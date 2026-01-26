@@ -1,0 +1,102 @@
+{
+  "id": "bande-organisee-001",
+  "version": "1.0.0",
+  "track": {
+    "title": "Bande Organisée",
+    "artist": "13 Organisé (SCH)",
+    "album": "13 Organisé",
+    "year": 2020
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Oui, ma gâtée, RS4 gris nardo, bien sûr qu'ils m'ont raté",
+      "startTime": 0,
+      "endTime": 4,
+      "terms": [
+        {
+          "term": "gâtée",
+          "definition": "Femme/copine choyée, terme affectueux",
+          "category": "argot"
+        },
+        {
+          "term": "RS4",
+          "definition": "Audi RS4, voiture sportive de luxe",
+          "category": "reference"
+        },
+        {
+          "term": "gris nardo",
+          "definition": "Couleur grise mate exclusive Audi, très prisée",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "Soleil dans la bulle, sur le Prado, Shifter pro'",
+      "startTime": 4,
+      "endTime": 8,
+      "terms": [
+        {
+          "term": "bulle",
+          "definition": "Voiture (on est dans sa bulle)",
+          "category": "argot"
+        },
+        {
+          "term": "Prado",
+          "definition": "Avenue du Prado, artère principale de Marseille",
+          "category": "reference"
+        },
+        {
+          "term": "Shifter pro'",
+          "definition": "Boîte de vitesse séquentielle à palettes",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "Contre-sens, ma chérie, tu es à contre-sens",
+      "startTime": 8,
+      "endTime": 11,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-004",
+      "text": "Puta, où tu étais quand j'mettais des sept euros d'essence",
+      "startTime": 11,
+      "endTime": 15,
+      "terms": [
+        {
+          "term": "Puta",
+          "definition": "Juron espagnol (putain), courant à Marseille",
+          "category": "expression"
+        },
+        {
+          "term": "sept euros d'essence",
+          "definition": "Référence à la galère financière d'avant le succès",
+          "category": "expression"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0a0a0f",
+    "textColor": "#ffffff",
+    "highlightColor": "#ff6b35",
+    "explanationBgColor": "#1a1a2e",
+    "fontFamily": "'Montserrat', 'Arial Black', sans-serif",
+    "fontSize": 48,
+    "animationStyle": "slide"
+  },
+  "config": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "explanationDuration": 3
+  }
+}
