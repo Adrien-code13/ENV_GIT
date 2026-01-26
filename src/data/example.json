@@ -1,0 +1,182 @@
+{
+  "id": "example-track-001",
+  "version": "1.0.0",
+  "track": {
+    "title": "Exemple de Titre",
+    "artist": "Artiste Exemple",
+    "album": "Album Demo",
+    "year": 2024
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Je suis dans le tieks avec mes refrés",
+      "startTime": 0,
+      "endTime": 3,
+      "terms": [
+        {
+          "term": "tieks",
+          "definition": "Quartier, zone, territoire. Vient du verlan de 'quartier' → 'tierqua' → 'tieks'",
+          "category": "verlan"
+        },
+        {
+          "term": "refrés",
+          "definition": "Frères, amis proches. Verlan de 'frères'",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "On est chaud comme la braise, pas le temps de faire des bails",
+      "startTime": 3,
+      "endTime": 6,
+      "terms": [
+        {
+          "term": "bails",
+          "definition": "Des histoires, des affaires, des choses. Terme d'argot très courant dans le rap français",
+          "example": "J'ai des bails à régler = J'ai des affaires à gérer",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "J'fais du biff depuis le tier-quar",
+      "startTime": 6,
+      "endTime": 9,
+      "terms": [
+        {
+          "term": "biff",
+          "definition": "Argent, billets. Vient de 'biffeton' (billet de banque en argot)",
+          "category": "argot"
+        },
+        {
+          "term": "tier-quar",
+          "definition": "Quartier. Verlan de 'quartier'",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "La street m'a tout appris, j'ai pas eu besoin d'la fac",
+      "startTime": 9,
+      "endTime": 12,
+      "terms": [
+        {
+          "term": "street",
+          "definition": "La rue, le quartier, l'environnement urbain. Anglicisme très utilisé dans le rap",
+          "category": "anglicisme"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-005",
+      "text": "Mes gars sont lovés, on flex avec la go",
+      "startTime": 12,
+      "endTime": 15,
+      "terms": [
+        {
+          "term": "lovés",
+          "definition": "Riches, qui ont de l'argent. Vient de 'lové' = argent",
+          "category": "argot"
+        },
+        {
+          "term": "flex",
+          "definition": "Frimer, montrer sa richesse ou son succès. Vient de l'anglais 'to flex'",
+          "category": "anglicisme"
+        },
+        {
+          "term": "go",
+          "definition": "Fille, copine, petite amie. Terme très courant dans le rap français",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-006",
+      "text": "J'suis zer-bla comme Messi, j'fais des galettes",
+      "startTime": 15,
+      "endTime": 18,
+      "terms": [
+        {
+          "term": "zer-bla",
+          "definition": "Verlan de 'blaser', qui signifie être connu, avoir une réputation",
+          "category": "verlan"
+        },
+        {
+          "term": "galettes",
+          "definition": "Argent, billets (référence aux disques d'or aussi parfois)",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-007",
+      "text": "Dans le bloc on tchille, on fume la beuh",
+      "startTime": 18,
+      "endTime": 21,
+      "terms": [
+        {
+          "term": "bloc",
+          "definition": "Immeuble, bâtiment, quartier. Le lieu où on habite ou traîne",
+          "category": "argot"
+        },
+        {
+          "term": "tchille",
+          "definition": "Se détendre, traîner sans rien faire de particulier. Vient de l'anglais 'chill'",
+          "category": "anglicisme"
+        },
+        {
+          "term": "beuh",
+          "definition": "Cannabis, herbe. Verlan de 'herbe'",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-008",
+      "text": "Le taf c'est la misère, moi j'préfère le bizness",
+      "startTime": 21,
+      "endTime": 24,
+      "terms": [
+        {
+          "term": "taf",
+          "definition": "Travail, emploi. Terme d'argot courant",
+          "category": "argot"
+        },
+        {
+          "term": "bizness",
+          "definition": "Affaires, souvent illicites ou informelles. Anglicisme adapté",
+          "category": "anglicisme"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0a0a0f",
+    "textColor": "#ffffff",
+    "highlightColor": "#ff6b35",
+    "explanationBgColor": "#1a1a2e",
+    "fontFamily": "'Montserrat', 'Arial Black', sans-serif",
+    "fontSize": 52,
+    "animationStyle": "slide"
+  },
+  "config": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "explanationDuration": 3
+  },
+  "createdAt": "2024-01-15T10:00:00Z",
+  "updatedAt": "2024-01-15T10:00:00Z"
+}
