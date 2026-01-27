@@ -410,7 +410,10 @@ def generate_video(data_path, output_path=None, start_time=None, end_time=None, 
             audio_clip = AudioFileClip(str(audio_path))
             if start_time is not None:
                 end = end_time if end_time else audio_clip.duration
-                audio_clip = audio_clip.subclipped(start_time, min(end, audio_clip.duration))
+                try:
+                    audio_clip = audio_clip.subclipped(start_time, min(end, audio_clip.duration))
+                except AttributeError:
+                    audio_clip = audio_clip.subclip(start_time, min(end, audio_clip.duration))
                 total_duration = audio_clip.duration
 
     # Create video
@@ -422,7 +425,10 @@ def generate_video(data_path, output_path=None, start_time=None, end_time=None, 
     video = VideoClip(make_frame, duration=total_duration)
 
     if audio_clip:
-        video = video.with_audio(audio_clip)
+        try:
+            video = video.with_audio(audio_clip)
+        except AttributeError:
+            video = video.set_audio(audio_clip)
 
     print(f"Exporting to {output_path}...")
     video.write_videofile(
