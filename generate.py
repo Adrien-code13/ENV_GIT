@@ -16,13 +16,12 @@ import textwrap
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
-from moviepy import (
-    VideoClip,
-    AudioFileClip,
-    CompositeVideoClip,
-    ImageClip,
-    concatenate_videoclips,
-)
+try:
+    # moviepy >= 2.0
+    from moviepy import VideoClip, AudioFileClip
+except ImportError:
+    # moviepy < 2.0 (ex: Google Colab)
+    from moviepy.editor import VideoClip, AudioFileClip
 import numpy as np
 
 
