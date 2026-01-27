@@ -1,44 +1,47 @@
 #!/usr/bin/env python3
 """
-Rap Lyrics Video Generator
-Generates TikTok/Shorts videos with rap lyrics and term explanations.
+Rap Lyrics Video Generator — TikTok/Shorts Optimized
+Generates addictive vertical videos with rap lyrics + term explanations.
 
 Usage:
     python3 generate.py --data src/data/bande-organisee.json
     python3 generate.py --data src/data/bande-organisee.json --start 68 --end 83
-    python3 generate.py --data src/data/bande-organisee.json --no-audio
 """
 
 import json
 import argparse
-import os
 import subprocess
-import textwrap
 import math
+import urllib.request
+import os
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 try:
-    # moviepy >= 2.0
     from moviepy import VideoClip, AudioFileClip
 except ImportError:
-    # moviepy < 2.0 (ex: Google Colab)
     from moviepy.editor import VideoClip, AudioFileClip
 import numpy as np
 
 
-# --- Config ---
+# ============================================================
+# CONFIG
+# ============================================================
 WIDTH = 1080
 HEIGHT = 1920
 FPS = 30
-BG_COLOR = (10, 10, 15)
-TEXT_COLOR = (255, 255, 255)
-DIMMED_COLOR = (80, 80, 90)
-HIGHLIGHT_COLOR = (255, 107, 53)
-ACCENT_COLOR = (255, 165, 0)
-EXPLANATION_BG = (20, 20, 35)
-EXPLANATION_BORDER = (255, 107, 53)
-DIVIDER_COLOR = (40, 40, 55)
+
+# Color palette
+C_BG = (8, 8, 14)
+C_WHITE = (255, 255, 255)
+C_DIM = (90, 90, 110)
+C_VERY_DIM = (45, 45, 60)
+C_ACCENT = (255, 90, 20)        # Vibrant orange
+C_ACCENT_GLOW = (255, 120, 50)
+C_ACCENT2 = (255, 200, 0)       # Gold
+C_CARD_BG = (16, 16, 32)
+C_CARD_BORDER = (255, 90, 20, 120)
+C_DIVIDER = (35, 35, 55)
 
 CATEGORY_COLORS = {
     "argot": (231, 76, 60),
@@ -56,370 +59,475 @@ CATEGORY_LABELS = {
     "expression": "EXPR",
 }
 
-# Layout zones
-HEADER_H = 160
-LEFT_W = 620          # lyrics zone width
-RIGHT_X = 660         # explanation zone x start
-RIGHT_W = 380         # explanation zone width
-LYRICS_TOP = 220      # where lyrics start
-LYRICS_BOTTOM = 1750  # where lyrics end
-LINE_SPACING = 130    # spacing between lyric lines
+# Layout
+HEADER_TOP = 50
+HEADER_H = 120
+CONTENT_TOP = 200
+LEFT_W = 600
+DIVIDER_X = 635
+RIGHT_X = 670
+RIGHT_W = 370
+CONTENT_BOTTOM = 1760
+LINE_H = 120
 
 # Fonts
-FONT_BOLD_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
-# Cache fonts globally
-_font_cache = {}
-
-def load_font(path, size):
-    key = (path, size)
-    if key not in _font_cache:
+_fcache = {}
+def font(path, size):
+    k = (path, size)
+    if k not in _fcache:
         try:
-            _font_cache[key] = ImageFont.truetype(path, size)
-        except Exception:
-            _font_cache[key] = ImageFont.load_default()
-    return _font_cache[key]
+            _fcache[k] = ImageFont.truetype(path, size)
+        except:
+            _fcache[k] = ImageFont.load_default()
+    return _fcache[k]
 
 
-def wrap_text(text, font, max_width, draw):
-    """Wrap text to fit within max_width pixels."""
+# ============================================================
+# DRAWING HELPERS
+# ============================================================
+
+def wrap(text, f, max_w, draw):
     words = text.split()
-    lines = []
-    current_line = ""
-    for word in words:
-        test_line = f"{current_line} {word}".strip()
-        bbox = draw.textbbox((0, 0), test_line, font=font)
-        if bbox[2] - bbox[0] <= max_width:
-            current_line = test_line
+    lines, cur = [], ""
+    for w in words:
+        test = f"{cur} {w}".strip()
+        if draw.textbbox((0, 0), test, font=f)[2] <= max_w:
+            cur = test
         else:
-            if current_line:
-                lines.append(current_line)
-            current_line = word
-    if current_line:
-        lines.append(current_line)
+            if cur:
+                lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
     return lines
 
 
-def draw_rounded_rect(draw, xy, radius, fill):
-    """Draw a rounded rectangle."""
+def rrect(draw, xy, r, fill):
     x1, y1, x2, y2 = xy
-    draw.rectangle([x1 + radius, y1, x2 - radius, y2], fill=fill)
-    draw.rectangle([x1, y1 + radius, x2, y2 - radius], fill=fill)
-    draw.pieslice([x1, y1, x1 + 2 * radius, y1 + 2 * radius], 180, 270, fill=fill)
-    draw.pieslice([x2 - 2 * radius, y1, x2, y1 + 2 * radius], 270, 360, fill=fill)
-    draw.pieslice([x1, y2 - 2 * radius, x1 + 2 * radius, y2], 90, 180, fill=fill)
-    draw.pieslice([x2 - 2 * radius, y2 - 2 * radius, x2, y2], 0, 90, fill=fill)
+    draw.rectangle([x1+r, y1, x2-r, y2], fill=fill)
+    draw.rectangle([x1, y1+r, x2, y2-r], fill=fill)
+    draw.pieslice([x1, y1, x1+2*r, y1+2*r], 180, 270, fill=fill)
+    draw.pieslice([x2-2*r, y1, x2, y1+2*r], 270, 360, fill=fill)
+    draw.pieslice([x1, y2-2*r, x1+2*r, y2], 90, 180, fill=fill)
+    draw.pieslice([x2-2*r, y2-2*r, x2, y2], 0, 90, fill=fill)
 
 
-def ease_out_cubic(t):
-    """Smooth easing function."""
-    return 1 - (1 - t) ** 3
+def ease_out(t):
+    return 1 - (1 - min(max(t, 0), 1)) ** 3
 
 
-def render_frame(t, data):
-    """Render a single frame at time t."""
-    img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
+def lerp(a, b, t):
+    return a + (b - a) * min(max(t, 0), 1)
+
+
+# ============================================================
+# BACKGROUND
+# ============================================================
+
+_bg_cache = {}
+
+def make_background(cover_path=None):
+    """Create a dark background with optional blurred album cover."""
+    key = cover_path or "_default_"
+    if key in _bg_cache:
+        return _bg_cache[key].copy()
+
+    bg = Image.new("RGB", (WIDTH, HEIGHT), C_BG)
+
+    if cover_path and os.path.exists(cover_path):
+        try:
+            cover = Image.open(cover_path).convert("RGB")
+            cover = cover.resize((WIDTH, HEIGHT), Image.LANCZOS)
+            cover = cover.filter(ImageFilter.GaussianBlur(radius=40))
+            # Darken heavily
+            dark = Image.new("RGB", (WIDTH, HEIGHT), (0, 0, 0))
+            bg = Image.blend(cover, dark, 0.70)
+        except:
+            pass
+
+    # Add subtle gradient overlay
+    draw = ImageDraw.Draw(bg)
+    for y in range(HEIGHT):
+        f = y / HEIGHT
+        # Top: slightly lighter, bottom: darker
+        alpha = int(lerp(20, 0, f) if f < 0.3 else lerp(0, 40, (f - 0.3) / 0.7))
+        draw.line([(0, y), (WIDTH, y)], fill=(alpha, alpha, alpha + 5))
+
+    _bg_cache[key] = bg.copy()
+    return bg
+
+
+# ============================================================
+# COUNT ALL TERMS IN LYRICS
+# ============================================================
+
+def count_total_terms(lyrics):
+    return sum(len(line.get("terms", [])) for line in lyrics)
+
+
+def count_revealed_terms(lyrics, t):
+    count = 0
+    for line in lyrics:
+        if t >= line["startTime"] and line.get("terms"):
+            lp = (t - line["startTime"]) / max(line["endTime"] - line["startTime"], 0.1)
+            for idx, term in enumerate(line["terms"]):
+                appear = 0.15 + idx * (0.6 / max(len(line["terms"]), 1))
+                if lp >= appear:
+                    count += 1
+        elif t >= line["endTime"] and line.get("terms"):
+            count += len(line["terms"])
+    return count
+
+
+# ============================================================
+# HOOK SCREEN (First 2.5 seconds)
+# ============================================================
+
+def render_hook(t, data, bg_img):
+    """Render the hook screen that appears in the first seconds."""
+    img = bg_img.copy()
+    draw = ImageDraw.Draw(img)
+
+    hook = data.get("hook", {})
+    hook_term = hook.get("term", "")
+    hook_line = hook.get("line", "")
+    track = data["track"]
+
+    # Pulsing glow effect
+    pulse = 0.7 + 0.3 * math.sin(t * 6)
+    glow_r = int(C_ACCENT[0] * pulse)
+    glow_g = int(C_ACCENT[1] * pulse)
+
+    # "SAIS-TU CE QUE VEUT DIRE..."
+    f1 = font(FONT_REG, 32)
+    txt1 = "SAIS-TU CE QUE VEUT DIRE..."
+    bbox = draw.textbbox((0, 0), txt1, font=f1)
+    x = (WIDTH - bbox[2]) // 2
+    draw.text((x, HEIGHT // 2 - 160), txt1, fill=C_DIM, font=f1)
+
+    # THE HOOK TERM — big, glowing
+    f2 = font(FONT_BOLD, 72)
+    bbox2 = draw.textbbox((0, 0), hook_term, font=f2)
+    x2 = (WIDTH - bbox2[2]) // 2
+    y2 = HEIGHT // 2 - 70
+
+    # Glow layers
+    for i in range(4, 0, -1):
+        glow_color = (glow_r // (i + 1), glow_g // (i + 1), 0)
+        draw.text((x2, y2), hook_term, fill=glow_color, font=f2)
+    draw.text((x2, y2), hook_term, fill=C_ACCENT, font=f2)
+
+    # Question mark animated
+    f3 = font(FONT_BOLD, 80)
+    scale_t = ease_out(t * 2) if t < 1 else 1
+    draw.text((x2 + bbox2[2] + 10, y2 - 5), "?", fill=C_ACCENT2, font=f3)
+
+    # Line preview below
+    if hook_line:
+        f4 = font(FONT_REG, 26)
+        lines = wrap(f'« {hook_line} »', f4, WIDTH - 120, draw)
+        for j, ln in enumerate(lines):
+            bbox_l = draw.textbbox((0, 0), ln, font=f4)
+            draw.text(
+                ((WIDTH - bbox_l[2]) // 2, HEIGHT // 2 + 60 + j * 36),
+                ln, fill=C_VERY_DIM, font=f4
+            )
+
+    # Artist/title at bottom
+    f5 = font(FONT_BOLD, 28)
+    f6 = font(FONT_REG, 24)
+    art = track["artist"]
+    ttl = track["title"]
+    bbox_a = draw.textbbox((0, 0), art, font=f5)
+    bbox_t = draw.textbbox((0, 0), ttl, font=f6)
+    draw.text(((WIDTH - bbox_a[2]) // 2, HEIGHT - 200), art, fill=C_ACCENT, font=f5)
+    draw.text(((WIDTH - bbox_t[2]) // 2, HEIGHT - 160), ttl, fill=C_DIM, font=f6)
+
+    # "Swipe up" / progress hint
+    fade_in = min(1, t / 2)
+    hint_alpha = int(180 * fade_in * pulse)
+    f7 = font(FONT_REG, 22)
+    htxt = f"{count_total_terms(data['lyrics'])} termes à décrypter"
+    bbox_h = draw.textbbox((0, 0), htxt, font=f7)
+    draw.text(
+        ((WIDTH - bbox_h[2]) // 2, HEIGHT - 110),
+        htxt, fill=(hint_alpha, hint_alpha, hint_alpha), font=f7
+    )
+
+    return np.array(img)
+
+
+# ============================================================
+# MAIN VIDEO FRAME
+# ============================================================
+
+def render_frame(t, data, bg_img):
+    img = bg_img.copy()
     draw = ImageDraw.Draw(img)
 
     track = data["track"]
     lyrics = data["lyrics"]
+    hook_duration = data.get("hook", {}).get("duration", 2.5)
 
-    # Fonts
-    font_artist = load_font(FONT_BOLD_PATH, 38)
-    font_title = load_font(FONT_PATH, 28)
-    font_lyrics_active = load_font(FONT_BOLD_PATH, 36)
-    font_lyrics_dim = load_font(FONT_PATH, 32)
-    font_term_title = load_font(FONT_BOLD_PATH, 28)
-    font_term_def = load_font(FONT_PATH, 22)
-    font_category = load_font(FONT_BOLD_PATH, 16)
+    # Adjust time for lyrics (offset by hook duration)
+    lt = t - hook_duration  # lyrics time
+    if lt < 0:
+        return render_hook(t, data, bg_img)
 
-    # =============================================
-    # HEADER: Title bar at top
-    # =============================================
-    # Background bar
-    draw_rounded_rect(draw, (30, 40, WIDTH - 30, HEADER_H), 16, (18, 18, 30))
+    total_terms = count_total_terms(lyrics)
+    revealed = count_revealed_terms(lyrics, lt)
 
-    # Orange accent bar on left
-    draw.rectangle([30, 40, 38, HEADER_H], fill=HIGHLIGHT_COLOR)
+    # ── HEADER ──────────────────────────────────────────────
+    # Background bar with glassmorphism effect
+    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    ov = ImageDraw.Draw(overlay)
+    rrect(ov, (30, HEADER_TOP, WIDTH - 30, HEADER_TOP + HEADER_H), 16, (15, 15, 28, 220))
+    img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)
 
-    # Artist name
-    draw.text((60, 58), track["artist"], fill=HIGHLIGHT_COLOR, font=font_artist)
+    # Accent stripe
+    draw.rectangle([30, HEADER_TOP, 36, HEADER_TOP + HEADER_H], fill=C_ACCENT)
 
-    # Song title
-    draw.text((60, 105), track["title"], fill=(180, 180, 190), font=font_title)
+    # Artist
+    draw.text((56, HEADER_TOP + 18), track["artist"], fill=C_ACCENT, font=font(FONT_BOLD, 34))
+    # Title
+    draw.text((56, HEADER_TOP + 60), track["title"], fill=(170, 170, 185), font=font(FONT_REG, 26))
 
-    # =============================================
-    # VERTICAL DIVIDER
-    # =============================================
-    divider_x = LEFT_W + 20
-    draw.line(
-        [(divider_x, LYRICS_TOP), (divider_x, LYRICS_BOTTOM)],
-        fill=DIVIDER_COLOR,
-        width=2,
-    )
+    # Terms counter badge (top right)
+    badge_txt = f"{revealed}/{total_terms}"
+    f_badge = font(FONT_BOLD, 22)
+    bb = draw.textbbox((0, 0), badge_txt, font=f_badge)
+    bw = bb[2] - bb[0] + 30
+    bx = WIDTH - 60 - bw
+    by = HEADER_TOP + 20
+    rrect(draw, (bx, by, bx + bw, by + 36), 18, C_ACCENT)
+    draw.text((bx + 15, by + 5), badge_txt, fill=C_WHITE, font=f_badge)
 
-    # =============================================
-    # LEFT SIDE: Lyrics (Spotify-style scroll)
-    # =============================================
+    # Small label
+    draw.text((bx + 2, by + 42), "décryptés", fill=C_DIM, font=font(FONT_REG, 16))
 
-    # Find active line index
+    # ── DIVIDER ─────────────────────────────────────────────
+    # Dotted vertical line
+    for y in range(CONTENT_TOP, CONTENT_BOTTOM, 12):
+        draw.rectangle([DIVIDER_X, y, DIVIDER_X + 2, y + 6], fill=C_DIVIDER)
+
+    # ── LEFT: LYRICS (Spotify scroll) ──────────────────────
     active_idx = -1
     for i, line in enumerate(lyrics):
-        if line["startTime"] <= t < line["endTime"]:
+        if line["startTime"] <= lt < line["endTime"]:
             active_idx = i
             break
-
-    # If between lines, show the last active
     if active_idx == -1:
         for i, line in enumerate(lyrics):
-            if t >= line["endTime"]:
+            if lt >= line["endTime"]:
                 active_idx = i
-            elif t < line["startTime"]:
-                break
 
-    # Calculate the vertical center target for the active line
-    lyrics_center_y = (LYRICS_TOP + LYRICS_BOTTOM) // 2 - 50
+    center_y = (CONTENT_TOP + CONTENT_BOTTOM) // 2 - 40
 
-    # Smooth scroll: active line should be near vertical center
     if active_idx >= 0:
-        # Calculate line progress for smooth interpolation
         line = lyrics[active_idx]
-        line_progress = (t - line["startTime"]) / max(line["endTime"] - line["startTime"], 0.1)
-        line_progress = min(max(line_progress, 0), 1)
-
-        # Target Y offset so active line is centered
-        target_offset = lyrics_center_y - (active_idx * LINE_SPACING)
-
-        # Smooth transition to next line
-        if active_idx < len(lyrics) - 1 and line_progress > 0.8:
-            next_offset = lyrics_center_y - ((active_idx + 1) * LINE_SPACING)
-            blend = ease_out_cubic((line_progress - 0.8) / 0.2)
-            scroll_offset = target_offset + (next_offset - target_offset) * blend
+        lp = (lt - line["startTime"]) / max(line["endTime"] - line["startTime"], 0.1)
+        lp = min(max(lp, 0), 1)
+        target = center_y - active_idx * LINE_H
+        if active_idx < len(lyrics) - 1 and lp > 0.8:
+            nxt = center_y - (active_idx + 1) * LINE_H
+            scroll = target + (nxt - target) * ease_out((lp - 0.8) / 0.2)
         else:
-            scroll_offset = target_offset
+            scroll = target
     else:
-        scroll_offset = lyrics_center_y
+        scroll = center_y
 
-    # Draw all lyric lines
     for i, line in enumerate(lyrics):
-        y = int(scroll_offset + i * LINE_SPACING)
-
-        # Skip lines outside visible area (with margin)
-        if y < LYRICS_TOP - 100 or y > LYRICS_BOTTOM + 50:
+        y = int(scroll + i * LINE_H)
+        if y < CONTENT_TOP - 80 or y > CONTENT_BOTTOM + 50:
             continue
 
-        # Fade out lines near edges
-        edge_fade = 1.0
-        if y < LYRICS_TOP + 80:
-            edge_fade = max(0, (y - LYRICS_TOP) / 80)
-        elif y > LYRICS_BOTTOM - 80:
-            edge_fade = max(0, (LYRICS_BOTTOM - y) / 80)
+        # Edge fade
+        ef = 1.0
+        if y < CONTENT_TOP + 60:
+            ef = max(0, (y - CONTENT_TOP) / 60)
+        elif y > CONTENT_BOTTOM - 60:
+            ef = max(0, (CONTENT_BOTTOM - y) / 60)
 
         is_active = (i == active_idx)
-        is_past = (i < active_idx)
+        is_past = (i < active_idx) if active_idx >= 0 else False
 
         if is_active:
-            # Active line: bright white with orange accent dot
-            alpha = int(255 * edge_fade)
-            color = (min(255, int(255 * edge_fade)), min(255, int(255 * edge_fade)), min(255, int(255 * edge_fade)))
-            font = font_lyrics_active
+            # ── Active line: bright with glow ──
+            f_act = font(FONT_BOLD, 34)
+            wrapped = wrap(line["text"], f_act, LEFT_W - 60, draw)
 
-            # Orange dot indicator
-            draw.ellipse(
-                [25, y + 10, 39, y + 24],
-                fill=HIGHLIGHT_COLOR,
-            )
+            # Glow background behind text
+            glow_h = len(wrapped) * 44 + 20
+            overlay2 = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+            ov2 = ImageDraw.Draw(overlay2)
+            rrect(ov2, (20, y - 10, LEFT_W + 10, y + glow_h), 12,
+                  (C_ACCENT[0], C_ACCENT[1], C_ACCENT[2], 18))
+            img = Image.alpha_composite(img.convert("RGBA"), overlay2).convert("RGB")
+            draw = ImageDraw.Draw(img)
 
-            wrapped = wrap_text(line["text"], font, LEFT_W - 60, draw)
+            # Accent dot
+            pulse = 0.7 + 0.3 * math.sin(lt * 8)
+            dot_r = int(7 * pulse)
+            cx, cy = 30, y + 14
+            draw.ellipse([cx - dot_r, cy - dot_r, cx + dot_r, cy + dot_r], fill=C_ACCENT)
+
             for j, wl in enumerate(wrapped):
-                draw.text((50, y + j * 44), wl, fill=color, font=font)
+                c = tuple(int(255 * ef) for _ in range(3))
+                draw.text((50, y + j * 44), wl, fill=c, font=f_act)
+
+            # Progress underline
+            if wrapped:
+                ul_y = y + len(wrapped) * 44 + 4
+                bar_w = int(lp * (LEFT_W - 80))
+                if bar_w > 0:
+                    draw.rectangle([50, ul_y, 50 + bar_w, ul_y + 3], fill=C_ACCENT)
 
         else:
-            # Inactive lines: dimmed
-            fade = 0.4 if is_past else 0.3
-            alpha = edge_fade * fade
-            gray = int(255 * alpha)
-            color = (gray, gray, int(gray * 1.1))
-            font = font_lyrics_dim
-
-            wrapped = wrap_text(line["text"], font, LEFT_W - 40, draw)
+            # ── Inactive line ──
+            opacity = 0.35 if is_past else 0.25
+            gray = int(255 * ef * opacity)
+            c = (gray, gray, int(gray * 1.1))
+            f_dim = font(FONT_REG, 30)
+            wrapped = wrap(line["text"], f_dim, LEFT_W - 40, draw)
             for j, wl in enumerate(wrapped):
-                draw.text((50, y + j * 40), wl, fill=color, font=font)
+                draw.text((50, y + j * 38), wl, fill=c, font=f_dim)
 
-    # =============================================
-    # RIGHT SIDE: Term explanations
-    # =============================================
-
-    # Get active line's terms
+    # ── RIGHT: EXPLANATIONS ─────────────────────────────────
     active_line = lyrics[active_idx] if 0 <= active_idx < len(lyrics) else None
 
     if active_line and active_line.get("showExplanation") and active_line.get("terms"):
         terms = active_line["terms"]
         line_data = active_line
-        line_progress = (t - line_data["startTime"]) / max(line_data["endTime"] - line_data["startTime"], 0.1)
-        line_progress = min(max(line_progress, 0), 1)
+        lp = (lt - line_data["startTime"]) / max(line_data["endTime"] - line_data["startTime"], 0.1)
+        lp = min(max(lp, 0), 1)
 
-        # "DÉCRYPTAGE" header on right side
-        header_y = LYRICS_TOP + 20
-        draw.text(
-            (RIGHT_X + 10, header_y),
-            "DÉCRYPTAGE",
-            fill=HIGHLIGHT_COLOR,
-            font=load_font(FONT_BOLD_PATH, 20),
-        )
-        # Underline
-        draw.rectangle(
-            [RIGHT_X + 10, header_y + 28, RIGHT_X + 160, header_y + 30],
-            fill=HIGHLIGHT_COLOR,
-        )
+        # Section header
+        hy = CONTENT_TOP + 10
+        draw.text((RIGHT_X, hy), "DÉCRYPTAGE", fill=C_ACCENT, font=font(FONT_BOLD, 18))
+        # Gradient underline
+        for x in range(RIGHT_X, RIGHT_X + 130):
+            fade = 1 - (x - RIGHT_X) / 130
+            c = tuple(int(v * fade) for v in C_ACCENT)
+            draw.line([(x, hy + 24), (x, hy + 26)], fill=c)
 
-        # Draw each term card
-        card_start_y = header_y + 60
+        card_y = hy + 50
 
         for idx, term in enumerate(terms):
-            # Stagger appearance: each term appears progressively
-            term_appear_at = 0.1 + idx * (0.7 / max(len(terms), 1))
-            if line_progress < term_appear_at:
+            appear = 0.15 + idx * (0.6 / max(len(terms), 1))
+            if lp < appear:
                 continue
 
-            # Fade in
-            fade_progress = min(1.0, (line_progress - term_appear_at) * 4)
-            slide_offset = int((1 - ease_out_cubic(fade_progress)) * 30)
+            fade = min(1.0, (lp - appear) * 5)
+            slide = int((1 - ease_out(fade)) * 25)
+            cy = card_y + idx * 180 + slide
 
-            card_y = card_start_y + idx * 200 + slide_offset
-
-            if card_y > LYRICS_BOTTOM - 50:
+            if cy + 160 > CONTENT_BOTTOM:
                 continue
 
-            # Card background with RGBA overlay
-            overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-            ov_draw = ImageDraw.Draw(overlay)
-            bg_alpha = int(200 * fade_progress)
-            draw_rounded_rect(
-                ov_draw,
-                (RIGHT_X, card_y, RIGHT_X + RIGHT_W, card_y + 170),
-                14,
-                (*EXPLANATION_BG, bg_alpha),
-            )
-            # Left accent border
-            ov_draw.rectangle(
-                [RIGHT_X, card_y + 10, RIGHT_X + 5, card_y + 160],
-                fill=(*HIGHLIGHT_COLOR, int(255 * fade_progress)),
-            )
-            img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+            # Card with glass effect
+            overlay3 = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+            ov3 = ImageDraw.Draw(overlay3)
+            a = int(210 * fade)
+            rrect(ov3, (RIGHT_X, cy, RIGHT_X + RIGHT_W, cy + 155), 14,
+                  (*C_CARD_BG, a))
+            # Left accent bar
+            ov3.rectangle([RIGHT_X, cy + 12, RIGHT_X + 4, cy + 143],
+                         fill=(C_ACCENT[0], C_ACCENT[1], C_ACCENT[2], int(255 * fade)))
+            # Top glow line
+            for x in range(RIGHT_X, RIGHT_X + RIGHT_W):
+                gf = 1 - abs(x - (RIGHT_X + RIGHT_W // 2)) / (RIGHT_W // 2)
+                ov3.point((x, cy), fill=(C_ACCENT[0], C_ACCENT[1], C_ACCENT[2], int(40 * gf * fade)))
+
+            img = Image.alpha_composite(img.convert("RGBA"), overlay3).convert("RGB")
             draw = ImageDraw.Draw(img)
 
-            if fade_progress > 0.2:
-                text_alpha = min(1.0, (fade_progress - 0.2) * 2)
+            if fade > 0.2:
+                ta = min(1.0, (fade - 0.2) * 2.5)
 
-                # Category badge
-                category = term.get("category", "other")
-                cat_color = CATEGORY_COLORS.get(category, CATEGORY_COLORS["other"])
-                cat_text = CATEGORY_LABELS.get(category, "TERME")
-                cat_bbox = draw.textbbox((0, 0), cat_text, font=font_category)
-                cat_w = cat_bbox[2] - cat_bbox[0] + 16
-                draw_rounded_rect(
-                    draw,
-                    (RIGHT_X + 18, card_y + 14, RIGHT_X + 18 + cat_w, card_y + 36),
-                    8,
-                    cat_color,
-                )
-                draw.text(
-                    (RIGHT_X + 26, card_y + 15),
-                    cat_text,
-                    fill=(255, 255, 255),
-                    font=font_category,
-                )
+                # Category pill
+                cat = term.get("category", "other")
+                cat_c = CATEGORY_COLORS.get(cat, CATEGORY_COLORS["other"])
+                cat_t = CATEGORY_LABELS.get(cat, "—")
+                f_cat = font(FONT_BOLD, 14)
+                cb = draw.textbbox((0, 0), cat_t, font=f_cat)
+                cw = cb[2] + 18
+                rrect(draw, (RIGHT_X + 16, cy + 12, RIGHT_X + 16 + cw, cy + 32), 8, cat_c)
+                draw.text((RIGHT_X + 25, cy + 13), cat_t, fill=C_WHITE, font=f_cat)
 
                 # Term name
-                term_text = term["term"]
-                tc = int(255 * text_alpha)
-                draw.text(
-                    (RIGHT_X + 18, card_y + 48),
-                    term_text,
-                    fill=(min(tc, HIGHLIGHT_COLOR[0]), min(tc, HIGHLIGHT_COLOR[1]), min(tc, HIGHLIGHT_COLOR[2])),
-                    font=font_term_title,
-                )
+                tc = int(255 * ta)
+                draw.text((RIGHT_X + 16, cy + 42),
+                         term["term"],
+                         fill=(min(tc, C_ACCENT[0]), min(tc, C_ACCENT[1]), min(tc, C_ACCENT[2])),
+                         font=font(FONT_BOLD, 26))
 
-                # Definition (wrapped)
-                def_lines = wrap_text(term["definition"], font_term_def, RIGHT_W - 36, draw)
-                gray = int(200 * text_alpha)
-                for j, dl in enumerate(def_lines):
-                    if card_y + 88 + j * 28 < card_y + 160:
-                        draw.text(
-                            (RIGHT_X + 18, card_y + 88 + j * 28),
-                            dl,
-                            fill=(gray, gray, gray),
-                            font=font_term_def,
-                        )
+                # Definition
+                f_def = font(FONT_REG, 20)
+                dlines = wrap(term["definition"], f_def, RIGHT_W - 32, draw)
+                g = int(190 * ta)
+                for j, dl in enumerate(dlines):
+                    dy = cy + 80 + j * 26
+                    if dy < cy + 145:
+                        draw.text((RIGHT_X + 16, dy), dl, fill=(g, g, g), font=f_def)
 
     elif active_line and not active_line.get("terms"):
-        # No terms to explain: show subtle message
-        msg_y = (LYRICS_TOP + LYRICS_BOTTOM) // 2 - 20
-        draw.text(
-            (RIGHT_X + 30, msg_y),
-            "Pas de terme",
-            fill=(50, 50, 60),
-            font=load_font(FONT_PATH, 22),
-        )
-        draw.text(
-            (RIGHT_X + 30, msg_y + 30),
-            "à décrypter",
-            fill=(50, 50, 60),
-            font=load_font(FONT_PATH, 22),
-        )
+        my = (CONTENT_TOP + CONTENT_BOTTOM) // 2 - 30
+        draw.text((RIGHT_X + 20, my), "Aucun terme", fill=C_VERY_DIM, font=font(FONT_REG, 22))
+        draw.text((RIGHT_X + 20, my + 30), "à décrypter", fill=C_VERY_DIM, font=font(FONT_REG, 22))
 
-    # =============================================
-    # PROGRESS BAR at bottom
-    # =============================================
-    if lyrics:
-        total_dur = lyrics[-1]["endTime"]
-        progress = min(t / total_dur, 1.0) if total_dur > 0 else 0
-        bar_y = HEIGHT - 70
+    # ── BOTTOM: Progress bar ────────────────────────────────
+    total_dur = lyrics[-1]["endTime"]
+    progress = min(lt / total_dur, 1.0) if total_dur > 0 else 0
+    bar_y = HEIGHT - 80
 
-        # Track
-        draw_rounded_rect(draw, (40, bar_y, WIDTH - 40, bar_y + 6), 3, (40, 40, 50))
-        # Fill
-        fill_w = int(progress * (WIDTH - 80))
-        if fill_w > 6:
-            draw_rounded_rect(draw, (40, bar_y, 40 + fill_w, bar_y + 6), 3, HIGHLIGHT_COLOR)
-            # Knob
-            draw.ellipse(
-                [40 + fill_w - 8, bar_y - 5, 40 + fill_w + 8, bar_y + 11],
-                fill=HIGHLIGHT_COLOR,
-            )
+    # Track bg
+    rrect(draw, (50, bar_y, WIDTH - 50, bar_y + 5), 2, (30, 30, 45))
+    # Fill
+    fw = int(progress * (WIDTH - 100))
+    if fw > 4:
+        rrect(draw, (50, bar_y, 50 + fw, bar_y + 5), 2, C_ACCENT)
+        # Knob with glow
+        kx = 50 + fw
+        for r in range(12, 5, -1):
+            a = 30 * (13 - r)
+            draw.ellipse([kx - r, bar_y - r + 2, kx + r, bar_y + r + 2],
+                        fill=(min(a, C_ACCENT[0]), min(a, C_ACCENT[1]), 0))
+        draw.ellipse([kx - 6, bar_y - 4, kx + 6, bar_y + 8], fill=C_ACCENT)
 
-        # Time labels
-        font_time = load_font(FONT_PATH, 18)
-        elapsed = f"{int(t // 60)}:{int(t % 60):02d}"
-        total = f"{int(total_dur // 60)}:{int(total_dur % 60):02d}"
-        draw.text((40, bar_y + 14), elapsed, fill=(120, 120, 130), font=font_time)
-        tb = draw.textbbox((0, 0), total, font=font_time)
-        draw.text((WIDTH - 40 - (tb[2] - tb[0]), bar_y + 14), total, fill=(120, 120, 130), font=font_time)
+    # Time labels
+    f_time = font(FONT_REG, 17)
+    elapsed = f"{int(lt // 60)}:{int(lt % 60):02d}"
+    total = f"{int(total_dur // 60)}:{int(total_dur % 60):02d}"
+    draw.text((50, bar_y + 12), elapsed, fill=C_DIM, font=f_time)
+    tb = draw.textbbox((0, 0), total, font=f_time)
+    draw.text((WIDTH - 50 - tb[2], bar_y + 12), total, fill=C_DIM, font=f_time)
+
+    # Completion percentage (center)
+    pct = f"{int(progress * 100)}%"
+    pb = draw.textbbox((0, 0), pct, font=f_time)
+    draw.text(((WIDTH - pb[2]) // 2, bar_y + 12), pct, fill=C_ACCENT, font=f_time)
 
     return np.array(img)
 
 
+# ============================================================
+# AUDIO DOWNLOAD
+# ============================================================
+
 def download_audio(artist, title, output_path):
-    """Download audio from YouTube using yt-dlp."""
     query = f"{artist} {title}"
-    print(f"Searching YouTube for: {query}")
-
+    print(f"Searching YouTube: {query}")
     cmd = [
-        "yt-dlp",
-        f"ytsearch1:{query}",
-        "-x",
-        "--audio-format", "mp3",
-        "--audio-quality", "0",
-        "-o", str(output_path),
-        "--no-playlist",
-        "--quiet",
+        "yt-dlp", f"ytsearch1:{query}",
+        "-x", "--audio-format", "mp3", "--audio-quality", "0",
+        "-o", str(output_path), "--no-playlist", "--quiet",
     ]
-
     try:
         subprocess.run(cmd, check=True, timeout=120)
-        # yt-dlp may add extension
         if not output_path.exists():
             for ext in [".mp3", ".m4a", ".webm", ".opus"]:
                 p = output_path.with_suffix(ext)
@@ -427,33 +535,66 @@ def download_audio(artist, title, output_path):
                     return p
         return output_path
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        print(f"Error downloading audio: {e}")
+        print(f"Audio download error: {e}")
         return None
 
 
+def download_cover(url, output_path):
+    """Download album cover image."""
+    try:
+        urllib.request.urlretrieve(url, str(output_path))
+        print(f"Cover downloaded: {output_path}")
+        return output_path
+    except Exception as e:
+        print(f"Cover download error: {e}")
+        return None
+
+
+# ============================================================
+# MAIN GENERATION
+# ============================================================
+
 def generate_video(data_path, output_path=None, start_time=None, end_time=None, no_audio=False):
-    """Generate the video from JSON data."""
     with open(data_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     track = data["track"]
     lyrics = data["lyrics"]
+    hook = data.get("hook", {})
+    hook_duration = hook.get("duration", 2.5)
 
     if not lyrics:
-        print("Error: No lyrics found in data file")
+        print("Error: No lyrics")
         return
 
-    # Calculate video duration from lyrics
-    video_duration = lyrics[-1]["endTime"] + 2  # 2s buffer
+    # Video duration = hook + lyrics + buffer
+    video_duration = hook_duration + lyrics[-1]["endTime"] + 2
 
     if output_path is None:
         output_path = Path("out") / f"{track['artist']} - {track['title']}.mp4"
-
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    print(f"Generating video for: {track['artist']} - {track['title']}")
-    print(f"Video duration: {video_duration}s | {len(lyrics)} lines")
+    print(f"=== Rap Lyrics Video Generator ===")
+    print(f"Track: {track['artist']} — {track['title']}")
+    print(f"Duration: {video_duration:.1f}s (hook: {hook_duration}s + lyrics: {lyrics[-1]['endTime']}s)")
+    print(f"Terms: {count_total_terms(lyrics)}")
+
+    # Download cover if URL provided
+    cover_path = None
+    if track.get("coverImage"):
+        ci = track["coverImage"]
+        if ci.startswith("http"):
+            cover_path = Path("out") / "covers" / f"{track['artist']}.jpg"
+            cover_path.parent.mkdir(parents=True, exist_ok=True)
+            if not cover_path.exists():
+                download_cover(ci, cover_path)
+        elif os.path.exists(ci):
+            cover_path = Path(ci)
+
+    # Pre-render background
+    print("Building background...")
+    bg_img = make_background(str(cover_path) if cover_path else None)
 
     # Download audio
     audio_clip = None
@@ -463,19 +604,17 @@ def generate_video(data_path, output_path=None, start_time=None, end_time=None, 
 
         if not audio_path.exists():
             print("Downloading audio...")
-            actual_path = download_audio(track["artist"], track["title"], audio_path)
-            if actual_path:
-                audio_path = actual_path
-                print(f"Audio downloaded: {audio_path}")
+            actual = download_audio(track["artist"], track["title"], audio_path)
+            if actual:
+                audio_path = actual
+                print(f"Audio: {audio_path}")
             else:
-                print("Could not download audio. Generating video without audio.")
+                print("No audio found. Continuing without audio.")
         else:
-            print(f"Using cached audio: {audio_path}")
+            print(f"Audio cached: {audio_path}")
 
         if audio_path.exists():
             audio_clip = AudioFileClip(str(audio_path))
-
-            # Cut audio to match the verse timing
             if start_time is not None:
                 end = end_time if end_time else start_time + video_duration
                 end = min(end, audio_clip.duration)
@@ -483,26 +622,27 @@ def generate_video(data_path, output_path=None, start_time=None, end_time=None, 
                     audio_clip = audio_clip.subclipped(start_time, end)
                 except AttributeError:
                     audio_clip = audio_clip.subclip(start_time, end)
-                print(f"Audio cut: {start_time}s -> {end}s ({audio_clip.duration:.1f}s)")
+                print(f"Audio cut: {start_time}s → {end}s")
 
-            # Match video duration to audio duration
-            video_duration = min(video_duration, audio_clip.duration)
+                # Prepend silence for hook duration
+                # (hook plays over the start of the audio)
+                video_duration = min(video_duration, hook_duration + audio_clip.duration)
 
-    # Create video
     print("Rendering frames...")
 
     def make_frame(t):
-        return render_frame(t, data)
+        return render_frame(t, data, bg_img)
 
     video = VideoClip(make_frame, duration=video_duration)
 
     if audio_clip:
+        # Offset audio to start after hook
         try:
             video = video.with_audio(audio_clip)
         except AttributeError:
             video = video.set_audio(audio_clip)
 
-    print(f"Exporting to {output_path}...")
+    print(f"Exporting → {output_path}")
     video.write_videofile(
         str(output_path),
         fps=FPS,
@@ -513,17 +653,16 @@ def generate_video(data_path, output_path=None, start_time=None, end_time=None, 
         logger="bar",
     )
 
-    print(f"\nVideo saved to: {output_path}")
-    print("Ready to upload to TikTok or YouTube Shorts!")
+    print(f"\n✅ Video saved: {output_path}")
+    print(f"📱 Ready for TikTok / YouTube Shorts!")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate rap lyrics video")
-    parser.add_argument("--data", required=True, help="Path to JSON data file")
+    parser = argparse.ArgumentParser(description="Rap Lyrics Video Generator")
+    parser.add_argument("--data", required=True, help="JSON data file path")
     parser.add_argument("--output", "-o", help="Output video path")
-    parser.add_argument("--start", type=float, help="Audio start time in seconds (where the verse begins)")
-    parser.add_argument("--end", type=float, help="Audio end time in seconds (where the verse ends)")
-    parser.add_argument("--no-audio", action="store_true", help="Generate without audio")
-
+    parser.add_argument("--start", type=float, help="Audio start time (seconds)")
+    parser.add_argument("--end", type=float, help="Audio end time (seconds)")
+    parser.add_argument("--no-audio", action="store_true", help="Skip audio")
     args = parser.parse_args()
     generate_video(args.data, args.output, args.start, args.end, args.no_audio)

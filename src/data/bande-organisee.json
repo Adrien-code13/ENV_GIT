@@ -5,7 +5,13 @@
     "title": "Bande Organisée",
     "artist": "13 Organisé (SCH)",
     "album": "13 Organisé",
-    "year": 2020
+    "year": 2020,
+    "coverImage": "https://i.scdn.co/image/ab67616d0000b273a6132919f4802a2552c22a85"
+  },
+  "hook": {
+    "term": "gris nardo",
+    "line": "RS4 gris nardo, bien sûr qu'ils m'ont raté",
+    "duration": 2.5
   },
   "lyrics": [
     {
@@ -16,17 +22,17 @@
       "terms": [
         {
           "term": "gâtée",
-          "definition": "Femme/copine choyée, terme affectueux",
+          "definition": "Copine choyée, terme affectueux",
           "category": "argot"
         },
         {
           "term": "RS4",
-          "definition": "Audi RS4, voiture sportive de luxe",
+          "definition": "Audi RS4, sportive de luxe",
           "category": "reference"
         },
         {
           "term": "gris nardo",
-          "definition": "Couleur grise mate exclusive Audi, très prisée",
+          "definition": "Couleur grise mate exclusive Audi",
           "category": "reference"
         }
       ],
@@ -40,17 +46,17 @@
       "terms": [
         {
           "term": "bulle",
-          "definition": "Voiture (on est dans sa bulle)",
+          "definition": "Voiture (être dans sa bulle)",
           "category": "argot"
         },
         {
           "term": "Prado",
-          "definition": "Avenue du Prado, artère principale de Marseille",
+          "definition": "Grande avenue de Marseille",
           "category": "reference"
         },
         {
           "term": "Shifter pro'",
-          "definition": "Boîte de vitesse séquentielle à palettes",
+          "definition": "Boîte de vitesse à palettes",
           "category": "reference"
         }
       ],
@@ -72,12 +78,12 @@
       "terms": [
         {
           "term": "Puta",
-          "definition": "Juron espagnol (putain), courant à Marseille",
+          "definition": "Juron espagnol courant à Marseille",
           "category": "expression"
         },
         {
-          "term": "sept euros d'essence",
-          "definition": "Référence à la galère financière d'avant le succès",
+          "term": "7€ d'essence",
+          "definition": "La galère financière avant le succès",
           "category": "expression"
         }
       ],
@@ -85,18 +91,13 @@
     }
   ],
   "style": {
-    "backgroundColor": "#0a0a0f",
-    "textColor": "#ffffff",
-    "highlightColor": "#ff6b35",
-    "explanationBgColor": "#1a1a2e",
-    "fontFamily": "'Montserrat', 'Arial Black', sans-serif",
-    "fontSize": 48,
+    "backgroundColor": "#08080e",
+    "highlightColor": "#ff5a14",
     "animationStyle": "slide"
   },
   "config": {
     "width": 1080,
     "height": 1920,
-    "fps": 30,
-    "explanationDuration": 3
+    "fps": 30
   }
 }
