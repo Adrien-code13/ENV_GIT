@@ -8,8 +8,9 @@ import {
   Sequence,
   spring,
   staticFile,
+  interpolate,
 } from "remotion";
-import type { RapLyricsVideo, LyricLine as LyricLineType } from "../types";
+import type { RapLyricsVideo, LyricLine as LyricLineType, TermExplanation } from "../types";
 import { HookScreen } from "./HookScreen";
 
 interface LyricsVideoProps {
@@ -27,6 +28,16 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   const currentTime = contentFrame / fps;
   const isHookPhase = frame < hookDurationFrames;
 
+  // Calculate when all lyrics end
+  const lyricsEndTime = useMemo(() => {
+    if (lyrics.length === 0) return 0;
+    return Math.max(...lyrics.map(l => l.endTime));
+  }, [lyrics]);
+
+  // End screen duration (2 seconds)
+  const endScreenDuration = 2;
+  const isEndScreen = currentTime >= lyricsEndTime && !isHookPhase;
+
   // === COLORS ===
   const HL = style.highlightColor;
   const BG1 = style.backgroundColor;
@@ -34,11 +45,11 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // === STATE ===
   const activeLine = useMemo(() => {
-    if (isHookPhase) return null;
+    if (isHookPhase || isEndScreen) return null;
     return lyrics.find(
       (line) => currentTime >= line.startTime && currentTime < line.endTime
     );
-  }, [lyrics, currentTime, isHookPhase]);
+  }, [lyrics, currentTime, isHookPhase, isEndScreen]);
 
   const activeLineIndex = useMemo(() => {
     if (!activeLine) return -1;
@@ -70,12 +81,31 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     return Math.min(count, totalTerms);
   }, [lyrics, currentTime, totalTerms, isHookPhase]);
 
-  const currentTerms = useMemo(() => {
-    if (!activeLine || !activeLine.showExplanation) return [];
-    const progress = getLineProgress(activeLine);
-    if (progress < 0.2) return [];
-    return activeLine.terms;
-  }, [activeLine, currentTime]);
+  // Track last shown terms to avoid blank spaces during transitions
+  const { currentTerms, hasTermsToShow } = useMemo(() => {
+    // If active line has terms and we're past the initial delay, show them
+    if (activeLine && activeLine.terms.length > 0) {
+      const progress = getLineProgress(activeLine);
+      if (progress >= 0.05) {
+        return { currentTerms: activeLine.terms, hasTermsToShow: true };
+      }
+    }
+
+    // Otherwise, find the most recent line with terms
+    for (let i = activeLineIndex; i >= 0; i--) {
+      const line = lyrics[i];
+      if (line && line.terms.length > 0 && currentTime >= line.startTime) {
+        return { currentTerms: line.terms, hasTermsToShow: true };
+      }
+    }
+
+    // Check if current line exists but has no terms (show smiley)
+    if (activeLine && activeLine.terms.length === 0) {
+      return { currentTerms: [], hasTermsToShow: false };
+    }
+
+    return { currentTerms: [], hasTermsToShow: false };
+  }, [activeLine, activeLineIndex, lyrics, currentTime]);
 
   // === ANIMATIONS ===
   const pulse = Math.sin(frame * 0.08) * 0.3 + 0.7;
@@ -87,6 +117,15 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     fps,
     config: { damping: 8, stiffness: 200, mass: 0.5 },
   });
+
+  // End screen animations
+  const endScreenProgress = isEndScreen ? (currentTime - lyricsEndTime) / endScreenDuration : 0;
+  const endScreenScale = spring({
+    frame: isEndScreen ? Math.floor((currentTime - lyricsEndTime) * fps) : 0,
+    fps,
+    config: { damping: 8, stiffness: 120, mass: 0.6 },
+  });
+  const questionMarkBounce = Math.sin(frame * 0.1) * 10;
 
   // Category styling
   const getCategoryColor = (cat?: string) => {
@@ -159,335 +198,398 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             transform: "skewX(-15deg)",
           }} />
 
-          {/* ========== TOP HEADER — BIGGER ========== */}
-          <div style={{
-            position: "absolute", top: 0, left: 0, right: 0,
-            padding: "55px 30px 20px", zIndex: 10,
-            display: "flex", alignItems: "center", gap: 18,
-          }}>
-            {/* Cover art */}
-            {track.coverImage && (
-              <div style={{
-                width: 85, height: 85, borderRadius: 8, overflow: "hidden",
-                flexShrink: 0,
-                boxShadow: `0 0 0 3px ${HL}, 0 4px 25px rgba(0,0,0,0.8)`,
-              }}>
-                <Img
-                  src={staticFile(track.coverImage)}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-            )}
-
-            {/* Title — BIGGER */}
-            <div style={{ flex: 1 }}>
-              <div style={{
-                fontSize: 42, fontWeight: 900, color: "#fff",
-                fontFamily: FONT_LYRICS,
-                textTransform: "uppercase", letterSpacing: 2, lineHeight: 1.1,
-                textShadow: "0 2px 15px rgba(0,0,0,0.8)",
-              }}>
-                {track.title}
-              </div>
-              <div style={{
-                fontSize: 24, color: "rgba(255,255,255,0.5)",
-                fontFamily: FONT_UI, fontWeight: 600,
-                textTransform: "uppercase", letterSpacing: 4, marginTop: 6,
-              }}>
-                {track.artist}
-              </div>
-            </div>
-          </div>
-
-          {/* ========== GIANT DECODED COUNTER — VERY PROMINENT ========== */}
-          <div style={{
-            position: "absolute", top: 180, left: 0, right: 0,
-            display: "flex", justifyContent: "center", alignItems: "center",
-            padding: "25px 0", zIndex: 10,
-          }}>
-            <div style={{
-              background: HL,
-              borderRadius: 12, padding: "18px 50px",
-              display: "flex", alignItems: "baseline", gap: 15,
-              boxShadow: `0 0 50px ${HL}60, 0 8px 30px rgba(0,0,0,0.6)`,
-              transform: `scale(${0.95 + counterScale * 0.05})`,
+          {/* ========== END SCREEN ========== */}
+          {isEndScreen ? (
+            <AbsoluteFill style={{
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 100,
             }}>
+              {/* Big glow */}
               <div style={{
-                fontSize: 70, fontWeight: 900, color: "#000",
-                fontFamily: FONT_LYRICS, lineHeight: 1,
-                letterSpacing: 2,
-              }}>
-                {decodedTerms}/{totalTerms}
-              </div>
-              <div style={{
-                fontSize: 22, color: "rgba(0,0,0,0.5)",
-                fontFamily: FONT_UI, fontWeight: 800,
-                textTransform: "uppercase", letterSpacing: 3,
-              }}>
-                DECODED
-              </div>
-            </div>
-          </div>
-
-          {/* ========== SIDE-BY-SIDE: LYRICS | DECODE — TAKES 1/4+ HEIGHT EACH ========== */}
-          <div style={{
-            position: "absolute", top: 330, left: 0, right: 0, bottom: 50,
-            display: "flex", flexDirection: "row",
-          }}>
-            {/* ====== LEFT: PAROLES ====== */}
-            <div style={{
-              width: "52%", padding: "30px 12px 30px 30px",
-              display: "flex", flexDirection: "column", justifyContent: "center",
-              overflow: "hidden", position: "relative",
-            }}>
-              {/* Column tag */}
-              <div style={{
-                position: "absolute", top: 10, left: 30,
-                fontSize: 14, fontWeight: 900, color: HL,
-                fontFamily: FONT_UI, letterSpacing: 5,
-                textTransform: "uppercase", zIndex: 10, opacity: 0.7,
-              }}>
-                PAROLES
-              </div>
-
-              {/* Fade top */}
-              <div style={{
-                position: "absolute", top: 0, left: 0, right: 0, height: 90,
-                background: "linear-gradient(180deg, rgba(10,10,10,1) 0%, transparent 100%)",
-                zIndex: 5, pointerEvents: "none",
+                position: "absolute",
+                width: 800,
+                height: 800,
+                borderRadius: "50%",
+                background: `radial-gradient(circle, ${HL}50 0%, transparent 70%)`,
+                opacity: pulse,
+                filter: "blur(60px)",
               }} />
 
-              {/* Lyrics — BIGGER FONT */}
+              {/* Main text */}
               <div style={{
-                display: "flex", flexDirection: "column", gap: 16,
-                transform: `translateY(${
-                  activeLineIndex > 0 ? -(activeLineIndex * 130 - 80) : 0
-                }px)`,
-                transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: `scale(${endScreenScale})`,
+                textAlign: "center",
               }}>
-                {lyrics.map((line, index) => {
-                  const isActive = index === activeLineIndex;
-                  const isPast = currentTime >= line.endTime;
-                  const progress = isActive ? getLineProgress(line) : 0;
+                <div style={{
+                  fontSize: 80,
+                  fontWeight: 900,
+                  color: "#ffffff",
+                  fontFamily: FONT_LYRICS,
+                  textTransform: "uppercase",
+                  letterSpacing: 4,
+                  textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                  marginBottom: 30,
+                }}>
+                  ALORS, TU EN AVAIS
+                </div>
+                <div style={{
+                  fontSize: 80,
+                  fontWeight: 900,
+                  color: "#ffffff",
+                  fontFamily: FONT_LYRICS,
+                  textTransform: "uppercase",
+                  letterSpacing: 4,
+                  textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                  marginBottom: 50,
+                }}>
+                  COMBIEN
+                </div>
 
-                  let opacity = 0.1;
-                  if (isActive) opacity = 1;
-                  else if (isPast) opacity = 0.2;
-                  else if (index === activeLineIndex + 1) opacity = 0.12;
+                {/* Giant question mark */}
+                <div style={{
+                  fontSize: 280,
+                  fontWeight: 900,
+                  color: HL,
+                  fontFamily: FONT_LYRICS,
+                  textShadow: `0 0 80px ${HL}90, 0 0 150px ${HL}50`,
+                  transform: `translateY(${questionMarkBounce}px)`,
+                  lineHeight: 0.8,
+                }}>
+                  ?
+                </div>
 
-                  const lineScale = isActive
-                    ? spring({
-                        frame: Math.max(0, contentFrame - line.startTime * fps),
-                        fps,
-                        config: { damping: 12, stiffness: 220, mass: 0.4 },
-                      })
-                    : 0.9;
-
-                  const renderText = () => {
-                    if (line.terms.length === 0 || !isActive) return line.text;
-
-                    const elements: React.ReactNode[] = [];
-                    let lastIdx = 0;
-
-                    const termPositions = line.terms
-                      .map((t) => ({
-                        term: t,
-                        index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
-                      }))
-                      .filter((t) => t.index !== -1)
-                      .sort((a, b) => a.index - b.index);
-
-                    termPositions.forEach(({ term, index: tIdx }, i) => {
-                      if (tIdx > lastIdx) {
-                        elements.push(
-                          <span key={`pre-${i}`}>{line.text.slice(lastIdx, tIdx)}</span>
-                        );
-                      }
-                      elements.push(
-                        <span
-                          key={`term-${i}`}
-                          style={{
-                            color: "#000",
-                            fontWeight: 900,
-                            background: HL,
-                            padding: "4px 12px",
-                            borderRadius: 4,
-                            marginLeft: 4, marginRight: 4,
-                            boxShadow: `0 0 20px ${HL}70`,
-                            display: "inline-block",
-                          }}
-                        >
-                          {line.text.slice(tIdx, tIdx + term.term.length)}
-                        </span>
-                      );
-                      lastIdx = tIdx + term.term.length;
-                    });
-
-                    if (lastIdx < line.text.length) {
-                      elements.push(<span key="rest">{line.text.slice(lastIdx)}</span>);
-                    }
-                    return elements.length > 0 ? elements : line.text;
-                  };
-
-                  return (
-                    <div
-                      key={line.id}
-                      style={{
-                        opacity,
-                        transform: `scale(${lineScale})`,
-                        transformOrigin: "left center",
-                        transition: "opacity 0.25s ease",
-                        padding: "14px 0",
-                        position: "relative",
-                        minHeight: 100,
-                      }}
-                    >
-                      {isActive && (
-                        <div style={{
-                          position: "absolute", left: -4, top: 8, bottom: 8,
-                          width: 5, borderRadius: 0,
-                          background: HL,
-                          boxShadow: `0 0 15px ${HL}90`,
-                        }} />
-                      )}
-                      <div style={{
-                        fontSize: 38,
-                        fontWeight: 900,
-                        color: isPast ? "rgba(255,255,255,0.15)" : "#ffffff",
-                        fontFamily: FONT_LYRICS,
-                        textTransform: "uppercase",
-                        lineHeight: 1.35,
-                        letterSpacing: 1.5,
-                        paddingLeft: isActive ? 18 : 8,
-                        textShadow: isActive ? `0 2px 12px rgba(0,0,0,0.8)` : "none",
-                      }}>
-                        {renderText()}
-                      </div>
-
-                      {isActive && (
-                        <div style={{
-                          marginTop: 12, marginLeft: 18,
-                          height: 5, borderRadius: 0,
-                          background: "rgba(255,255,255,0.05)",
-                          overflow: "hidden", width: "80%",
-                        }}>
-                          <div style={{
-                            width: `${progress * 100}%`,
-                            height: "100%",
-                            background: HL,
-                            boxShadow: `0 0 12px ${HL}90`,
-                          }} />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                {/* Score reminder */}
+                <div style={{
+                  marginTop: 50,
+                  fontSize: 48,
+                  color: "rgba(255,255,255,0.6)",
+                  fontFamily: FONT_UI,
+                  fontWeight: 600,
+                }}>
+                  {decodedTerms}/{totalTerms} décodés
+                </div>
               </div>
-
-              {/* Fade bottom */}
+            </AbsoluteFill>
+          ) : (
+            <>
+              {/* ========== TOP HEADER — BIGGER ========== */}
               <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0, height: 90,
-                background: "linear-gradient(0deg, rgba(10,10,10,1) 0%, transparent 100%)",
-                zIndex: 5, pointerEvents: "none",
-              }} />
-            </div>
-
-            {/* ====== DIVIDER ====== */}
-            <div style={{
-              width: 4,
-              background: `linear-gradient(180deg, transparent, ${HL}50 20%, ${HL}50 80%, transparent)`,
-              margin: "50px 0",
-            }} />
-
-            {/* ====== RIGHT: DECODE — BIGGER ====== */}
-            <div style={{
-              flex: 1, padding: "30px 30px 30px 18px",
-              display: "flex", flexDirection: "column", justifyContent: "center",
-              gap: 24, overflow: "hidden",
-            }}>
-              {/* Column tag */}
-              <div style={{
-                position: "absolute", top: 10, right: 30,
-                fontSize: 14, fontWeight: 900, color: HL,
-                fontFamily: FONT_UI, letterSpacing: 5,
-                textTransform: "uppercase", opacity: 0.7,
+                position: "absolute", top: 0, left: 0, right: 0,
+                padding: "60px 35px 25px", zIndex: 10,
+                display: "flex", alignItems: "center", gap: 22,
               }}>
-                DECODE
-              </div>
-
-              {currentTerms.length > 0 ? (
-                currentTerms.map((term, i) => {
-                  const tFrame = contentFrame - (activeLine ? activeLine.startTime * fps : 0);
-                  const s = spring({
-                    frame: Math.max(0, tFrame - i * 5 - 6),
-                    fps,
-                    config: { damping: 10, stiffness: 200, mass: 0.5 },
-                  });
-
-                  return (
-                    <div
-                      key={`expl-${term.term}-${i}`}
-                      style={{
-                        background: "rgba(255,255,255,0.04)",
-                        borderRadius: 6,
-                        padding: "26px 24px",
-                        borderLeft: `5px solid ${HL}`,
-                        transform: `translateX(${(1 - s) * 60}px)`,
-                        opacity: s,
-                        boxShadow: `0 4px 30px rgba(0,0,0,0.5), -5px 0 20px ${HL}20`,
-                      }}
-                    >
-                      {term.category && (
-                        <div style={{
-                          display: "inline-block", marginBottom: 14,
-                          background: getCategoryColor(term.category),
-                          color: "#000", fontSize: 13, fontWeight: 900,
-                          padding: "6px 14px", borderRadius: 3,
-                          fontFamily: FONT_UI, letterSpacing: 2,
-                          textTransform: "uppercase",
-                          boxShadow: `0 2px 12px ${getCategoryColor(term.category)}60`,
-                        }}>
-                          {getCategoryLabel(term.category)}
-                        </div>
-                      )}
-
-                      <div style={{
-                        fontSize: 44, fontWeight: 900, color: HL,
-                        fontFamily: FONT_LYRICS,
-                        textTransform: "uppercase",
-                        letterSpacing: 2,
-                        textShadow: `0 0 20px ${HL}70`,
-                        marginBottom: 12, lineHeight: 1.1,
-                      }}>
-                        {term.term}
-                      </div>
-
-                      <div style={{
-                        fontSize: 28, color: "rgba(255,255,255,0.8)",
-                        fontFamily: FONT_UI, fontWeight: 400,
-                        lineHeight: 1.5,
-                      }}>
-                        {term.definition}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div style={{ textAlign: "center" }}>
+                {/* Cover art */}
+                {track.coverImage && (
                   <div style={{
-                    fontSize: 60, color: HL,
-                    fontFamily: FONT_LYRICS,
-                    textTransform: "uppercase",
-                    opacity: 0.08 + pulse * 0.1,
-                    textShadow: `0 0 40px ${HL}30`,
-                    letterSpacing: 8,
+                    width: 100, height: 100, borderRadius: 10, overflow: "hidden",
+                    flexShrink: 0,
+                    boxShadow: `0 0 0 4px ${HL}, 0 4px 30px rgba(0,0,0,0.8)`,
                   }}>
-                    ???
+                    <Img
+                      src={staticFile(track.coverImage)}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                )}
+
+                {/* Title — BIGGER */}
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontSize: 52, fontWeight: 900, color: "#fff",
+                    fontFamily: FONT_LYRICS,
+                    textTransform: "uppercase", letterSpacing: 3, lineHeight: 1.1,
+                    textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+                  }}>
+                    {track.title}
+                  </div>
+                  <div style={{
+                    fontSize: 28, color: "rgba(255,255,255,0.5)",
+                    fontFamily: FONT_UI, fontWeight: 600,
+                    textTransform: "uppercase", letterSpacing: 5, marginTop: 8,
+                  }}>
+                    {track.artist}
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+
+              {/* ========== GIANT DECODED COUNTER — EVEN BIGGER ========== */}
+              <div style={{
+                position: "absolute", top: 200, left: 0, right: 0,
+                display: "flex", justifyContent: "center", alignItems: "center",
+                padding: "30px 0", zIndex: 10,
+              }}>
+                <div style={{
+                  background: HL,
+                  borderRadius: 14, padding: "22px 60px",
+                  display: "flex", alignItems: "baseline", gap: 18,
+                  boxShadow: `0 0 60px ${HL}70, 0 10px 40px rgba(0,0,0,0.6)`,
+                  transform: `scale(${0.95 + counterScale * 0.05})`,
+                }}>
+                  <div style={{
+                    fontSize: 85, fontWeight: 900, color: "#000",
+                    fontFamily: FONT_LYRICS, lineHeight: 1,
+                    letterSpacing: 3,
+                  }}>
+                    {decodedTerms}/{totalTerms}
+                  </div>
+                  <div style={{
+                    fontSize: 26, color: "rgba(0,0,0,0.5)",
+                    fontFamily: FONT_UI, fontWeight: 800,
+                    textTransform: "uppercase", letterSpacing: 4,
+                  }}>
+                    DÉCODÉS
+                  </div>
+                </div>
+              </div>
+
+              {/* ========== SIDE-BY-SIDE: LYRICS | DECODE ========== */}
+              <div style={{
+                position: "absolute", top: 380, left: 0, right: 0, bottom: 30,
+                display: "flex", flexDirection: "row",
+              }}>
+                {/* ====== LEFT: PAROLES (no title) ====== */}
+                <div style={{
+                  width: "52%", padding: "20px 12px 20px 35px",
+                  display: "flex", flexDirection: "column", justifyContent: "center",
+                  overflow: "hidden", position: "relative",
+                }}>
+                  {/* Fade top */}
+                  <div style={{
+                    position: "absolute", top: 0, left: 0, right: 0, height: 60,
+                    background: "linear-gradient(180deg, rgba(10,10,10,1) 0%, transparent 100%)",
+                    zIndex: 5, pointerEvents: "none",
+                  }} />
+
+                  {/* Lyrics — BIGGER FONT */}
+                  <div style={{
+                    display: "flex", flexDirection: "column", gap: 18,
+                    transform: `translateY(${
+                      activeLineIndex > 0 ? -(activeLineIndex * 140 - 60) : 0
+                    }px)`,
+                    transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                  }}>
+                    {lyrics.map((line, index) => {
+                      const isActive = index === activeLineIndex;
+                      const isPast = currentTime >= line.endTime;
+                      const progress = isActive ? getLineProgress(line) : 0;
+
+                      let opacity = 0.1;
+                      if (isActive) opacity = 1;
+                      else if (isPast) opacity = 0.2;
+                      else if (index === activeLineIndex + 1) opacity = 0.12;
+
+                      const lineScale = isActive
+                        ? spring({
+                            frame: Math.max(0, contentFrame - line.startTime * fps),
+                            fps,
+                            config: { damping: 12, stiffness: 220, mass: 0.4 },
+                          })
+                        : 0.9;
+
+                      const renderText = () => {
+                        if (line.terms.length === 0 || !isActive) return line.text;
+
+                        const elements: React.ReactNode[] = [];
+                        let lastIdx = 0;
+
+                        const termPositions = line.terms
+                          .map((t) => ({
+                            term: t,
+                            index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
+                          }))
+                          .filter((t) => t.index !== -1)
+                          .sort((a, b) => a.index - b.index);
+
+                        termPositions.forEach(({ term, index: tIdx }, i) => {
+                          if (tIdx > lastIdx) {
+                            elements.push(
+                              <span key={`pre-${i}`}>{line.text.slice(lastIdx, tIdx)}</span>
+                            );
+                          }
+                          elements.push(
+                            <span
+                              key={`term-${i}`}
+                              style={{
+                                color: "#000",
+                                fontWeight: 900,
+                                background: HL,
+                                padding: "6px 14px",
+                                borderRadius: 5,
+                                marginLeft: 5, marginRight: 5,
+                                boxShadow: `0 0 25px ${HL}80`,
+                                display: "inline-block",
+                              }}
+                            >
+                              {line.text.slice(tIdx, tIdx + term.term.length)}
+                            </span>
+                          );
+                          lastIdx = tIdx + term.term.length;
+                        });
+
+                        if (lastIdx < line.text.length) {
+                          elements.push(<span key="rest">{line.text.slice(lastIdx)}</span>);
+                        }
+                        return elements.length > 0 ? elements : line.text;
+                      };
+
+                      return (
+                        <div
+                          key={line.id}
+                          style={{
+                            opacity,
+                            transform: `scale(${lineScale})`,
+                            transformOrigin: "left center",
+                            transition: "opacity 0.25s ease",
+                            padding: "16px 0",
+                            position: "relative",
+                            minHeight: 110,
+                          }}
+                        >
+                          {isActive && (
+                            <div style={{
+                              position: "absolute", left: -5, top: 10, bottom: 10,
+                              width: 6, borderRadius: 0,
+                              background: HL,
+                              boxShadow: `0 0 20px ${HL}90`,
+                            }} />
+                          )}
+                          <div style={{
+                            fontSize: 46,
+                            fontWeight: 900,
+                            color: isPast ? "rgba(255,255,255,0.15)" : "#ffffff",
+                            fontFamily: FONT_LYRICS,
+                            textTransform: "uppercase",
+                            lineHeight: 1.35,
+                            letterSpacing: 2,
+                            paddingLeft: isActive ? 20 : 10,
+                            textShadow: isActive ? `0 2px 15px rgba(0,0,0,0.8)` : "none",
+                          }}>
+                            {renderText()}
+                          </div>
+
+                          {isActive && (
+                            <div style={{
+                              marginTop: 14, marginLeft: 20,
+                              height: 6, borderRadius: 0,
+                              background: "rgba(255,255,255,0.05)",
+                              overflow: "hidden", width: "80%",
+                            }}>
+                              <div style={{
+                                width: `${progress * 100}%`,
+                                height: "100%",
+                                background: HL,
+                                boxShadow: `0 0 15px ${HL}90`,
+                              }} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Fade bottom */}
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 0, right: 0, height: 60,
+                    background: "linear-gradient(0deg, rgba(10,10,10,1) 0%, transparent 100%)",
+                    zIndex: 5, pointerEvents: "none",
+                  }} />
+                </div>
+
+                {/* ====== DIVIDER ====== */}
+                <div style={{
+                  width: 5,
+                  background: `linear-gradient(180deg, transparent, ${HL}60 20%, ${HL}60 80%, transparent)`,
+                  margin: "40px 0",
+                }} />
+
+                {/* ====== RIGHT: DECODE (no title) — BIGGER ====== */}
+                <div style={{
+                  flex: 1, padding: "20px 35px 20px 20px",
+                  display: "flex", flexDirection: "column", justifyContent: "center",
+                  gap: 28, overflow: "hidden",
+                }}>
+                  {currentTerms.length > 0 ? (
+                    currentTerms.map((term, i) => {
+                      const tFrame = contentFrame - (activeLine ? activeLine.startTime * fps : 0);
+                      const s = spring({
+                        frame: Math.max(0, tFrame - i * 4),
+                        fps,
+                        config: { damping: 10, stiffness: 200, mass: 0.5 },
+                      });
+
+                      return (
+                        <div
+                          key={`expl-${term.term}-${i}`}
+                          style={{
+                            background: "rgba(255,255,255,0.05)",
+                            borderRadius: 8,
+                            padding: "30px 28px",
+                            borderLeft: `6px solid ${HL}`,
+                            transform: `translateX(${(1 - s) * 50}px)`,
+                            opacity: s,
+                            boxShadow: `0 5px 35px rgba(0,0,0,0.5), -6px 0 25px ${HL}25`,
+                          }}
+                        >
+                          {term.category && (
+                            <div style={{
+                              display: "inline-block", marginBottom: 16,
+                              background: getCategoryColor(term.category),
+                              color: "#000", fontSize: 15, fontWeight: 900,
+                              padding: "8px 16px", borderRadius: 4,
+                              fontFamily: FONT_UI, letterSpacing: 2,
+                              textTransform: "uppercase",
+                              boxShadow: `0 2px 15px ${getCategoryColor(term.category)}60`,
+                            }}>
+                              {getCategoryLabel(term.category)}
+                            </div>
+                          )}
+
+                          <div style={{
+                            fontSize: 52, fontWeight: 900, color: HL,
+                            fontFamily: FONT_LYRICS,
+                            textTransform: "uppercase",
+                            letterSpacing: 3,
+                            textShadow: `0 0 25px ${HL}80`,
+                            marginBottom: 14, lineHeight: 1.1,
+                          }}>
+                            {term.term}
+                          </div>
+
+                          <div style={{
+                            fontSize: 32, color: "rgba(255,255,255,0.85)",
+                            fontFamily: FONT_UI, fontWeight: 400,
+                            lineHeight: 1.45,
+                          }}>
+                            {term.definition}
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    // Smiley when no terms to decode (too easy!)
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{
+                        fontSize: 120,
+                        opacity: 0.3 + pulse * 0.2,
+                        filter: `drop-shadow(0 0 30px ${HL}40)`,
+                      }}>
+                        😎
+                      </div>
+                      <div style={{
+                        fontSize: 28, color: "rgba(255,255,255,0.4)",
+                        fontFamily: FONT_UI, fontWeight: 600,
+                        textTransform: "uppercase", letterSpacing: 4,
+                        marginTop: 15,
+                      }}>
+                        TROP FACILE
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* ========== AUDIO ========== */}
           {track.audioFile && <Audio src={staticFile(track.audioFile)} />}

@@ -27,31 +27,31 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     config: { damping: 8, stiffness: 120, mass: 0.6 },
   });
 
-  // Question mark bounce
+  // Question intro scale
   const questionScale = spring({
     frame: frame - 2,
     fps,
     config: { damping: 6, stiffness: 200, mass: 0.4 },
   });
 
-  // Subtitle fade in
-  const subtitleOpacity = interpolate(frame, [15, 25], [0, 1], {
+  // "Décodons les paroles" appears later
+  const decodonsOpacity = interpolate(frame, [35, 50], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const decodonsX = interpolate(frame, [35, 50], [-30, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Arrow bounce
+  const arrowBounce = Math.sin(frame * 0.12) * 8;
 
   // Background gradient rotation
   const gradientAngle = interpolate(frame, [0, 90], [135, 225]);
 
-  // Line preview slide up
-  const lineY = interpolate(frame, [20, 35], [60, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const lineOpacity = interpolate(frame, [20, 35], [0, 0.6], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const FONT_IMPACT = "'Impact', 'Arial Black', 'Bebas Neue', sans-serif";
+  const FONT_UI = "'Inter', 'Helvetica Neue', sans-serif";
 
   return (
     <AbsoluteFill
@@ -65,115 +65,112 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          width: 600,
-          height: 600,
+          width: 800,
+          height: 800,
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${style.highlightColor}40 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${style.highlightColor}50 0%, transparent 70%)`,
           opacity: pulse,
-          filter: "blur(40px)",
+          filter: "blur(60px)",
         }}
       />
 
-      {/* "Tu sais ce que veut dire..." */}
+      {/* "Tu sais ce que veut dire..." - MUCH BIGGER */}
       <div
         style={{
           position: "absolute",
-          top: "28%",
+          top: "22%",
           opacity: questionScale,
           transform: `scale(${questionScale})`,
         }}
       >
         <div
           style={{
-            fontSize: 38,
-            color: "rgba(255,255,255,0.7)",
-            fontFamily: "'Inter', sans-serif",
-            fontWeight: 500,
+            fontSize: 72,
+            color: "#ffffff",
+            fontFamily: FONT_IMPACT,
+            fontWeight: 900,
             textAlign: "center",
-            letterSpacing: 1,
+            letterSpacing: 3,
+            textTransform: "uppercase",
+            textShadow: "0 4px 30px rgba(0,0,0,0.8)",
           }}
         >
-          Tu sais ce que veut dire...
+          TU SAIS CE QUE VEUT DIRE
         </div>
       </div>
 
-      {/* The TERM - big, glowing, centered */}
+      {/* The TERM - MUCH BIGGER, glowing, centered */}
       <div
         style={{
           transform: `scale(${termScale})`,
           textAlign: "center",
+          marginTop: 40,
         }}
       >
         <div
           style={{
-            fontSize: 96,
+            fontSize: 160,
             fontWeight: 900,
             color: style.highlightColor,
-            fontFamily: "'Inter', sans-serif",
-            textShadow: `0 0 40px ${style.highlightColor}80, 0 0 80px ${style.highlightColor}40`,
-            letterSpacing: -2,
-          }}
-        >
-          "{hook.term}"
-        </div>
-        <div
-          style={{
-            fontSize: 28,
-            color: "rgba(255,255,255,0.5)",
-            fontFamily: "'Inter', sans-serif",
-            fontWeight: 400,
-            marginTop: 16,
-            opacity: subtitleOpacity,
-            letterSpacing: 3,
+            fontFamily: FONT_IMPACT,
+            textShadow: `0 0 60px ${style.highlightColor}90, 0 0 120px ${style.highlightColor}50`,
+            letterSpacing: 4,
             textTransform: "uppercase",
           }}
         >
-          ? ? ?
+          {hook.term}
         </div>
       </div>
 
-      {/* Preview of the lyrics line */}
+      {/* "Décodons les paroles" with arrow */}
       <div
         style={{
           position: "absolute",
           bottom: "18%",
-          left: 60,
-          right: 60,
-          textAlign: "center",
-          opacity: lineOpacity,
-          transform: `translateY(${lineY}px)`,
+          opacity: decodonsOpacity,
+          transform: `translateX(${decodonsX}px)`,
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
         }}
       >
         <div
           style={{
-            fontSize: 24,
-            color: "rgba(255,255,255,0.4)",
-            fontFamily: "'Inter', sans-serif",
-            fontStyle: "italic",
-            lineHeight: 1.6,
+            fontSize: 42,
+            color: "rgba(255,255,255,0.9)",
+            fontFamily: FONT_IMPACT,
+            fontWeight: 900,
+            textTransform: "uppercase",
+            letterSpacing: 4,
+            textShadow: "0 2px 20px rgba(0,0,0,0.6)",
           }}
         >
-          "{hook.line}"
+          DÉCODONS LES PAROLES
         </div>
-      </div>
-
-      {/* Bottom indicator - "Swipe pour découvrir" */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 80,
-          opacity: subtitleOpacity * 0.6,
-        }}
-      >
+        {/* Arrow pointing right */}
         <div
           style={{
-            width: 40,
-            height: 40,
-            borderLeft: "2px solid rgba(255,255,255,0.3)",
-            borderBottom: "2px solid rgba(255,255,255,0.3)",
-            transform: `rotate(-45deg) translateY(${Math.sin(frame * 0.1) * 5}px)`,
+            transform: `translateX(${arrowBounce}px)`,
+            display: "flex",
+            alignItems: "center",
           }}
-        />
+        >
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={style.highlightColor}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: `drop-shadow(0 0 15px ${style.highlightColor}80)`,
+            }}
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
       </div>
     </AbsoluteFill>
   );
