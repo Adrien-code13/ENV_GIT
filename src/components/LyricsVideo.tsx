@@ -591,10 +591,11 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             </>
           )}
 
-          {/* ========== AUDIO ========== */}
-          {track.audioFile && <Audio src={staticFile(track.audioFile)} />}
         </AbsoluteFill>
       </Sequence>
+
+      {/* ========== AUDIO - starts from frame 0 ========== */}
+      {track.audioFile && <Audio src={staticFile(track.audioFile)} />}
     </AbsoluteFill>
   );
 };
