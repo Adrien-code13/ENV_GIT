@@ -47,6 +47,9 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   // Arrow bounce
   const arrowBounce = Math.sin(frame * 0.12) * 8;
 
+  // Question mark bounce (for the term)
+  const questionMarkBounce = Math.sin(frame * 0.1) * 10;
+
   // Background gradient rotation
   const gradientAngle = interpolate(frame, [0, 90], [135, 225]);
 
@@ -99,7 +102,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         </div>
       </div>
 
-      {/* The TERM - MUCH BIGGER, glowing, centered */}
+      {/* The TERM - MUCH BIGGER, glowing, centered + question mark */}
       <div
         style={{
           transform: `scale(${termScale})`,
@@ -109,16 +112,29 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       >
         <div
           style={{
-            fontSize: 160,
+            fontSize: 140,
             fontWeight: 900,
             color: style.highlightColor,
             fontFamily: FONT_IMPACT,
             textShadow: `0 0 60px ${style.highlightColor}90, 0 0 120px ${style.highlightColor}50`,
             letterSpacing: 4,
             textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20,
           }}
         >
           {hook.term}
+          <span
+            style={{
+              fontSize: 200,
+              transform: `translateY(${questionMarkBounce}px)`,
+              display: "inline-block",
+            }}
+          >
+            ?
+          </span>
         </div>
       </div>
 

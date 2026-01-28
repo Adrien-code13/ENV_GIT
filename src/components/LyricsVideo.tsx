@@ -83,6 +83,11 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // Track last shown terms to avoid blank spaces during transitions
   const { currentTerms, hasTermsToShow } = useMemo(() => {
+    // If active line exists and has NO terms, show smiley (too easy!)
+    if (activeLine && activeLine.terms.length === 0) {
+      return { currentTerms: [], hasTermsToShow: false };
+    }
+
     // If active line has terms and we're past the initial delay, show them
     if (activeLine && activeLine.terms.length > 0) {
       const progress = getLineProgress(activeLine);
@@ -91,17 +96,12 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
       }
     }
 
-    // Otherwise, find the most recent line with terms
+    // During transition (no active line or early in active line), show previous line's terms
     for (let i = activeLineIndex; i >= 0; i--) {
       const line = lyrics[i];
       if (line && line.terms.length > 0 && currentTime >= line.startTime) {
         return { currentTerms: line.terms, hasTermsToShow: true };
       }
-    }
-
-    // Check if current line exists but has no terms (show smiley)
-    if (activeLine && activeLine.terms.length === 0) {
-      return { currentTerms: [], hasTermsToShow: false };
     }
 
     return { currentTerms: [], hasTermsToShow: false };
@@ -533,13 +533,13 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         >
                           {term.category && (
                             <div style={{
-                              display: "inline-block", marginBottom: 16,
+                              display: "inline-block", marginBottom: 18,
                               background: getCategoryColor(term.category),
-                              color: "#000", fontSize: 15, fontWeight: 900,
-                              padding: "8px 16px", borderRadius: 4,
-                              fontFamily: FONT_UI, letterSpacing: 2,
+                              color: "#000", fontSize: 22, fontWeight: 900,
+                              padding: "10px 20px", borderRadius: 6,
+                              fontFamily: FONT_UI, letterSpacing: 3,
                               textTransform: "uppercase",
-                              boxShadow: `0 2px 15px ${getCategoryColor(term.category)}60`,
+                              boxShadow: `0 4px 20px ${getCategoryColor(term.category)}70`,
                             }}>
                               {getCategoryLabel(term.category)}
                             </div>

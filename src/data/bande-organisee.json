@@ -22,8 +22,13 @@
       "endTime": 4,
       "terms": [
         {
+          "term": "gâtée",
+          "definition": "Terme affectueux pour une femme choyée, chérie",
+          "category": "argot"
+        },
+        {
           "term": "gris nardo",
-          "definition": "Couleur grise mate exclusive Audi, très rare et chère",
+          "definition": "Couleur grise mate exclusive Audi, rare et chère",
           "category": "reference"
         }
       ],
@@ -37,12 +42,17 @@
       "terms": [
         {
           "term": "bulle",
-          "definition": "Voiture, être dans sa bulle = rouler tranquille",
+          "definition": "Voiture, rouler tranquille",
           "category": "argot"
         },
         {
+          "term": "Prado",
+          "definition": "Avenue du Prado, artère mythique de Marseille",
+          "category": "reference"
+        },
+        {
           "term": "Shifter pro'",
-          "definition": "Boîte de vitesse séquentielle à palettes au volant",
+          "definition": "Boîte séquentielle à palettes",
           "category": "reference"
         }
       ],
