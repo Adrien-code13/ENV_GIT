@@ -155,7 +155,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               }}
             >
               <Img
-                src={track.coverImage}
+                src={staticFile(track.coverImage)}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -205,7 +205,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 }}
               >
                 <Img
-                  src={track.coverImage}
+                  src={staticFile(track.coverImage)}
                   style={{
                     width: "100%",
                     height: "100%",
