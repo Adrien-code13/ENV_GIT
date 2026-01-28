@@ -2,11 +2,12 @@
   "id": "bande-organisee-001",
   "version": "1.0.0",
   "track": {
-    "title": "Bande Organisée",
-    "artist": "13 Organisé (SCH)",
+    "title": "13 Organisé",
+    "artist": "Couplet SCH",
     "album": "13 Organisé",
     "year": 2020,
-    "coverImage": "cover.jpg"
+    "coverImage": "cover.jpg",
+    "audioFile": "audio.mp3"
   },
   "hook": {
     "term": "gris nardo",

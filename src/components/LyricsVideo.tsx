@@ -6,7 +6,6 @@ import {
   Audio,
   Img,
   Sequence,
-  interpolate,
   spring,
   staticFile,
 } from "remotion";
@@ -79,12 +78,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   }, [activeLine, currentTime]);
 
   // === ANIMATIONS ===
-  const videoProgress = frame / durationInFrames;
   const pulse = Math.sin(frame * 0.08) * 0.3 + 0.7;
-  // Slow drift for background grain
   const drift = Math.sin(frame * 0.01) * 20;
 
-  // Category styling — street colors
+  // Counter animation when it changes
+  const counterScale = spring({
+    frame: frame % 30,
+    fps,
+    config: { damping: 8, stiffness: 200, mass: 0.5 },
+  });
+
+  // Category styling
   const getCategoryColor = (cat?: string) => {
     const colors: Record<string, string> = {
       argot: "#ff3333", verlan: "#bb44ff", reference: "#ffaa00",
@@ -100,7 +104,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     return labels[cat ?? ""] ?? "TERME";
   };
 
-  // Street-style font: bold condensed
+  // Street-style fonts
   const FONT_LYRICS = "'Impact', 'Arial Black', 'Bebas Neue', sans-serif";
   const FONT_UI = "'Inter', 'Helvetica Neue', sans-serif";
 
@@ -116,14 +120,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
       {/* ========== MAIN CONTENT ========== */}
       <Sequence from={hookDurationFrames}>
         <AbsoluteFill>
-          {/* --- Dark concrete/urban gradient background --- */}
+          {/* --- Background gradient --- */}
           <div style={{
             position: "absolute", inset: 0,
             background: `linear-gradient(175deg,
               ${BG1} 0%, ${BG2} 35%, #0d0d0d 65%, ${BG1} 100%)`,
           }} />
 
-          {/* --- Optional background image (city, street, etc.) --- */}
+          {/* --- Optional background image --- */}
           {style.backgroundImage && (
             <div style={{
               position: "absolute", inset: 0, opacity: 0.18,
@@ -137,7 +141,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             </div>
           )}
 
-          {/* --- Grunge texture overlay (scratchy concrete feel) --- */}
+          {/* --- Grunge texture overlay --- */}
           <div style={{
             position: "absolute", inset: 0, opacity: 0.04,
             backgroundImage:
@@ -146,37 +150,27 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             transform: `translate(${drift}px, ${drift * 0.5}px)`,
           }} />
 
-          {/* --- Diagonal scratch lines (urban/gritty) --- */}
-          <div style={{
-            position: "absolute", inset: 0, opacity: 0.02,
-            background: `repeating-linear-gradient(
-              -45deg,
-              transparent, transparent 80px,
-              rgba(255,255,255,0.03) 80px, rgba(255,255,255,0.03) 81px
-            )`,
-          }} />
-
-          {/* --- Street glow: harsh, directional, not soft orbs --- */}
+          {/* --- Street glow --- */}
           <div style={{
             position: "absolute", top: -100, left: "30%",
-            width: 400, height: 800, borderRadius: "0%",
+            width: 400, height: 800,
             background: `linear-gradient(180deg, ${HL}12 0%, transparent 60%)`,
             opacity: pulse, filter: "blur(40px)",
             transform: "skewX(-15deg)",
           }} />
 
-          {/* ========== TOP HEADER — raw/minimal ========== */}
+          {/* ========== TOP HEADER — BIGGER ========== */}
           <div style={{
             position: "absolute", top: 0, left: 0, right: 0,
-            padding: "50px 28px 16px", zIndex: 10,
-            display: "flex", alignItems: "center", gap: 16,
+            padding: "55px 30px 20px", zIndex: 10,
+            display: "flex", alignItems: "center", gap: 18,
           }}>
-            {/* Cover art with rough border */}
+            {/* Cover art */}
             {track.coverImage && (
               <div style={{
-                width: 70, height: 70, borderRadius: 6, overflow: "hidden",
+                width: 85, height: 85, borderRadius: 8, overflow: "hidden",
                 flexShrink: 0,
-                boxShadow: `0 0 0 3px ${HL}, 0 4px 20px rgba(0,0,0,0.8)`,
+                boxShadow: `0 0 0 3px ${HL}, 0 4px 25px rgba(0,0,0,0.8)`,
               }}>
                 <Img
                   src={staticFile(track.coverImage)}
@@ -185,10 +179,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               </div>
             )}
 
-            {/* Title — UPPERCASE, condensed, street */}
+            {/* Title — BIGGER */}
             <div style={{ flex: 1 }}>
               <div style={{
-                fontSize: 32, fontWeight: 900, color: "#fff",
+                fontSize: 42, fontWeight: 900, color: "#fff",
                 fontFamily: FONT_LYRICS,
                 textTransform: "uppercase", letterSpacing: 2, lineHeight: 1.1,
                 textShadow: "0 2px 15px rgba(0,0,0,0.8)",
@@ -196,78 +190,78 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {track.title}
               </div>
               <div style={{
-                fontSize: 18, color: "rgba(255,255,255,0.45)",
+                fontSize: 24, color: "rgba(255,255,255,0.5)",
                 fontFamily: FONT_UI, fontWeight: 600,
-                textTransform: "uppercase", letterSpacing: 3, marginTop: 4,
+                textTransform: "uppercase", letterSpacing: 4, marginTop: 6,
               }}>
                 {track.artist}
               </div>
             </div>
+          </div>
 
-            {/* COUNTER — raw box style */}
+          {/* ========== GIANT DECODED COUNTER — VERY PROMINENT ========== */}
+          <div style={{
+            position: "absolute", top: 180, left: 0, right: 0,
+            display: "flex", justifyContent: "center", alignItems: "center",
+            padding: "25px 0", zIndex: 10,
+          }}>
             <div style={{
               background: HL,
-              borderRadius: 4, padding: "10px 14px",
-              display: "flex", flexDirection: "column", alignItems: "center",
-              boxShadow: `0 0 25px ${HL}50, 0 4px 15px rgba(0,0,0,0.5)`,
+              borderRadius: 12, padding: "18px 50px",
+              display: "flex", alignItems: "baseline", gap: 15,
+              boxShadow: `0 0 50px ${HL}60, 0 8px 30px rgba(0,0,0,0.6)`,
+              transform: `scale(${0.95 + counterScale * 0.05})`,
             }}>
               <div style={{
-                fontSize: 30, fontWeight: 900, color: "#000",
+                fontSize: 70, fontWeight: 900, color: "#000",
                 fontFamily: FONT_LYRICS, lineHeight: 1,
-                letterSpacing: 1,
+                letterSpacing: 2,
               }}>
                 {decodedTerms}/{totalTerms}
               </div>
               <div style={{
-                fontSize: 9, color: "rgba(0,0,0,0.6)",
+                fontSize: 22, color: "rgba(0,0,0,0.5)",
                 fontFamily: FONT_UI, fontWeight: 800,
-                textTransform: "uppercase", letterSpacing: 2, marginTop: 3,
+                textTransform: "uppercase", letterSpacing: 3,
               }}>
                 DECODED
               </div>
             </div>
           </div>
 
-          {/* --- Header divider — thick, raw --- */}
+          {/* ========== SIDE-BY-SIDE: LYRICS | DECODE — TAKES 1/4+ HEIGHT EACH ========== */}
           <div style={{
-            position: "absolute", top: 155, left: 28, right: 28, height: 3,
-            background: `linear-gradient(90deg, ${HL}, ${HL}60, transparent)`,
-          }} />
-
-          {/* ========== SIDE-BY-SIDE ========== */}
-          <div style={{
-            position: "absolute", top: 175, left: 0, right: 0, bottom: 125,
+            position: "absolute", top: 330, left: 0, right: 0, bottom: 50,
             display: "flex", flexDirection: "row",
           }}>
             {/* ====== LEFT: PAROLES ====== */}
             <div style={{
-              width: "52%", padding: "28px 10px 28px 28px",
+              width: "52%", padding: "30px 12px 30px 30px",
               display: "flex", flexDirection: "column", justifyContent: "center",
               overflow: "hidden", position: "relative",
             }}>
-              {/* Column tag — spray paint style */}
+              {/* Column tag */}
               <div style={{
-                position: "absolute", top: 6, left: 28,
-                fontSize: 12, fontWeight: 900, color: HL,
-                fontFamily: FONT_UI, letterSpacing: 4,
-                textTransform: "uppercase", zIndex: 10,
-                opacity: 0.6,
+                position: "absolute", top: 10, left: 30,
+                fontSize: 14, fontWeight: 900, color: HL,
+                fontFamily: FONT_UI, letterSpacing: 5,
+                textTransform: "uppercase", zIndex: 10, opacity: 0.7,
               }}>
                 PAROLES
               </div>
 
               {/* Fade top */}
               <div style={{
-                position: "absolute", top: 0, left: 0, right: 0, height: 80,
+                position: "absolute", top: 0, left: 0, right: 0, height: 90,
                 background: "linear-gradient(180deg, rgba(10,10,10,1) 0%, transparent 100%)",
                 zIndex: 5, pointerEvents: "none",
               }} />
 
-              {/* Lyrics */}
+              {/* Lyrics — BIGGER FONT */}
               <div style={{
-                display: "flex", flexDirection: "column", gap: 10,
+                display: "flex", flexDirection: "column", gap: 16,
                 transform: `translateY(${
-                  activeLineIndex > 0 ? -(activeLineIndex * 95 - 60) : 0
+                  activeLineIndex > 0 ? -(activeLineIndex * 130 - 80) : 0
                 }px)`,
                 transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
               }}>
@@ -276,10 +270,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   const isPast = currentTime >= line.endTime;
                   const progress = isActive ? getLineProgress(line) : 0;
 
-                  let opacity = 0.12;
+                  let opacity = 0.1;
                   if (isActive) opacity = 1;
-                  else if (isPast) opacity = 0.25;
-                  else if (index === activeLineIndex + 1) opacity = 0.15;
+                  else if (isPast) opacity = 0.2;
+                  else if (index === activeLineIndex + 1) opacity = 0.12;
 
                   const lineScale = isActive
                     ? spring({
@@ -287,7 +281,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         fps,
                         config: { damping: 12, stiffness: 220, mass: 0.4 },
                       })
-                    : 0.93;
+                    : 0.9;
 
                   const renderText = () => {
                     if (line.terms.length === 0 || !isActive) return line.text;
@@ -316,10 +310,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                             color: "#000",
                             fontWeight: 900,
                             background: HL,
-                            padding: "2px 8px",
-                            borderRadius: 3,
-                            marginLeft: 3, marginRight: 3,
-                            boxShadow: `0 0 15px ${HL}60`,
+                            padding: "4px 12px",
+                            borderRadius: 4,
+                            marginLeft: 4, marginRight: 4,
+                            boxShadow: `0 0 20px ${HL}70`,
                             display: "inline-block",
                           }}
                         >
@@ -343,48 +337,45 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         transform: `scale(${lineScale})`,
                         transformOrigin: "left center",
                         transition: "opacity 0.25s ease",
-                        padding: "10px 0",
+                        padding: "14px 0",
                         position: "relative",
+                        minHeight: 100,
                       }}
                     >
-                      {/* Active indicator — thick bar */}
                       {isActive && (
                         <div style={{
-                          position: "absolute", left: -2, top: 4, bottom: 4,
-                          width: 4, borderRadius: 0,
+                          position: "absolute", left: -4, top: 8, bottom: 8,
+                          width: 5, borderRadius: 0,
                           background: HL,
-                          boxShadow: `0 0 12px ${HL}80`,
+                          boxShadow: `0 0 15px ${HL}90`,
                         }} />
                       )}
                       <div style={{
-                        fontSize: 30,
+                        fontSize: 38,
                         fontWeight: 900,
-                        color: isPast ? "rgba(255,255,255,0.2)" : "#ffffff",
+                        color: isPast ? "rgba(255,255,255,0.15)" : "#ffffff",
                         fontFamily: FONT_LYRICS,
                         textTransform: "uppercase",
-                        lineHeight: 1.4,
+                        lineHeight: 1.35,
                         letterSpacing: 1.5,
-                        paddingLeft: isActive ? 14 : 6,
-                        textShadow: isActive
-                          ? `0 2px 10px rgba(0,0,0,0.7)`
-                          : "none",
+                        paddingLeft: isActive ? 18 : 8,
+                        textShadow: isActive ? `0 2px 12px rgba(0,0,0,0.8)` : "none",
                       }}>
                         {renderText()}
                       </div>
 
-                      {/* Progress bar — thick, solid */}
                       {isActive && (
                         <div style={{
-                          marginTop: 8, marginLeft: 14,
-                          height: 4, borderRadius: 0,
-                          background: "rgba(255,255,255,0.06)",
-                          overflow: "hidden",
+                          marginTop: 12, marginLeft: 18,
+                          height: 5, borderRadius: 0,
+                          background: "rgba(255,255,255,0.05)",
+                          overflow: "hidden", width: "80%",
                         }}>
                           <div style={{
                             width: `${progress * 100}%`,
                             height: "100%",
                             background: HL,
-                            boxShadow: `0 0 10px ${HL}80`,
+                            boxShadow: `0 0 12px ${HL}90`,
                           }} />
                         </div>
                       )}
@@ -395,31 +386,31 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
               {/* Fade bottom */}
               <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0, height: 80,
+                position: "absolute", bottom: 0, left: 0, right: 0, height: 90,
                 background: "linear-gradient(0deg, rgba(10,10,10,1) 0%, transparent 100%)",
                 zIndex: 5, pointerEvents: "none",
               }} />
             </div>
 
-            {/* ====== DIVIDER — raw line ====== */}
+            {/* ====== DIVIDER ====== */}
             <div style={{
-              width: 3,
-              background: `linear-gradient(180deg, transparent, ${HL}40 20%, ${HL}40 80%, transparent)`,
-              margin: "40px 0",
+              width: 4,
+              background: `linear-gradient(180deg, transparent, ${HL}50 20%, ${HL}50 80%, transparent)`,
+              margin: "50px 0",
             }} />
 
-            {/* ====== RIGHT: DECODE ====== */}
+            {/* ====== RIGHT: DECODE — BIGGER ====== */}
             <div style={{
-              flex: 1, padding: "28px 28px 28px 14px",
+              flex: 1, padding: "30px 30px 30px 18px",
               display: "flex", flexDirection: "column", justifyContent: "center",
-              gap: 20, overflow: "hidden",
+              gap: 24, overflow: "hidden",
             }}>
               {/* Column tag */}
               <div style={{
-                position: "absolute", top: 6, right: 28,
-                fontSize: 12, fontWeight: 900, color: HL,
-                fontFamily: FONT_UI, letterSpacing: 4,
-                textTransform: "uppercase", opacity: 0.6,
+                position: "absolute", top: 10, right: 30,
+                fontSize: 14, fontWeight: 900, color: HL,
+                fontFamily: FONT_UI, letterSpacing: 5,
+                textTransform: "uppercase", opacity: 0.7,
               }}>
                 DECODE
               </div>
@@ -438,44 +429,41 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       key={`expl-${term.term}-${i}`}
                       style={{
                         background: "rgba(255,255,255,0.04)",
-                        borderRadius: 4,
-                        padding: "20px 20px",
-                        borderLeft: `4px solid ${HL}`,
+                        borderRadius: 6,
+                        padding: "26px 24px",
+                        borderLeft: `5px solid ${HL}`,
                         transform: `translateX(${(1 - s) * 60}px)`,
                         opacity: s,
-                        boxShadow: `0 4px 25px rgba(0,0,0,0.5), -4px 0 15px ${HL}15`,
+                        boxShadow: `0 4px 30px rgba(0,0,0,0.5), -5px 0 20px ${HL}20`,
                       }}
                     >
-                      {/* Category badge — street tag style */}
                       {term.category && (
                         <div style={{
-                          display: "inline-block", marginBottom: 10,
+                          display: "inline-block", marginBottom: 14,
                           background: getCategoryColor(term.category),
-                          color: "#000", fontSize: 11, fontWeight: 900,
-                          padding: "4px 10px", borderRadius: 2,
+                          color: "#000", fontSize: 13, fontWeight: 900,
+                          padding: "6px 14px", borderRadius: 3,
                           fontFamily: FONT_UI, letterSpacing: 2,
                           textTransform: "uppercase",
-                          boxShadow: `0 2px 10px ${getCategoryColor(term.category)}50`,
+                          boxShadow: `0 2px 12px ${getCategoryColor(term.category)}60`,
                         }}>
                           {getCategoryLabel(term.category)}
                         </div>
                       )}
 
-                      {/* Term — BIG CAPS */}
                       <div style={{
-                        fontSize: 36, fontWeight: 900, color: HL,
+                        fontSize: 44, fontWeight: 900, color: HL,
                         fontFamily: FONT_LYRICS,
                         textTransform: "uppercase",
                         letterSpacing: 2,
-                        textShadow: `0 0 15px ${HL}60`,
-                        marginBottom: 8, lineHeight: 1.1,
+                        textShadow: `0 0 20px ${HL}70`,
+                        marginBottom: 12, lineHeight: 1.1,
                       }}>
                         {term.term}
                       </div>
 
-                      {/* Definition */}
                       <div style={{
-                        fontSize: 22, color: "rgba(255,255,255,0.75)",
+                        fontSize: 28, color: "rgba(255,255,255,0.8)",
                         fontFamily: FONT_UI, fontWeight: 400,
                         lineHeight: 1.5,
                       }}>
@@ -487,56 +475,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               ) : (
                 <div style={{ textAlign: "center" }}>
                   <div style={{
-                    fontSize: 50, color: HL,
+                    fontSize: 60, color: HL,
                     fontFamily: FONT_LYRICS,
                     textTransform: "uppercase",
-                    opacity: 0.1 + pulse * 0.12,
-                    textShadow: `0 0 30px ${HL}30`,
-                    letterSpacing: 5,
+                    opacity: 0.08 + pulse * 0.1,
+                    textShadow: `0 0 40px ${HL}30`,
+                    letterSpacing: 8,
                   }}>
                     ???
                   </div>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* ========== BOTTOM BAR ========== */}
-          <div style={{
-            position: "absolute", bottom: 0, left: 0, right: 0,
-            height: 115, padding: "0 28px 42px",
-            display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 10,
-          }}>
-            {/* Progress bar — thick, raw */}
-            <div style={{
-              width: "100%", height: 6, borderRadius: 0,
-              backgroundColor: "rgba(255,255,255,0.06)", overflow: "hidden",
-            }}>
-              <div style={{
-                width: `${videoProgress * 100}%`, height: "100%",
-                background: HL,
-                boxShadow: `0 0 15px ${HL}70, 0 0 5px ${HL}`,
-              }} />
-            </div>
-
-            {/* Bottom bar */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{
-                fontSize: 14, fontWeight: 900,
-                color: "rgba(255,255,255,0.3)",
-                fontFamily: FONT_UI,
-                letterSpacing: 3, textTransform: "uppercase",
-              }}>
-                LYRICS DECODED
-              </div>
-              <div style={{
-                fontSize: 14, fontWeight: 900, color: HL,
-                fontFamily: FONT_UI,
-                letterSpacing: 1,
-                textShadow: `0 0 10px ${HL}50`,
-              }}>
-                FOLLOW +
-              </div>
             </div>
           </div>
 
