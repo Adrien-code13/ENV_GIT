@@ -1,3 +1,2 @@
-export { LyricLine } from "./LyricLine";
-export { TermExplanationPopup } from "./TermExplanation";
+export { HookScreen } from "./HookScreen";
 export { LyricsVideo } from "./LyricsVideo";

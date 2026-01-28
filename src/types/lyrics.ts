@@ -95,6 +95,20 @@ export const VideoConfigSchema = z.object({
 export type VideoConfig = z.infer<typeof VideoConfigSchema>;
 
 /**
+ * Schema for the hook screen (first 2-3 seconds to grab attention)
+ */
+export const HookSchema = z.object({
+  /** The term to tease */
+  term: z.string(),
+  /** The lyrics line containing the term */
+  line: z.string(),
+  /** Duration of hook screen in seconds */
+  duration: z.number().default(2.5),
+});
+
+export type Hook = z.infer<typeof HookSchema>;
+
+/**
  * Main schema for a rap lyrics video project
  */
 export const RapLyricsVideoSchema = z.object({
@@ -104,6 +118,8 @@ export const RapLyricsVideoSchema = z.object({
   version: z.string().default("1.0.0"),
   /** Track metadata */
   track: TrackMetadataSchema,
+  /** Hook screen config */
+  hook: HookSchema.optional(),
   /** All lyrics lines with timing */
   lyrics: z.array(LyricLineSchema),
   /** Video styling options */
