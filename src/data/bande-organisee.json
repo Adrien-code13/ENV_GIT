@@ -5,7 +5,8 @@
     "title": "Bande Organisée",
     "artist": "13 Organisé (SCH)",
     "album": "13 Organisé",
-    "year": 2020
+    "year": 2020,
+    "coverImage": "cover.jpg"
   },
   "hook": {
     "term": "gris nardo",
@@ -20,18 +21,8 @@
       "endTime": 4,
       "terms": [
         {
-          "term": "gâtée",
-          "definition": "Copine choyée, terme affectueux",
-          "category": "argot"
-        },
-        {
-          "term": "RS4",
-          "definition": "Audi RS4, sportive de luxe",
-          "category": "reference"
-        },
-        {
           "term": "gris nardo",
-          "definition": "Couleur grise mate exclusive Audi",
+          "definition": "Couleur grise mate exclusive Audi, très rare et chère",
           "category": "reference"
         }
       ],
@@ -45,17 +36,12 @@
       "terms": [
         {
           "term": "bulle",
-          "definition": "Voiture (être dans sa bulle)",
+          "definition": "Voiture, être dans sa bulle = rouler tranquille",
           "category": "argot"
         },
         {
-          "term": "Prado",
-          "definition": "Grande avenue de Marseille",
-          "category": "reference"
-        },
-        {
           "term": "Shifter pro'",
-          "definition": "Boîte de vitesse à palettes",
+          "definition": "Boîte de vitesse séquentielle à palettes au volant",
           "category": "reference"
         }
       ],
@@ -76,13 +62,8 @@
       "endTime": 15,
       "terms": [
         {
-          "term": "Puta",
-          "definition": "Juron espagnol courant à Marseille",
-          "category": "expression"
-        },
-        {
           "term": "7€ d'essence",
-          "definition": "La galère financière avant le succès",
+          "definition": "Galère financière d'avant le succès, ne pouvait mettre que le minimum",
           "category": "expression"
         }
       ],
@@ -91,6 +72,7 @@
   ],
   "style": {
     "backgroundColor": "#08080e",
+    "secondaryColor": "#1a0a2e",
     "highlightColor": "#ff5a14",
     "animationStyle": "slide"
   },

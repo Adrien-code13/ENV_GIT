@@ -60,11 +60,13 @@ export type TrackMetadata = z.infer<typeof TrackMetadataSchema>;
  * Schema for video styling options
  */
 export const VideoStyleSchema = z.object({
-  /** Background color or gradient */
+  /** Background color */
   backgroundColor: z.string().default("#0f0f0f"),
+  /** Secondary background color for gradient */
+  secondaryColor: z.string().default("#1a0a2e"),
   /** Primary text color for lyrics */
   textColor: z.string().default("#ffffff"),
-  /** Highlight color for current word/line */
+  /** Highlight color for terms */
   highlightColor: z.string().default("#ff6b35"),
   /** Color for explanation popups */
   explanationBgColor: z.string().default("#1a1a2e"),
@@ -74,6 +76,8 @@ export const VideoStyleSchema = z.object({
   fontSize: z.number().default(48),
   /** Animation style */
   animationStyle: z.enum(["fade", "slide", "bounce", "typewriter"]).default("fade"),
+  /** Optional background image filename in public/ */
+  backgroundImage: z.string().optional(),
 });
 
 export type VideoStyle = z.infer<typeof VideoStyleSchema>;
