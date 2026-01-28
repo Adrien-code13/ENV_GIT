@@ -4,7 +4,6 @@ import {
   useCurrentFrame,
   useVideoConfig,
   Audio,
-  Img,
   Sequence,
   interpolate,
   spring,
@@ -143,28 +142,6 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             }}
           />
 
-          {/* Blurred cover art background */}
-          {track.coverImage && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                opacity: 0.08,
-                filter: "blur(60px) saturate(1.5)",
-                overflow: "hidden",
-              }}
-            >
-              <Img
-                src={staticFile(track.coverImage)}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-          )}
-
           {/* Subtle grain/noise overlay */}
           <div
             style={{
@@ -191,30 +168,6 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               zIndex: 10,
             }}
           >
-            {/* Cover art thumbnail */}
-            {track.coverImage && (
-              <div
-                style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: 14,
-                  overflow: "hidden",
-                  flexShrink: 0,
-                  boxShadow: `0 4px 20px rgba(0,0,0,0.5), 0 0 30px ${style.highlightColor}20`,
-                  border: `1px solid rgba(255,255,255,0.1)`,
-                }}
-              >
-                <Img
-                  src={staticFile(track.coverImage)}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-            )}
-
             {/* Track info */}
             <div style={{ flex: 1 }}>
               <div
