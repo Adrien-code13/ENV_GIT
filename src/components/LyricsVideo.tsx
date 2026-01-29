@@ -40,8 +40,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // === COLORS ===
   const HL = style.highlightColor;
+  const ACCENT = "#ff2d78"; // hot pink
   const BG1 = style.backgroundColor;
-  const BG2 = style.secondaryColor ?? "#1c1c1c";
+  const BG2 = style.secondaryColor ?? "#0c1a3d";
+  const BG_BASE = "#140228"; // deep purple base
 
   // === STATE ===
   const activeLine = useMemo(() => {
@@ -83,27 +85,21 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // Track last shown terms to avoid blank spaces during transitions
   const { currentTerms, hasTermsToShow } = useMemo(() => {
-    // If active line exists and has NO terms, show smiley (too easy!)
     if (activeLine && activeLine.terms.length === 0) {
       return { currentTerms: [], hasTermsToShow: false };
     }
-
-    // If active line has terms and we're past the initial delay, show them
     if (activeLine && activeLine.terms.length > 0) {
       const progress = getLineProgress(activeLine);
       if (progress >= 0.05) {
         return { currentTerms: activeLine.terms, hasTermsToShow: true };
       }
     }
-
-    // During transition (no active line or early in active line), show previous line's terms
     for (let i = activeLineIndex; i >= 0; i--) {
       const line = lyrics[i];
       if (line && line.terms.length > 0 && currentTime >= line.startTime) {
         return { currentTerms: line.terms, hasTermsToShow: true };
       }
     }
-
     return { currentTerms: [], hasTermsToShow: false };
   }, [activeLine, activeLineIndex, lyrics, currentTime]);
 
@@ -112,14 +108,12 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   const fastPulse = Math.sin(frame * 0.2) * 0.5 + 0.5;
   const drift = Math.sin(frame * 0.015) * 15;
 
-  // Counter pop animation
   const counterPop = spring({
     frame: frame % 20,
     fps,
     config: { damping: 6, stiffness: 300, mass: 0.3 },
   });
 
-  // End screen animations
   const endScreenScale = spring({
     frame: isEndScreen ? Math.floor((currentTime - lyricsEndTime) * fps) : 0,
     fps,
@@ -127,13 +121,13 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   });
   const qBounce = Math.sin(frame * 0.12) * 15;
 
-  // Category styling
+  // Category styling — vibrant colors
   const getCategoryColor = (cat?: string) => {
     const colors: Record<string, string> = {
-      argot: "#ff3333", verlan: "#bb44ff", reference: "#ffaa00",
-      anglicisme: "#00ccff", expression: "#ff6600",
+      argot: "#ff4466", verlan: "#c855ff", reference: "#ffcc00",
+      anglicisme: "#00e5ff", expression: "#ff7733",
     };
-    return colors[cat ?? ""] ?? "#888";
+    return colors[cat ?? ""] ?? "#aaa";
   };
   const getCategoryLabel = (cat?: string) => {
     const labels: Record<string, string> = {
@@ -143,12 +137,11 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     return labels[cat ?? ""] ?? "TERME";
   };
 
-  // Fonts
   const FONT_LYRICS = "'Impact', 'Arial Black', 'Bebas Neue', sans-serif";
   const FONT_UI = "'Inter', 'Helvetica Neue', sans-serif";
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "#0a0a0a" }}>
+    <AbsoluteFill style={{ backgroundColor: BG_BASE }}>
       {/* ========== HOOK SCREEN ========== */}
       {hook && (
         <Sequence from={0} durationInFrames={hookDurationFrames}>
@@ -159,18 +152,41 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
       {/* ========== MAIN CONTENT ========== */}
       <Sequence from={hookDurationFrames}>
         <AbsoluteFill>
-          {/* --- Background gradient --- */}
+          {/* --- Rich gradient background --- */}
           <div style={{
             position: "absolute", inset: 0,
-            background: `linear-gradient(175deg,
-              ${BG1} 0%, ${BG2} 35%, #0d0d0d 65%, ${BG1} 100%)`,
+            background: `linear-gradient(170deg,
+              ${BG1} 0%, #2d1059 20%, ${BG2} 45%, #1a0535 70%, ${BG1} 100%)`,
+          }} />
+
+          {/* --- Ambient color blobs for depth --- */}
+          <div style={{
+            position: "absolute", top: "5%", left: "-15%",
+            width: 700, height: 700, borderRadius: "50%",
+            background: `radial-gradient(circle, ${ACCENT}18 0%, transparent 65%)`,
+            filter: "blur(100px)", opacity: 0.9,
+            transform: `translate(${drift}px, ${drift * 0.5}px)`,
+          }} />
+          <div style={{
+            position: "absolute", bottom: "10%", right: "-10%",
+            width: 600, height: 600, borderRadius: "50%",
+            background: `radial-gradient(circle, #4a1fd820 0%, transparent 60%)`,
+            filter: "blur(80px)", opacity: 0.8,
+            transform: `translate(${-drift}px, ${drift * 0.3}px)`,
+          }} />
+          <div style={{
+            position: "absolute", top: "40%", left: "50%",
+            width: 500, height: 500, borderRadius: "50%",
+            background: `radial-gradient(circle, ${HL}08 0%, transparent 60%)`,
+            filter: "blur(70px)", opacity: pulse,
+            transform: "translate(-50%, -50%)",
           }} />
 
           {/* --- Optional background image --- */}
           {style.backgroundImage && (
             <div style={{
-              position: "absolute", inset: 0, opacity: 0.18,
-              filter: "brightness(0.4) contrast(1.3) saturate(0.6)",
+              position: "absolute", inset: 0, opacity: 0.12,
+              filter: "brightness(0.5) contrast(1.2) saturate(0.5)",
               overflow: "hidden",
             }}>
               <Img
@@ -184,14 +200,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
           <div style={{
             position: "absolute", top: -200, left: "20%",
             width: 300, height: 1000,
-            background: `linear-gradient(180deg, ${HL}15 0%, transparent 60%)`,
+            background: `linear-gradient(180deg, ${ACCENT}18 0%, transparent 60%)`,
             opacity: pulse, filter: "blur(50px)",
             transform: `skewX(-20deg) translateY(${drift}px)`,
           }} />
           <div style={{
             position: "absolute", top: -100, right: "15%",
             width: 200, height: 800,
-            background: `linear-gradient(180deg, ${HL}10 0%, transparent 50%)`,
+            background: `linear-gradient(180deg, ${HL}12 0%, transparent 50%)`,
             opacity: fastPulse, filter: "blur(40px)",
             transform: `skewX(15deg) translateY(${-drift}px)`,
           }} />
@@ -208,7 +224,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 position: "absolute",
                 width: 900, height: 900,
                 borderRadius: "50%",
-                background: `radial-gradient(circle, ${HL}50 0%, transparent 60%)`,
+                background: `radial-gradient(circle, ${HL}40 0%, ${ACCENT}20 40%, transparent 60%)`,
                 opacity: pulse, filter: "blur(80px)",
               }} />
 
@@ -221,7 +237,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   fontSize: 78, fontWeight: 900, color: "#ffffff",
                   fontFamily: FONT_LYRICS,
                   textTransform: "uppercase", letterSpacing: 4,
-                  textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                  textShadow: `0 4px 30px rgba(0,0,0,0.6), 0 0 40px ${ACCENT}20`,
                   marginBottom: 20,
                 }}>
                   ALORS, TU EN AVAIS
@@ -230,7 +246,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   fontSize: 78, fontWeight: 900, color: "#ffffff",
                   fontFamily: FONT_LYRICS,
                   textTransform: "uppercase", letterSpacing: 4,
-                  textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                  textShadow: `0 4px 30px rgba(0,0,0,0.6), 0 0 40px ${ACCENT}20`,
                   marginBottom: 40,
                 }}>
                   COMBIEN
@@ -238,9 +254,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                 {/* Giant question mark */}
                 <div style={{
-                  fontSize: 300, fontWeight: 900, color: HL,
+                  fontSize: 300, fontWeight: 900, color: ACCENT,
                   fontFamily: FONT_LYRICS,
-                  textShadow: `0 0 80px ${HL}90, 0 0 160px ${HL}50`,
+                  textShadow: `0 0 80px ${ACCENT}90, 0 0 160px ${ACCENT}50`,
                   transform: `translateY(${qBounce}px)`,
                   lineHeight: 0.8,
                 }}>
@@ -250,8 +266,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {/* Score */}
                 <div style={{
                   marginTop: 50, fontSize: 52,
-                  color: "rgba(255,255,255,0.7)",
+                  color: HL,
                   fontFamily: FONT_UI, fontWeight: 700,
+                  textShadow: `0 0 20px ${HL}60`,
                 }}>
                   {decodedTerms}/{totalTerms} décodés
                 </div>
@@ -270,7 +287,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   <div style={{
                     width: 90, height: 90, borderRadius: 10, overflow: "hidden",
                     flexShrink: 0,
-                    boxShadow: `0 0 0 3px ${HL}, 0 4px 25px rgba(0,0,0,0.8)`,
+                    boxShadow: `0 0 0 3px ${HL}, 0 0 25px ${HL}40, 0 4px 25px rgba(0,0,0,0.6)`,
                   }}>
                     <Img
                       src={staticFile(track.coverImage)}
@@ -285,12 +302,12 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                     fontSize: 48, fontWeight: 900, color: "#fff",
                     fontFamily: FONT_LYRICS,
                     textTransform: "uppercase", letterSpacing: 2, lineHeight: 1.1,
-                    textShadow: "0 2px 15px rgba(0,0,0,0.8)",
+                    textShadow: "0 2px 15px rgba(0,0,0,0.6)",
                   }}>
                     {track.title}
                   </div>
                   <div style={{
-                    fontSize: 24, color: "rgba(255,255,255,0.5)",
+                    fontSize: 24, color: "rgba(255,255,255,0.6)",
                     fontFamily: FONT_UI, fontWeight: 600,
                     textTransform: "uppercase", letterSpacing: 4, marginTop: 6,
                   }}>
@@ -299,17 +316,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 </div>
               </div>
 
-              {/* ========== DECODED COUNTER — punchy ========== */}
+              {/* ========== DECODED COUNTER ========== */}
               <div style={{
                 position: "absolute", top: 185, left: 0, right: 0,
                 display: "flex", justifyContent: "center", alignItems: "center",
                 padding: "25px 0", zIndex: 10,
               }}>
                 <div style={{
-                  background: HL,
+                  background: `linear-gradient(135deg, ${HL}, ${HL}dd)`,
                   borderRadius: 16, padding: "18px 50px",
                   display: "flex", alignItems: "baseline", gap: 14,
-                  boxShadow: `0 0 50px ${HL}60, 0 8px 35px rgba(0,0,0,0.5)`,
+                  boxShadow: `0 0 50px ${HL}50, 0 8px 35px rgba(0,0,0,0.4)`,
                   transform: `scale(${0.95 + counterPop * 0.05})`,
                 }}>
                   <div style={{
@@ -343,7 +360,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   {/* Fade top */}
                   <div style={{
                     position: "absolute", top: 0, left: 0, right: 0, height: 50,
-                    background: "linear-gradient(180deg, rgba(10,10,10,1) 0%, transparent 100%)",
+                    background: `linear-gradient(180deg, ${BG_BASE}ff 0%, transparent 100%)`,
                     zIndex: 5, pointerEvents: "none",
                   }} />
 
@@ -362,8 +379,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                       let opacity = 0.08;
                       if (isActive) opacity = 1;
-                      else if (isPast) opacity = 0.18;
-                      else if (index === activeLineIndex + 1) opacity = 0.1;
+                      else if (isPast) opacity = 0.2;
+                      else if (index === activeLineIndex + 1) opacity = 0.12;
 
                       const lineScale = isActive
                         ? spring({
@@ -403,7 +420,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                                 padding: "4px 12px",
                                 borderRadius: 5,
                                 marginLeft: 4, marginRight: 4,
-                                boxShadow: `0 0 20px ${HL}80`,
+                                boxShadow: `0 0 20px ${HL}70`,
                                 display: "inline-block",
                               }}
                             >
@@ -436,20 +453,20 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                             <div style={{
                               position: "absolute", left: -4, top: 8, bottom: 8,
                               width: 5, borderRadius: 0,
-                              background: HL,
-                              boxShadow: `0 0 18px ${HL}90`,
+                              background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
+                              boxShadow: `0 0 18px ${HL}80`,
                             }} />
                           )}
                           <div style={{
                             fontSize: 44,
                             fontWeight: 900,
-                            color: isPast ? "rgba(255,255,255,0.12)" : "#ffffff",
+                            color: isPast ? "rgba(255,255,255,0.15)" : "#ffffff",
                             fontFamily: FONT_LYRICS,
                             textTransform: "uppercase",
                             lineHeight: 1.3,
                             letterSpacing: 1.5,
                             paddingLeft: isActive ? 18 : 8,
-                            textShadow: isActive ? "0 2px 12px rgba(0,0,0,0.8)" : "none",
+                            textShadow: isActive ? "0 2px 12px rgba(0,0,0,0.6)" : "none",
                           }}>
                             {renderText()}
                           </div>
@@ -457,15 +474,16 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                           {isActive && (
                             <div style={{
                               marginTop: 12, marginLeft: 18,
-                              height: 5, borderRadius: 0,
-                              background: "rgba(255,255,255,0.04)",
+                              height: 5, borderRadius: 3,
+                              background: "rgba(255,255,255,0.08)",
                               overflow: "hidden", width: "85%",
                             }}>
                               <div style={{
                                 width: `${progress * 100}%`,
                                 height: "100%",
-                                background: `linear-gradient(90deg, ${HL}, ${HL}cc)`,
-                                boxShadow: `0 0 12px ${HL}90`,
+                                background: `linear-gradient(90deg, ${HL}, ${ACCENT})`,
+                                boxShadow: `0 0 12px ${HL}80`,
+                                borderRadius: 3,
                               }} />
                             </div>
                           )}
@@ -477,7 +495,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   {/* Fade bottom */}
                   <div style={{
                     position: "absolute", bottom: 0, left: 0, right: 0, height: 50,
-                    background: "linear-gradient(0deg, rgba(10,10,10,1) 0%, transparent 100%)",
+                    background: `linear-gradient(0deg, ${BG_BASE}ff 0%, transparent 100%)`,
                     zIndex: 5, pointerEvents: "none",
                   }} />
                 </div>
@@ -485,7 +503,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {/* ====== DIVIDER ====== */}
                 <div style={{
                   width: 4,
-                  background: `linear-gradient(180deg, transparent, ${HL}50 20%, ${HL}50 80%, transparent)`,
+                  background: `linear-gradient(180deg, transparent, ${ACCENT}60 20%, ${HL}50 50%, ${ACCENT}60 80%, transparent)`,
                   margin: "30px 0",
                 }} />
 
@@ -508,13 +526,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         <div
                           key={`expl-${term.term}-${i}`}
                           style={{
-                            background: "rgba(255,255,255,0.05)",
+                            background: "rgba(255,255,255,0.06)",
                             borderRadius: 10,
                             padding: "26px 24px",
                             borderLeft: `5px solid ${HL}`,
                             transform: `translateX(${(1 - s) * 60}px) scale(${0.9 + s * 0.1})`,
                             opacity: s,
-                            boxShadow: `0 4px 30px rgba(0,0,0,0.5), -5px 0 20px ${HL}20`,
+                            boxShadow: `0 4px 30px rgba(0,0,0,0.3), -5px 0 20px ${HL}15`,
+                            backdropFilter: "blur(10px)",
                           }}
                         >
                           {term.category && (
@@ -525,7 +544,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               padding: "8px 18px", borderRadius: 6,
                               fontFamily: FONT_UI, letterSpacing: 3,
                               textTransform: "uppercase",
-                              boxShadow: `0 3px 15px ${getCategoryColor(term.category)}60`,
+                              boxShadow: `0 3px 15px ${getCategoryColor(term.category)}50`,
                             }}>
                               {getCategoryLabel(term.category)}
                             </div>
@@ -536,14 +555,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                             fontFamily: FONT_LYRICS,
                             textTransform: "uppercase",
                             letterSpacing: 2,
-                            textShadow: `0 0 20px ${HL}70`,
+                            textShadow: `0 0 20px ${HL}60`,
                             marginBottom: 10, lineHeight: 1.1,
                           }}>
                             {term.term}
                           </div>
 
                           <div style={{
-                            fontSize: 30, color: "rgba(255,255,255,0.85)",
+                            fontSize: 30, color: "rgba(255,255,255,0.9)",
                             fontFamily: FONT_UI, fontWeight: 400,
                             lineHeight: 1.4,
                           }}>
@@ -557,14 +576,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                     <div style={{ textAlign: "center" }}>
                       <div style={{
                         fontSize: 130,
-                        opacity: 0.3 + fastPulse * 0.3,
-                        filter: `drop-shadow(0 0 30px ${HL}40)`,
+                        opacity: 0.4 + fastPulse * 0.3,
+                        filter: `drop-shadow(0 0 30px ${ACCENT}40)`,
                         transform: `scale(${0.95 + fastPulse * 0.1})`,
                       }}>
                         😎
                       </div>
                       <div style={{
-                        fontSize: 30, color: "rgba(255,255,255,0.5)",
+                        fontSize: 30, color: "rgba(255,255,255,0.6)",
                         fontFamily: FONT_UI, fontWeight: 700,
                         textTransform: "uppercase", letterSpacing: 5,
                         marginTop: 12,

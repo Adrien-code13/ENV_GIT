@@ -18,6 +18,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const { fps } = useVideoConfig();
 
   const HL = style.highlightColor;
+  const ACCENT = "#ff2d78"; // hot pink accent
 
   // === PHASE 1: "AU FAIT..." appears immediately with punch ===
   const phase1Scale = spring({
@@ -85,12 +86,26 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   return (
     <AbsoluteFill
       style={{
-        background: `linear-gradient(${gradientAngle}deg, #0a0a0a 0%, #1a0a2e 40%, #0a0a0a 100%)`,
+        background: `linear-gradient(${gradientAngle}deg, #1a0535 0%, #2d1059 25%, #0c1a3d 55%, #1a0535 100%)`,
         justifyContent: "center",
         alignItems: "center",
         transform: `translate(${shakeX}px, ${shakeY}px)`,
       }}
     >
+      {/* Colored ambient blobs */}
+      <div style={{
+        position: "absolute", top: "10%", left: "-10%",
+        width: 600, height: 600, borderRadius: "50%",
+        background: "radial-gradient(circle, #ff2d7830 0%, transparent 70%)",
+        filter: "blur(80px)", opacity: 0.8,
+      }} />
+      <div style={{
+        position: "absolute", bottom: "5%", right: "-10%",
+        width: 500, height: 500, borderRadius: "50%",
+        background: "radial-gradient(circle, #4a1fd830 0%, transparent 70%)",
+        filter: "blur(60px)", opacity: 0.7,
+      }} />
+
       {/* Radial glow behind term */}
       <div
         style={{
@@ -98,7 +113,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           width: 900,
           height: 900,
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${HL}40 0%, transparent 60%)`,
+          background: `radial-gradient(circle, ${HL}35 0%, ${ACCENT}15 40%, transparent 60%)`,
           opacity: termOpacity * pulse,
           filter: "blur(80px)",
         }}
@@ -110,8 +125,8 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           style={{
             position: "absolute",
             inset: 0,
-            background: `radial-gradient(circle, ${HL}30 0%, transparent 70%)`,
-            opacity: interpolate(frame, [termDelay, termDelay + 4], [0.8, 0], {
+            background: `radial-gradient(circle, ${HL}40 0%, ${ACCENT}20 40%, transparent 70%)`,
+            opacity: interpolate(frame, [termDelay, termDelay + 4], [0.9, 0], {
               extrapolateRight: "clamp",
             }),
           }}
@@ -130,7 +145,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         <div
           style={{
             fontSize: 64,
-            color: "rgba(255,255,255,0.7)",
+            color: "rgba(255,255,255,0.8)",
             fontFamily: FONT,
             fontWeight: 900,
             textAlign: "center",
@@ -160,7 +175,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
             textAlign: "center",
             letterSpacing: 4,
             textTransform: "uppercase",
-            textShadow: "0 4px 40px rgba(0,0,0,0.9)",
+            textShadow: `0 4px 40px rgba(0,0,0,0.7), 0 0 30px ${ACCENT}30`,
           }}
         >
           ÇA VEUT DIRE QUOI
@@ -204,9 +219,9 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           style={{
             fontSize: 220,
             fontWeight: 900,
-            color: HL,
+            color: ACCENT,
             fontFamily: FONT,
-            textShadow: `0 0 80px ${HL}80, 0 0 160px ${HL}40`,
+            textShadow: `0 0 80px ${ACCENT}80, 0 0 160px ${ACCENT}40`,
             lineHeight: 0.8,
           }}
         >
@@ -231,7 +246,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         <div
           style={{
             fontSize: 36,
-            color: "rgba(255,255,255,0.8)",
+            color: "rgba(255,255,255,0.85)",
             fontFamily: FONT,
             fontWeight: 900,
             textTransform: "uppercase",
