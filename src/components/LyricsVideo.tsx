@@ -40,10 +40,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // === COLORS ===
   const HL = style.highlightColor;
-  const ACCENT = "#ff2d78"; // hot pink
+  const ACCENT = "#4f8cff"; // electric blue
   const BG1 = style.backgroundColor;
-  const BG2 = style.secondaryColor ?? "#0c1a3d";
-  const BG_BASE = "#140228"; // deep purple base
+  const BG2 = style.secondaryColor ?? "#101d35";
+  const BG_BASE = "#0b1120"; // dark navy base
 
   // === STATE ===
   const activeLine = useMemo(() => {
@@ -124,8 +124,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   // Category styling — vibrant colors
   const getCategoryColor = (cat?: string) => {
     const colors: Record<string, string> = {
-      argot: "#ff4466", verlan: "#c855ff", reference: "#ffcc00",
-      anglicisme: "#00e5ff", expression: "#ff7733",
+      argot: "#ff3b5c", verlan: "#a855f7", reference: "#f59e0b",
+      anglicisme: "#38bdf8", expression: "#fb923c",
     };
     return colors[cat ?? ""] ?? "#aaa";
   };
@@ -156,21 +156,21 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
           <div style={{
             position: "absolute", inset: 0,
             background: `linear-gradient(170deg,
-              ${BG1} 0%, #2d1059 20%, ${BG2} 45%, #1a0535 70%, ${BG1} 100%)`,
+              ${BG1} 0%, #0f1a30 20%, ${BG2} 45%, #0d1528 70%, ${BG1} 100%)`,
           }} />
 
           {/* --- Ambient color blobs for depth --- */}
           <div style={{
             position: "absolute", top: "5%", left: "-15%",
             width: 700, height: 700, borderRadius: "50%",
-            background: `radial-gradient(circle, ${ACCENT}18 0%, transparent 65%)`,
+            background: `radial-gradient(circle, ${HL}15 0%, transparent 65%)`,
             filter: "blur(100px)", opacity: 0.9,
             transform: `translate(${drift}px, ${drift * 0.5}px)`,
           }} />
           <div style={{
             position: "absolute", bottom: "10%", right: "-10%",
             width: 600, height: 600, borderRadius: "50%",
-            background: `radial-gradient(circle, #4a1fd820 0%, transparent 60%)`,
+            background: `radial-gradient(circle, ${ACCENT}18 0%, transparent 60%)`,
             filter: "blur(80px)", opacity: 0.8,
             transform: `translate(${-drift}px, ${drift * 0.3}px)`,
           }} />

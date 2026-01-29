@@ -18,7 +18,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const { fps } = useVideoConfig();
 
   const HL = style.highlightColor;
-  const ACCENT = "#ff2d78"; // hot pink accent
+  const ACCENT = "#4f8cff"; // electric blue accent
 
   // === PHASE 1: "AU FAIT..." appears immediately with punch ===
   const phase1Scale = spring({
@@ -86,7 +86,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   return (
     <AbsoluteFill
       style={{
-        background: `linear-gradient(${gradientAngle}deg, #1a0535 0%, #2d1059 25%, #0c1a3d 55%, #1a0535 100%)`,
+        background: `linear-gradient(${gradientAngle}deg, #0b1120 0%, #0f1a30 30%, #131f3a 60%, #0b1120 100%)`,
         justifyContent: "center",
         alignItems: "center",
         transform: `translate(${shakeX}px, ${shakeY}px)`,
@@ -96,13 +96,13 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div style={{
         position: "absolute", top: "10%", left: "-10%",
         width: 600, height: 600, borderRadius: "50%",
-        background: "radial-gradient(circle, #ff2d7830 0%, transparent 70%)",
+        background: `radial-gradient(circle, ${HL}25 0%, transparent 70%)`,
         filter: "blur(80px)", opacity: 0.8,
       }} />
       <div style={{
         position: "absolute", bottom: "5%", right: "-10%",
         width: 500, height: 500, borderRadius: "50%",
-        background: "radial-gradient(circle, #4a1fd830 0%, transparent 70%)",
+        background: `radial-gradient(circle, ${ACCENT}20 0%, transparent 70%)`,
         filter: "blur(60px)", opacity: 0.7,
       }} />
 

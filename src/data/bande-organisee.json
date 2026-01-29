@@ -82,9 +82,9 @@
     }
   ],
   "style": {
-    "backgroundColor": "#1a0535",
-    "secondaryColor": "#0c1a3d",
-    "highlightColor": "#ffe135",
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#ff3b5c",
     "animationStyle": "slide"
   },
   "config": {
