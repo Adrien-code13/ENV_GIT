@@ -253,9 +253,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                 {/* Giant question mark */}
                 <div style={{
-                  fontSize: 300, fontWeight: 900, color: ACCENT,
+                  fontSize: 300, fontWeight: 900, color: HL,
                   fontFamily: FONT,
-                  textShadow: `0 0 80px ${ACCENT}90, 0 0 160px ${ACCENT}50`,
+                  textShadow: `0 0 80px ${HL}90, 0 0 160px ${HL}50`,
                   transform: `translateY(${qBounce}px)`,
                   lineHeight: 0.8,
                 }}>
