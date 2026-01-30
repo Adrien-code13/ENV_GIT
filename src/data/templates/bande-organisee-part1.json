@@ -1,0 +1,95 @@
+{
+  "id": "bande-organisee-001",
+  "version": "1.0.0",
+  "track": {
+    "title": "13 Organisé",
+    "artist": "Couplet SCH",
+    "album": "13 Organisé",
+    "year": 2020,
+    "coverImage": "cover.jpg",
+    "audioFile": "audio.mp3"
+  },
+  "hook": {
+    "term": "gris nardo",
+    "line": "RS4 gris nardo, bien sûr qu'ils m'ont raté",
+    "duration": 2.5
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Oui, ma gâtée, RS4 gris nardo, bien sûr qu'ils m'ont raté",
+      "startTime": 0,
+      "endTime": 4,
+      "terms": [
+        {
+          "term": "gâtée",
+          "definition": "Femme choyée, chérie",
+          "category": "argot"
+        },
+        {
+          "term": "gris nardo",
+          "definition": "Couleur grise mate exclusive Audi",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "Soleil dans la bulle, sur le Prado, Shifter pro'",
+      "startTime": 4,
+      "endTime": 8,
+      "terms": [
+        {
+          "term": "bulle",
+          "definition": "Sa voiture",
+          "category": "argot"
+        },
+        {
+          "term": "Prado",
+          "definition": "Grande avenue de Marseille",
+          "category": "reference"
+        },
+        {
+          "term": "Shifter pro'",
+          "definition": "Palettes au volant",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "Contre-sens, ma chérie, tu es à contre-sens",
+      "startTime": 8,
+      "endTime": 11,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-004",
+      "text": "Puta, où tu étais quand j'mettais des sept euros d'essence",
+      "startTime": 11,
+      "endTime": 15,
+      "terms": [
+        {
+          "term": "sept euros d'essence",
+          "definition": "Galère d'avant le succès",
+          "category": "expression"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#ff3b5c",
+    "animationStyle": "slide"
+  },
+  "config": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  }
+}

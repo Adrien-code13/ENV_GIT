@@ -1,0 +1,106 @@
+{
+  "id": "bande-organisee-002",
+  "version": "1.0.0",
+  "track": {
+    "title": "13 Organisé",
+    "artist": "Couplet SCH",
+    "album": "13 Organisé",
+    "year": 2020,
+    "coverImage": "cover.jpg",
+    "audioFile": "audio2.mp3"
+  },
+  "hook": {
+    "term": "tchop",
+    "line": "Grimpe dans la tchop, j'fais 0 à 100",
+    "duration": 2.5
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Le téléphone bippe, que tu prends la kew",
+      "startTime": 0,
+      "endTime": 3.5,
+      "terms": [
+        {
+          "term": "bippe",
+          "definition": "Sonne, vibre",
+          "category": "argot"
+        },
+        {
+          "term": "kew",
+          "definition": "Verlan de 'queue', file d'attente",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "C'est Marseille, bébé, sa mère un CDD",
+      "startTime": 3.5,
+      "endTime": 7,
+      "terms": [
+        {
+          "term": "sa mère",
+          "definition": "Juron marseillais d'intensité",
+          "category": "expression"
+        },
+        {
+          "term": "CDD",
+          "definition": "Contrat temporaire, rien de stable",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "Wesh alors, ma race, tranquille ou quoi",
+      "startTime": 7,
+      "endTime": 10,
+      "terms": [
+        {
+          "term": "wesh",
+          "definition": "Salut, hey (vient de l'arabe)",
+          "category": "argot"
+        },
+        {
+          "term": "ma race",
+          "definition": "Expression familière, mon gars",
+          "category": "expression"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "Grimpe dans la tchop, j'fais 0 à 100 en 2 secondes 3",
+      "startTime": 10,
+      "endTime": 14,
+      "terms": [
+        {
+          "term": "tchop",
+          "definition": "Voiture (argot marseillais)",
+          "category": "argot"
+        },
+        {
+          "term": "0 à 100",
+          "definition": "Accélération fulgurante",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#ff3b5c",
+    "animationStyle": "slide"
+  },
+  "config": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  }
+}

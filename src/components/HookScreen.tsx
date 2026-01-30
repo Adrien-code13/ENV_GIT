@@ -18,7 +18,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const { fps } = useVideoConfig();
 
   const HL = style.highlightColor;
-  const ACCENT = "#4f8cff"; // electric blue accent
+  const ACCENT = "#00e676"; // vibrant green accent
 
   // === PHASE 1: "AU FAIT..." appears immediately with punch ===
   const phase1Scale = spring({

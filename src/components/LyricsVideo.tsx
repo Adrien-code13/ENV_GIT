@@ -40,7 +40,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // === COLORS ===
   const HL = style.highlightColor;
-  const ACCENT = "#4f8cff"; // electric blue
+  const ACCENT = "#00e676"; // vibrant green
   const BG1 = style.backgroundColor;
   const BG2 = style.secondaryColor ?? "#101d35";
   const BG_BASE = "#0b1120"; // dark navy base
@@ -137,8 +137,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     return labels[cat ?? ""] ?? "TERME";
   };
 
-  const FONT_LYRICS = "'Impact', 'Arial Black', 'Bebas Neue', sans-serif";
-  const FONT_UI = "'Inter', 'Helvetica Neue', sans-serif";
+  const FONT = "'Impact', 'Arial Black', sans-serif";
 
   return (
     <AbsoluteFill style={{ backgroundColor: BG_BASE }}>
@@ -235,7 +234,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               }}>
                 <div style={{
                   fontSize: 78, fontWeight: 900, color: "#ffffff",
-                  fontFamily: FONT_LYRICS,
+                  fontFamily: FONT,
                   textTransform: "uppercase", letterSpacing: 4,
                   textShadow: `0 4px 30px rgba(0,0,0,0.6), 0 0 40px ${ACCENT}20`,
                   marginBottom: 20,
@@ -244,7 +243,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 </div>
                 <div style={{
                   fontSize: 78, fontWeight: 900, color: "#ffffff",
-                  fontFamily: FONT_LYRICS,
+                  fontFamily: FONT,
                   textTransform: "uppercase", letterSpacing: 4,
                   textShadow: `0 4px 30px rgba(0,0,0,0.6), 0 0 40px ${ACCENT}20`,
                   marginBottom: 40,
@@ -255,7 +254,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {/* Giant question mark */}
                 <div style={{
                   fontSize: 300, fontWeight: 900, color: ACCENT,
-                  fontFamily: FONT_LYRICS,
+                  fontFamily: FONT,
                   textShadow: `0 0 80px ${ACCENT}90, 0 0 160px ${ACCENT}50`,
                   transform: `translateY(${qBounce}px)`,
                   lineHeight: 0.8,
@@ -267,7 +266,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 <div style={{
                   marginTop: 50, fontSize: 52,
                   color: HL,
-                  fontFamily: FONT_UI, fontWeight: 700,
+                  fontFamily: FONT, fontWeight: 700,
                   textShadow: `0 0 20px ${HL}60`,
                 }}>
                   {decodedTerms}/{totalTerms} décodés
@@ -300,7 +299,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 <div style={{ flex: 1 }}>
                   <div style={{
                     fontSize: 48, fontWeight: 900, color: "#fff",
-                    fontFamily: FONT_LYRICS,
+                    fontFamily: FONT,
                     textTransform: "uppercase", letterSpacing: 2, lineHeight: 1.1,
                     textShadow: "0 2px 15px rgba(0,0,0,0.6)",
                   }}>
@@ -308,7 +307,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                   <div style={{
                     fontSize: 24, color: "rgba(255,255,255,0.6)",
-                    fontFamily: FONT_UI, fontWeight: 600,
+                    fontFamily: FONT, fontWeight: 600,
                     textTransform: "uppercase", letterSpacing: 4, marginTop: 6,
                   }}>
                     {track.artist}
@@ -331,14 +330,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 }}>
                   <div style={{
                     fontSize: 80, fontWeight: 900, color: "#000",
-                    fontFamily: FONT_LYRICS, lineHeight: 1,
+                    fontFamily: FONT, lineHeight: 1,
                     letterSpacing: 2,
                   }}>
                     {decodedTerms}/{totalTerms}
                   </div>
                   <div style={{
                     fontSize: 24, color: "rgba(0,0,0,0.5)",
-                    fontFamily: FONT_UI, fontWeight: 800,
+                    fontFamily: FONT, fontWeight: 800,
                     textTransform: "uppercase", letterSpacing: 3,
                   }}>
                     DÉCODÉS
@@ -461,7 +460,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                             fontSize: 44,
                             fontWeight: 900,
                             color: isPast ? "rgba(255,255,255,0.15)" : "#ffffff",
-                            fontFamily: FONT_LYRICS,
+                            fontFamily: FONT,
                             textTransform: "uppercase",
                             lineHeight: 1.3,
                             letterSpacing: 1.5,
@@ -542,7 +541,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               background: getCategoryColor(term.category),
                               color: "#000", fontSize: 22, fontWeight: 900,
                               padding: "8px 18px", borderRadius: 6,
-                              fontFamily: FONT_UI, letterSpacing: 3,
+                              fontFamily: FONT, letterSpacing: 3,
                               textTransform: "uppercase",
                               boxShadow: `0 3px 15px ${getCategoryColor(term.category)}50`,
                             }}>
@@ -552,7 +551,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                           <div style={{
                             fontSize: 48, fontWeight: 900, color: HL,
-                            fontFamily: FONT_LYRICS,
+                            fontFamily: FONT,
                             textTransform: "uppercase",
                             letterSpacing: 2,
                             textShadow: `0 0 20px ${HL}60`,
@@ -563,7 +562,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                           <div style={{
                             fontSize: 30, color: "rgba(255,255,255,0.9)",
-                            fontFamily: FONT_UI, fontWeight: 400,
+                            fontFamily: FONT, fontWeight: 400,
                             lineHeight: 1.4,
                           }}>
                             {term.definition}
@@ -584,7 +583,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       </div>
                       <div style={{
                         fontSize: 30, color: "rgba(255,255,255,0.6)",
-                        fontFamily: FONT_UI, fontWeight: 700,
+                        fontFamily: FONT, fontWeight: 700,
                         textTransform: "uppercase", letterSpacing: 5,
                         marginTop: 12,
                       }}>
