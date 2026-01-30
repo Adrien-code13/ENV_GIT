@@ -13,6 +13,13 @@ interface HookScreenProps {
   style: VideoStyle;
 }
 
+const DIFFICULTY_CONFIG: Record<number, { emoji: string; label: string }> = {
+  1: { emoji: "\uD83D\uDE0E", label: "EZ" },
+  2: { emoji: "\uD83D\uDC40", label: "PAS ÉVIDENT" },
+  3: { emoji: "\uD83E\uDD75", label: "C'EST CHAUD" },
+  4: { emoji: "\uD83D\uDC80", label: "HARDCORE" },
+};
+
 export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -50,6 +57,18 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     extrapolateRight: "clamp",
   });
 
+  // === PHASE 3b: Difficulty gauge appears after term ===
+  const diffDelay = termDelay + 8;
+  const diffScale = spring({
+    frame: frame - diffDelay,
+    fps,
+    config: { damping: 8, stiffness: 200, mass: 0.4 },
+  });
+  const diffOpacity = interpolate(frame, [diffDelay, diffDelay + 5], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
   // === PHASE 4: "?" bounces in after term ===
   const qDelay = termDelay + 10;
   const qScale = spring({
@@ -82,6 +101,18 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     ? Math.cos(frame * 4) * (6 - (frame - termDelay)) * 1.5 : 0;
 
   const FONT = "'Impact', 'Arial Black', 'Bebas Neue', sans-serif";
+
+  const difficulty = hook.difficulty ?? 0;
+  const diffConfig = DIFFICULTY_CONFIG[difficulty];
+
+  // Star animation - each star pops in sequentially
+  const getStarScale = (starIndex: number) => {
+    return spring({
+      frame: frame - diffDelay - starIndex * 3,
+      fps,
+      config: { damping: 6, stiffness: 300, mass: 0.3 },
+    });
+  };
 
   return (
     <AbsoluteFill
@@ -137,14 +168,14 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          top: "28%",
+          top: "22%",
           transform: `scale(${phase1Scale})`,
           opacity: phase1Scale,
         }}
       >
         <div
           style={{
-            fontSize: 64,
+            fontSize: 90,
             color: "rgba(255,255,255,0.8)",
             fontFamily: FONT,
             fontWeight: 900,
@@ -161,14 +192,14 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          top: "35%",
+          top: "30%",
           transform: `scale(${phase2Scale}) translateY(${phase2Y}px)`,
           opacity: phase2Scale,
         }}
       >
         <div
           style={{
-            fontSize: 80,
+            fontSize: 100,
             color: "#ffffff",
             fontFamily: FONT,
             fontWeight: 900,
@@ -188,12 +219,12 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           transform: `scale(${termScale})`,
           opacity: termOpacity,
           textAlign: "center",
-          marginTop: 80,
+          marginTop: 60,
         }}
       >
         <div
           style={{
-            fontSize: 150,
+            fontSize: 170,
             fontWeight: 900,
             color: HL,
             fontFamily: FONT,
@@ -206,22 +237,77 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         </div>
       </div>
 
+      {/* === Difficulty gauge with stars === */}
+      {difficulty > 0 && diffConfig && (
+        <div
+          style={{
+            position: "absolute",
+            top: "60%",
+            opacity: diffOpacity,
+            transform: `scale(${diffScale})`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          {/* Stars row */}
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            {Array.from({ length: 4 }).map((_, i) => {
+              const isFilled = i < difficulty;
+              const starS = getStarScale(i);
+              return (
+                <div
+                  key={i}
+                  style={{
+                    fontSize: 50,
+                    transform: `scale(${starS})`,
+                    opacity: isFilled ? 1 : 0.2,
+                    filter: isFilled ? `drop-shadow(0 0 12px ${HL}80)` : "none",
+                  }}
+                >
+                  {"\u2B50"}
+                </div>
+              );
+            })}
+          </div>
+          {/* Emoji + label */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 14,
+            marginTop: 6,
+          }}>
+            <div style={{ fontSize: 52 }}>{diffConfig.emoji}</div>
+            <div style={{
+              fontSize: 36,
+              fontFamily: FONT,
+              fontWeight: 900,
+              color: HL,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              textShadow: `0 0 20px ${HL}60`,
+            }}>
+              {diffConfig.label}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* === Giant "?" bouncing === */}
       <div
         style={{
           position: "absolute",
-          top: "62%",
+          top: "72%",
           opacity: qScale,
           transform: `scale(${qScale}) translateY(${qBounce}px)`,
         }}
       >
         <div
           style={{
-            fontSize: 220,
+            fontSize: 250,
             fontWeight: 900,
-            color: ACCENT,
+            color: HL,
             fontFamily: FONT,
-            textShadow: `0 0 80px ${ACCENT}80, 0 0 160px ${ACCENT}40`,
+            textShadow: `0 0 80px ${HL}80, 0 0 160px ${HL}40`,
             lineHeight: 0.8,
           }}
         >
@@ -233,7 +319,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          bottom: "12%",
+          bottom: "8%",
           opacity: decodonsOpacity,
           transform: `translateY(${decodonsY}px)`,
           display: "flex",
@@ -245,7 +331,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       >
         <div
           style={{
-            fontSize: 36,
+            fontSize: 40,
             color: "rgba(255,255,255,0.85)",
             fontFamily: FONT,
             fontWeight: 900,
@@ -263,8 +349,8 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           }}
         >
           <svg
-            width="50"
-            height="50"
+            width="55"
+            height="55"
             viewBox="0 0 24 24"
             fill="none"
             stroke={HL}

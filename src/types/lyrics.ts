@@ -108,6 +108,8 @@ export const HookSchema = z.object({
   line: z.string(),
   /** Duration of hook screen in seconds */
   duration: z.number().default(2.5),
+  /** Difficulty level 1-4 (1=EZ, 2=pas évident, 3=c'est chaud, 4=hardcore) */
+  difficulty: z.number().min(1).max(4).optional(),
 });
 
 export type Hook = z.infer<typeof HookSchema>;

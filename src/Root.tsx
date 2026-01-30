@@ -4,7 +4,7 @@ import { LyricsVideo } from "./components";
 import type { RapLyricsVideo } from "./types";
 
 // Import your data file
-import exampleData from "./data/bande-organisee-part2.json";
+import exampleData from "./data/bande-organisee-part3.json";
 
 // Calculate total duration from lyrics + hook
 const calculateDuration = (data: RapLyricsVideo, fps: number): number => {

@@ -1,0 +1,79 @@
+{
+  "id": "bande-organisee-003",
+  "version": "1.0.0",
+  "track": {
+    "title": "Bande Organisée",
+    "artist": "Couplet Naps",
+    "coverImage": "cover.jpg",
+    "audioFile": "audio3.mp3"
+  },
+  "hook": {
+    "term": "kech-Marra",
+    "line": "T-Max, casque Araï, recherché à kech-Marra",
+    "duration": 2.5,
+    "difficulty": 3
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "C'est du vingt-quatre carats, j'rappe depuis l'époque de K-Ra",
+      "startTime": 0,
+      "endTime": 3.5,
+      "terms": [
+        {
+          "term": "K-Ra",
+          "definition": "Rappeur marseillais de Sale Equipe, jeu de mots avec carats",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "La technique, le flow de malade, artistiquement, on se balade",
+      "startTime": 3.5,
+      "endTime": 7,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-003",
+      "text": "T-Max, casque Araï, recherché à kech-Marra",
+      "startTime": 7,
+      "endTime": 10.5,
+      "terms": [
+        {
+          "term": "T-Max",
+          "definition": "Scooter Yamaha, emblème de Marseille",
+          "category": "reference"
+        },
+        {
+          "term": "kech-Marra",
+          "definition": "Verlan de Marrakech",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "J'lui envoie une frappe imparable, j'fais couler son mascara",
+      "startTime": 10.5,
+      "endTime": 14,
+      "terms": [
+        {
+          "term": "mascara",
+          "definition": "Faire pleurer, impact émotionnel dévastateur",
+          "category": "expression"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#00e676",
+    "animationStyle": "slide"
+  }
+}
