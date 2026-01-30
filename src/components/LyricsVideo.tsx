@@ -40,7 +40,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
   // === COLORS ===
   const HL = style.highlightColor;
-  const ACCENT = "#00e676"; // vibrant green
+  const ACCENT = "#38bdf8"; // electric blue
   const BG1 = style.backgroundColor;
   const BG2 = style.secondaryColor ?? "#101d35";
   const BG_BASE = "#0b1120"; // dark navy base
@@ -124,7 +124,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   // Category styling — vibrant colors
   const getCategoryColor = (cat?: string) => {
     const colors: Record<string, string> = {
-      argot: "#ff3b5c", verlan: "#a855f7", reference: "#f59e0b",
+      argot: "#00e676", verlan: "#a855f7", reference: "#f59e0b",
       anglicisme: "#38bdf8", expression: "#fb923c",
     };
     return colors[cat ?? ""] ?? "#aaa";

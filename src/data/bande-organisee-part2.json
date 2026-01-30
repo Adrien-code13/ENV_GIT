@@ -22,14 +22,9 @@
       "endTime": 3.5,
       "terms": [
         {
-          "term": "bippe",
-          "definition": "Sonne, vibre",
-          "category": "argot"
-        },
-        {
           "term": "kew",
-          "definition": "Verlan de 'queue', file d'attente",
-          "category": "verlan"
+          "definition": "Drogue, cocaïne (argot marseillais)",
+          "category": "argot"
         }
       ],
       "showExplanation": true
@@ -41,13 +36,8 @@
       "endTime": 7,
       "terms": [
         {
-          "term": "sa mère",
-          "definition": "Juron marseillais d'intensité",
-          "category": "expression"
-        },
-        {
           "term": "CDD",
-          "definition": "Contrat temporaire, rien de stable",
+          "definition": "Contrat à durée déterminée, rien de stable",
           "category": "reference"
         }
       ],
@@ -60,13 +50,8 @@
       "endTime": 10,
       "terms": [
         {
-          "term": "wesh",
-          "definition": "Salut, hey (vient de l'arabe)",
-          "category": "argot"
-        },
-        {
           "term": "ma race",
-          "definition": "Expression familière, mon gars",
+          "definition": "Mon frère, mon pote (expression marseillaise)",
           "category": "expression"
         }
       ],
@@ -82,11 +67,6 @@
           "term": "tchop",
           "definition": "Voiture (argot marseillais)",
           "category": "argot"
-        },
-        {
-          "term": "0 à 100",
-          "definition": "Accélération fulgurante",
-          "category": "reference"
         }
       ],
       "showExplanation": true
@@ -95,7 +75,7 @@
   "style": {
     "backgroundColor": "#0b1120",
     "secondaryColor": "#101d35",
-    "highlightColor": "#ff3b5c",
+    "highlightColor": "#00e676",
     "animationStyle": "slide"
   },
   "config": {
