@@ -271,6 +271,39 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 }}>
                   {decodedTerms}/{totalTerms} décodés
                 </div>
+
+                {/* CTA: COMMENTE TON SCORE */}
+                <div style={{
+                  marginTop: 50,
+                  background: `linear-gradient(135deg, ${HL}, ${HL}cc)`,
+                  borderRadius: 16,
+                  padding: "18px 40px",
+                  display: "inline-block",
+                  boxShadow: `0 0 40px ${HL}50, 0 8px 30px rgba(0,0,0,0.4)`,
+                  transform: `scale(${0.95 + Math.sin(frame * 0.1) * 0.05})`,
+                }}>
+                  <div style={{
+                    fontSize: 38, fontWeight: 900, color: "#000",
+                    fontFamily: FONT, letterSpacing: 4,
+                    textTransform: "uppercase",
+                  }}>
+                    COMMENTE TON SCORE
+                  </div>
+                </div>
+
+                {/* CTA: FOLLOW */}
+                <div style={{
+                  marginTop: 25,
+                  opacity: 0.7 + Math.sin(frame * 0.15) * 0.3,
+                }}>
+                  <div style={{
+                    fontSize: 30, fontWeight: 900, color: "rgba(255,255,255,0.8)",
+                    fontFamily: FONT, letterSpacing: 6,
+                    textTransform: "uppercase",
+                  }}>
+                    FOLLOW POUR LA SUITE
+                  </div>
+                </div>
               </div>
             </AbsoluteFill>
           ) : (
@@ -521,22 +554,48 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         fps,
                         config: { damping: 8, stiffness: 250, mass: 0.4 },
                       });
-                      // Term slam - bigger overshoot
+                      // Term slam
                       const termSlam = spring({
                         frame: Math.max(0, tFrame - i * 3 - 2),
                         fps,
                         config: { damping: 5, stiffness: 200, mass: 0.6 },
                       });
-                      // Definition typewriter: reveal characters over time
-                      const defDelay = 8 + i * 3;
+
+                      // === COUNTDOWN 3-2-1 before definition ===
+                      const countdownStart = 4 + i * 3;
+                      const countdownFrame = tFrame - countdownStart;
+                      const countdownNum =
+                        countdownFrame < 4 ? 3 :
+                        countdownFrame < 8 ? 2 :
+                        countdownFrame < 12 ? 1 : 0;
+                      const showCountdown = countdownFrame >= 0 && countdownFrame < 12;
+                      const countdownLocalFrame = countdownFrame % 4;
+                      const countdownScale = spring({
+                        frame: countdownLocalFrame,
+                        fps,
+                        config: { damping: 6, stiffness: 400, mass: 0.3 },
+                      });
+
+                      // Definition typewriter starts after countdown
+                      const defDelay = countdownStart + 13;
                       const defProgress = Math.max(0, tFrame - defDelay);
                       const charsToShow = Math.min(
-                        Math.floor(defProgress * 1.8),
+                        Math.floor(defProgress * 2.2),
                         term.definition.length,
                       );
                       const visibleDef = term.definition.slice(0, charsToShow);
                       const showCursor = charsToShow < term.definition.length && defProgress > 0;
-                      // Glow pulse behind card
+                      const defDone = charsToShow >= term.definition.length && defProgress > 0;
+
+                      // "TU SAVAIS ?" flash after definition complete
+                      const tuSavaisFrame = defDone ? Math.max(0, tFrame - defDelay - Math.ceil(term.definition.length / 2.2) - 2) : 0;
+                      const tuSavaisScale = spring({
+                        frame: tuSavaisFrame,
+                        fps,
+                        config: { damping: 8, stiffness: 300, mass: 0.3 },
+                      });
+
+                      // Glow pulse
                       const glowPulse = Math.sin(frame * 0.08 + i * 2) * 0.4 + 0.6;
 
                       return (
@@ -602,21 +661,60 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               marginBottom: 12, borderRadius: 1,
                             }} />
 
-                            {/* Definition — typewriter */}
-                            <div style={{
-                              fontSize: 30, color: "rgba(255,255,255,0.92)",
-                              fontFamily: FONT, fontWeight: 400,
-                              lineHeight: 1.4, minHeight: 42,
-                            }}>
-                              {visibleDef}
-                              {showCursor && (
+                            {/* Countdown 3-2-1 OR Definition */}
+                            {showCountdown ? (
+                              <div style={{
+                                textAlign: "center",
+                                padding: "10px 0",
+                              }}>
+                                <div style={{
+                                  fontSize: 70, fontWeight: 900,
+                                  color: countdownNum === 1 ? HL : "rgba(255,255,255,0.9)",
+                                  fontFamily: FONT,
+                                  transform: `scale(${countdownScale})`,
+                                  textShadow: countdownNum === 1
+                                    ? `0 0 30px ${HL}80` : "0 2px 10px rgba(0,0,0,0.5)",
+                                  letterSpacing: 4,
+                                }}>
+                                  {countdownNum}
+                                </div>
+                              </div>
+                            ) : (
+                              <div style={{
+                                fontSize: 30, color: "rgba(255,255,255,0.92)",
+                                fontFamily: FONT, fontWeight: 400,
+                                lineHeight: 1.4, minHeight: 42,
+                              }}>
+                                {visibleDef}
+                                {showCursor && (
+                                  <span style={{
+                                    color: HL,
+                                    opacity: Math.sin(frame * 0.3) > 0 ? 1 : 0,
+                                    fontWeight: 900,
+                                  }}>|</span>
+                                )}
+                              </div>
+                            )}
+
+                            {/* "TU SAVAIS ?" flash */}
+                            {defDone && tuSavaisFrame > 0 && (
+                              <div style={{
+                                marginTop: 10,
+                                transform: `scale(${tuSavaisScale})`,
+                                opacity: tuSavaisScale,
+                              }}>
                                 <span style={{
+                                  fontSize: 24, fontWeight: 900,
                                   color: HL,
-                                  opacity: Math.sin(frame * 0.3) > 0 ? 1 : 0,
-                                  fontWeight: 900,
-                                }}>|</span>
-                              )}
-                            </div>
+                                  fontFamily: FONT,
+                                  letterSpacing: 4,
+                                  textTransform: "uppercase",
+                                  textShadow: `0 0 15px ${HL}60`,
+                                }}>
+                                  TU SAVAIS ?
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
