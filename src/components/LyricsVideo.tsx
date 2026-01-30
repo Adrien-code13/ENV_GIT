@@ -515,57 +515,108 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   {currentTerms.length > 0 ? (
                     currentTerms.map((term, i) => {
                       const tFrame = contentFrame - (activeLine ? activeLine.startTime * fps : 0);
+                      // Card slide-in
                       const s = spring({
                         frame: Math.max(0, tFrame - i * 3),
                         fps,
                         config: { damping: 8, stiffness: 250, mass: 0.4 },
                       });
+                      // Term slam - bigger overshoot
+                      const termSlam = spring({
+                        frame: Math.max(0, tFrame - i * 3 - 2),
+                        fps,
+                        config: { damping: 5, stiffness: 200, mass: 0.6 },
+                      });
+                      // Definition typewriter: reveal characters over time
+                      const defDelay = 8 + i * 3;
+                      const defProgress = Math.max(0, tFrame - defDelay);
+                      const charsToShow = Math.min(
+                        Math.floor(defProgress * 1.8),
+                        term.definition.length,
+                      );
+                      const visibleDef = term.definition.slice(0, charsToShow);
+                      const showCursor = charsToShow < term.definition.length && defProgress > 0;
+                      // Glow pulse behind card
+                      const glowPulse = Math.sin(frame * 0.08 + i * 2) * 0.4 + 0.6;
 
                       return (
                         <div
                           key={`expl-${term.term}-${i}`}
-                          style={{
-                            background: "rgba(255,255,255,0.06)",
-                            borderRadius: 10,
-                            padding: "26px 24px",
-                            borderLeft: `5px solid ${HL}`,
-                            transform: `translateX(${(1 - s) * 60}px) scale(${0.9 + s * 0.1})`,
-                            opacity: s,
-                            boxShadow: `0 4px 30px rgba(0,0,0,0.3), -5px 0 20px ${HL}15`,
-                            backdropFilter: "blur(10px)",
-                          }}
+                          style={{ position: "relative" }}
                         >
-                          {term.category && (
+                          {/* Glow behind card */}
+                          <div style={{
+                            position: "absolute", inset: -15,
+                            borderRadius: 18,
+                            background: `radial-gradient(ellipse at left, ${HL}30 0%, transparent 70%)`,
+                            opacity: s * glowPulse,
+                            filter: "blur(20px)",
+                            pointerEvents: "none",
+                          }} />
+
+                          <div
+                            style={{
+                              position: "relative",
+                              background: `linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)`,
+                              borderRadius: 14,
+                              padding: "26px 24px",
+                              borderLeft: `5px solid ${HL}`,
+                              transform: `translateX(${(1 - s) * 80}px) scale(${0.85 + s * 0.15})`,
+                              opacity: s,
+                              boxShadow: `0 4px 30px rgba(0,0,0,0.3), -5px 0 25px ${HL}20, 0 0 60px ${HL}08`,
+                              backdropFilter: "blur(10px)",
+                            }}
+                          >
+                            {term.category && (
+                              <div style={{
+                                display: "inline-block", marginBottom: 14,
+                                background: getCategoryColor(term.category),
+                                color: "#000", fontSize: 22, fontWeight: 900,
+                                padding: "8px 18px", borderRadius: 6,
+                                fontFamily: FONT, letterSpacing: 3,
+                                textTransform: "uppercase",
+                                boxShadow: `0 3px 15px ${getCategoryColor(term.category)}50`,
+                              }}>
+                                {getCategoryLabel(term.category)}
+                              </div>
+                            )}
+
+                            {/* Term — slam entrance */}
                             <div style={{
-                              display: "inline-block", marginBottom: 14,
-                              background: getCategoryColor(term.category),
-                              color: "#000", fontSize: 22, fontWeight: 900,
-                              padding: "8px 18px", borderRadius: 6,
-                              fontFamily: FONT, letterSpacing: 3,
+                              fontSize: 52, fontWeight: 900, color: HL,
+                              fontFamily: FONT,
                               textTransform: "uppercase",
-                              boxShadow: `0 3px 15px ${getCategoryColor(term.category)}50`,
+                              letterSpacing: 2,
+                              textShadow: `0 0 25px ${HL}70, 0 2px 10px rgba(0,0,0,0.5)`,
+                              marginBottom: 12, lineHeight: 1.1,
+                              transform: `scale(${0.6 + termSlam * 0.4})`,
+                              opacity: termSlam,
                             }}>
-                              {getCategoryLabel(term.category)}
+                              {term.term}
                             </div>
-                          )}
 
-                          <div style={{
-                            fontSize: 48, fontWeight: 900, color: HL,
-                            fontFamily: FONT,
-                            textTransform: "uppercase",
-                            letterSpacing: 2,
-                            textShadow: `0 0 20px ${HL}60`,
-                            marginBottom: 10, lineHeight: 1.1,
-                          }}>
-                            {term.term}
-                          </div>
+                            {/* Separator line */}
+                            <div style={{
+                              width: `${s * 100}%`, height: 2,
+                              background: `linear-gradient(90deg, ${HL}80, transparent)`,
+                              marginBottom: 12, borderRadius: 1,
+                            }} />
 
-                          <div style={{
-                            fontSize: 30, color: "rgba(255,255,255,0.9)",
-                            fontFamily: FONT, fontWeight: 400,
-                            lineHeight: 1.4,
-                          }}>
-                            {term.definition}
+                            {/* Definition — typewriter */}
+                            <div style={{
+                              fontSize: 30, color: "rgba(255,255,255,0.92)",
+                              fontFamily: FONT, fontWeight: 400,
+                              lineHeight: 1.4, minHeight: 42,
+                            }}>
+                              {visibleDef}
+                              {showCursor && (
+                                <span style={{
+                                  color: HL,
+                                  opacity: Math.sin(frame * 0.3) > 0 ? 1 : 0,
+                                  fontWeight: 900,
+                                }}>|</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );

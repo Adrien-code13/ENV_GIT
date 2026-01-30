@@ -1,0 +1,80 @@
+{
+  "id": "bande-organisee-004",
+  "version": "1.0.0",
+  "track": {
+    "title": "Bande Organisée",
+    "artist": "Couplet Naps",
+    "coverImage": "cover.jpg",
+    "audioFile": "audio4.mp3"
+  },
+  "hook": {
+    "term": "Zampa",
+    "line": "J'suis un peu d'Zampa, un peu d'Zizou, j'offre un Ricard à Poutine",
+    "duration": 2.5,
+    "difficulty": 1
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Yo, cesse ton baratin, t'es qu'un fils de bar à tain-p'",
+      "startTime": 0,
+      "endTime": 3.5,
+      "terms": [
+        {
+          "term": "bar à tain-p'",
+          "definition": "Verlan de putain",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-002",
+      "text": "J'commence le rap avec sept et trois, à la rivière, j'ai touché la quinte",
+      "startTime": 3.5,
+      "endTime": 7,
+      "terms": [
+        {
+          "term": "sept et trois",
+          "definition": "Terme de poker, il a commencé avec rien",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "Yo, j'vise l'or, le platine, à la base, c'était les assises",
+      "startTime": 7,
+      "endTime": 10.5,
+      "terms": [
+        {
+          "term": "les assises",
+          "definition": "Cour d'assises, tribunal criminel",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "J'suis un peu d'Zampa, un peu d'Zizou, j'offre un Ricard à Poutine",
+      "startTime": 10.5,
+      "endTime": 14,
+      "terms": [
+        {
+          "term": "Zampa",
+          "definition": "Tany Zampa, parrain du milieu marseillais",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#00e676",
+    "animationStyle": "slide"
+  }
+}
