@@ -1,0 +1,35 @@
+{
+  "title": "Flying Blue",
+  "artist": "L2B & La Fouine",
+  "audioFile": "audio.mp3",
+  "difficulty": 2,
+  "hookTerm": "shtar",
+  "hookLine": "Moi, j'étais au shtar avec les gars de Bondy",
+  "totalDuration": 8,
+  "lyrics": [
+    {
+      "text": "J'vois ma tess dans l'hublot",
+      "terms": [
+        { "term": "tess", "definition": "Quartier, cité (verlan de teci)", "category": "verlan" }
+      ]
+    },
+    {
+      "text": "J'fais grimper les miles sur Flying Blue",
+      "terms": [
+        { "term": "Flying Blue", "definition": "Programme de fidélité Air France", "category": "reference" }
+      ]
+    },
+    {
+      "text": "Bou-bou-bounce, baby rebondit",
+      "terms": [
+        { "term": "baby rebondit", "definition": "Réf au son Kyky2Bondy", "category": "reference" }
+      ]
+    },
+    {
+      "text": "Moi, j'étais au shtar avec les gars de Bondy",
+      "terms": [
+        { "term": "shtar", "definition": "Prison (vient de l'arabe)", "category": "argot" }
+      ]
+    }
+  ]
+}
