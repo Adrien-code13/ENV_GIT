@@ -561,23 +561,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         config: { damping: 5, stiffness: 200, mass: 0.6 },
                       });
 
-                      // === COUNTDOWN 3-2-1 before definition ===
-                      const countdownStart = 4 + i * 3;
-                      const countdownFrame = tFrame - countdownStart;
-                      const countdownNum =
-                        countdownFrame < 4 ? 3 :
-                        countdownFrame < 8 ? 2 :
-                        countdownFrame < 12 ? 1 : 0;
-                      const showCountdown = countdownFrame >= 0 && countdownFrame < 12;
-                      const countdownLocalFrame = countdownFrame % 4;
-                      const countdownScale = spring({
-                        frame: countdownLocalFrame,
-                        fps,
-                        config: { damping: 6, stiffness: 400, mass: 0.3 },
-                      });
-
-                      // Definition typewriter starts after countdown
-                      const defDelay = countdownStart + 13;
+                      // Definition typewriter
+                      const defDelay = 8 + i * 3;
                       const defProgress = Math.max(0, tFrame - defDelay);
                       const charsToShow = Math.min(
                         Math.floor(defProgress * 2.2),
@@ -661,40 +646,21 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               marginBottom: 12, borderRadius: 1,
                             }} />
 
-                            {/* Countdown 3-2-1 OR Definition */}
-                            {showCountdown ? (
-                              <div style={{
-                                textAlign: "center",
-                                padding: "10px 0",
-                              }}>
-                                <div style={{
-                                  fontSize: 70, fontWeight: 900,
-                                  color: countdownNum === 1 ? HL : "rgba(255,255,255,0.9)",
-                                  fontFamily: FONT,
-                                  transform: `scale(${countdownScale})`,
-                                  textShadow: countdownNum === 1
-                                    ? `0 0 30px ${HL}80` : "0 2px 10px rgba(0,0,0,0.5)",
-                                  letterSpacing: 4,
-                                }}>
-                                  {countdownNum}
-                                </div>
-                              </div>
-                            ) : (
-                              <div style={{
-                                fontSize: 30, color: "rgba(255,255,255,0.92)",
-                                fontFamily: FONT, fontWeight: 400,
-                                lineHeight: 1.4, minHeight: 42,
-                              }}>
-                                {visibleDef}
-                                {showCursor && (
-                                  <span style={{
-                                    color: HL,
-                                    opacity: Math.sin(frame * 0.3) > 0 ? 1 : 0,
-                                    fontWeight: 900,
-                                  }}>|</span>
-                                )}
-                              </div>
-                            )}
+                            {/* Definition — typewriter */}
+                            <div style={{
+                              fontSize: 30, color: "rgba(255,255,255,0.92)",
+                              fontFamily: FONT, fontWeight: 400,
+                              lineHeight: 1.4, minHeight: 42,
+                            }}>
+                              {visibleDef}
+                              {showCursor && (
+                                <span style={{
+                                  color: HL,
+                                  opacity: Math.sin(frame * 0.3) > 0 ? 1 : 0,
+                                  fontWeight: 900,
+                                }}>|</span>
+                              )}
+                            </div>
 
                             {/* "TU SAVAIS ?" flash */}
                             {defDone && tuSavaisFrame > 0 && (
