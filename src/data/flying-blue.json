@@ -4,8 +4,8 @@
   "track": {
     "title": "Flying Blue",
     "artist": "SCH",
-    "coverImage": "cover-flyingblue.jpg",
-    "audioFile": "audio-flyingblue.mp3"
+    "coverImage": "cover.jpg",
+    "audioFile": "audio.mp3"
   },
   "hook": {
     "term": "shtar",
