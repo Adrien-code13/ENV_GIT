@@ -714,12 +714,21 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
         </AbsoluteFill>
       </Sequence>
 
-      {/* ========== AUDIO - starts after hook screen ========== */}
-      {track.audioFile && (
-        <Sequence from={hookDurationFrames}>
-          <Audio src={staticFile(track.audioFile)} />
-        </Sequence>
-      )}
+      {/* ========== AUDIO - synced with lyrics position in audio ========== */}
+      {track.audioFile && (() => {
+        const audioOffset = track.audioStartOffset ?? 0;
+        // During hook: play audio from (offset - hookDuration) so music leads into lyrics
+        // During lyrics: audio is at the right position naturally
+        const hookSec = hook?.duration ?? 0;
+        const audioStartSec = Math.max(0, audioOffset - hookSec);
+        const startFromFrames = Math.round(audioStartSec * fps);
+        return (
+          <Audio
+            src={staticFile(track.audioFile)}
+            startFrom={startFromFrames}
+          />
+        );
+      })()}
     </AbsoluteFill>
   );
 };

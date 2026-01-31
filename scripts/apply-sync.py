@@ -7,6 +7,16 @@ Usage:
 
 Example:
     python3 scripts/apply-sync.py src/data/autobahn.json sync-result.json
+
+The sync-result.json should contain:
+{
+  "audioStartOffset": 80.5,
+  "hookAudioOffset": 78.0,
+  "lines": [
+    {"text": "...", "startTime": 0.0, "endTime": 2.5},
+    ...
+  ]
+}
 """
 
 import sys
@@ -40,13 +50,21 @@ def main():
         print(f"Sync file contains error: {sync['error']}")
         sys.exit(1)
 
+    # Apply audioStartOffset to track
+    audio_offset = sync.get("audioStartOffset", 0)
+    if "track" in video:
+        video["track"]["audioStartOffset"] = audio_offset
+        print(f"Audio offset: {audio_offset}s (lyrics start at this point in the audio)")
+
+    # Apply line timings
+    lines = sync.get("lines", sync if isinstance(sync, list) else [])
     lyrics = video.get("lyrics", [])
 
-    if len(sync) != len(lyrics):
-        print(f"Warning: sync has {len(sync)} entries but video has {len(lyrics)} lines")
+    if len(lines) != len(lyrics):
+        print(f"Warning: sync has {len(lines)} entries but video has {len(lyrics)} lines")
 
     updated = 0
-    for i, entry in enumerate(sync):
+    for i, entry in enumerate(lines):
         if i >= len(lyrics):
             break
         lyrics[i]["startTime"] = entry["startTime"]
@@ -61,7 +79,7 @@ def main():
 
     print(f"Updated {updated} lines in {video_path}")
     for i, line in enumerate(lyrics):
-        print(f"  [{line['startTime']}s - {line['endTime']}s] {line['text'][:50]}")
+        print(f"  [{line['startTime']}s - {line['endTime']}s] {line['text'][:60]}")
 
 
 if __name__ == "__main__":

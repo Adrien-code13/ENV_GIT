@@ -52,6 +52,8 @@ export const TrackMetadataSchema = z.object({
   coverImage: z.string().optional(),
   /** Audio file path (for local rendering) */
   audioFile: z.string().optional(),
+  /** Seconds into the audio file where the lyrics start (for offsetting playback) */
+  audioStartOffset: z.number().default(0),
 });
 
 export type TrackMetadata = z.infer<typeof TrackMetadataSchema>;

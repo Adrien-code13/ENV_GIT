@@ -11,16 +11,15 @@ Supports multiple backends (tries in order):
 Usage:
     python3 scripts/whisper-sync.py <audio_file> <lyrics_json> [total_duration]
 
-Input lyrics_json format:
-    '["line 1 text", "line 2 text", ...]'
-    or a path to a JSON file containing the array
-
-Output: JSON with timestamps to stdout
-    [{"text": "line 1", "startTime": 0.0, "endTime": 1.5}, ...]
+Output: JSON object to stdout with:
+  - audioStartOffset: seconds into the audio where the lyrics begin
+  - hookAudioOffset: audioStartOffset minus hook duration (audio starts here during hook)
+  - lines: array of {text, startTime, endTime} with times relative to 0
 
 Environment variables:
     WHISPER_MODEL    - model size: tiny, base, small (default: base)
     WHISPER_CPP_PATH - path to whisper-cli binary
+    HOOK_DURATION    - hook screen duration in seconds (default: 2.5)
 """
 
 import sys
@@ -28,11 +27,11 @@ import json
 import os
 import subprocess
 import warnings
-import tempfile
 
 warnings.filterwarnings("ignore")
 
 WHISPER_MODEL = os.environ.get("WHISPER_MODEL", "base")
+HOOK_DURATION = float(os.environ.get("HOOK_DURATION", "2.5"))
 
 
 def log(msg: str):
@@ -59,36 +58,36 @@ def match_lyrics_to_segments(lyrics: list[str], segments: list[dict]) -> list[di
         if best_seg:
             results.append({
                 "text": line,
-                "startTime": round(best_seg["start"], 1),
-                "endTime": round(best_seg["end"], 1),
+                "absStart": round(best_seg["start"], 2),
+                "absEnd": round(best_seg["end"], 2),
                 "confidence": round(best_score, 2),
             })
         else:
             results.append({
                 "text": line,
-                "startTime": 0,
-                "endTime": 0,
+                "absStart": 0,
+                "absEnd": 0,
                 "confidence": 0,
             })
 
     # Fix overlaps: ensure sequential order
     for i in range(1, len(results)):
-        if results[i]["startTime"] < results[i - 1]["endTime"]:
-            mid = (results[i - 1]["endTime"] + results[i]["startTime"]) / 2
-            results[i - 1]["endTime"] = round(mid, 1)
-            results[i]["startTime"] = round(mid, 1)
+        if results[i]["absStart"] < results[i - 1]["absEnd"]:
+            mid = (results[i - 1]["absEnd"] + results[i]["absStart"]) / 2
+            results[i - 1]["absEnd"] = round(mid, 2)
+            results[i]["absStart"] = round(mid, 2)
 
     for i in range(1, len(results)):
-        if results[i]["startTime"] <= results[i - 1]["startTime"]:
-            results[i]["startTime"] = results[i - 1]["endTime"]
-        if results[i]["endTime"] <= results[i]["startTime"]:
-            results[i]["endTime"] = round(results[i]["startTime"] + 1.5, 1)
+        if results[i]["absStart"] <= results[i - 1]["absStart"]:
+            results[i]["absStart"] = results[i - 1]["absEnd"]
+        if results[i]["absEnd"] <= results[i]["absStart"]:
+            results[i]["absEnd"] = round(results[i]["absStart"] + 1.5, 2)
 
     return results
 
 
 def try_faster_whisper(audio_path: str) -> list[dict] | None:
-    """Try using faster-whisper (CTranslate2 backend, lighter than openai-whisper)."""
+    """Try using faster-whisper (CTranslate2 backend)."""
     try:
         from faster_whisper import WhisperModel
         log(f"Using faster-whisper with model '{WHISPER_MODEL}'...")
@@ -143,7 +142,6 @@ def try_whisper_cpp(audio_path: str) -> list[dict] | None:
         log("whisper.cpp not found")
         return None
 
-    # whisper.cpp needs a .ggml model file
     model_paths = [
         os.environ.get("WHISPER_CPP_MODEL", ""),
         os.path.expanduser(f"~/.cache/whisper.cpp/ggml-{WHISPER_MODEL}.bin"),
@@ -164,7 +162,6 @@ def try_whisper_cpp(audio_path: str) -> list[dict] | None:
 
     try:
         log(f"Using whisper.cpp: {binary} with model {model_path}")
-        # Output as JSON
         result = subprocess.run(
             [binary, "-m", model_path, "-l", "fr", "-oj", "-f", audio_path],
             capture_output=True, text=True, timeout=120
@@ -178,7 +175,6 @@ def try_whisper_cpp(audio_path: str) -> list[dict] | None:
         for seg in data.get("transcription", []):
             t_start = seg["timestamps"]["from"].replace(",", ".")
             t_end = seg["timestamps"]["to"].replace(",", ".")
-            # Parse HH:MM:SS.mmm format
             start_s = _parse_timestamp(t_start)
             end_s = _parse_timestamp(t_end)
             segments.append({"start": start_s, "end": end_s, "text": seg["text"].strip()})
@@ -192,7 +188,6 @@ def try_whisper_cpp(audio_path: str) -> list[dict] | None:
 
 
 def _parse_timestamp(ts: str) -> float:
-    """Parse HH:MM:SS.mmm to seconds."""
     parts = ts.split(":")
     if len(parts) == 3:
         h, m, s = parts
@@ -204,7 +199,6 @@ def _parse_timestamp(ts: str) -> float:
 
 
 def get_audio_duration(audio_path: str) -> float | None:
-    """Get audio duration using ffprobe."""
     try:
         result = subprocess.run(
             ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", audio_path],
@@ -215,8 +209,6 @@ def get_audio_duration(audio_path: str) -> float | None:
             return float(data["format"]["duration"])
     except Exception:
         pass
-
-    # Try with ffmpeg
     try:
         result = subprocess.run(
             ["ffmpeg", "-i", audio_path],
@@ -229,30 +221,13 @@ def get_audio_duration(audio_path: str) -> float | None:
             return int(h) * 3600 + int(m) * 60 + int(s) + int(ms) / 100
     except Exception:
         pass
-
     return None
-
-
-def uniform_timing(lyrics: list[str], total_duration: float) -> list[dict]:
-    """Distribute lyrics evenly across the total duration."""
-    log(f"Using uniform timing: {total_duration}s for {len(lyrics)} lines")
-    time_per_line = total_duration / len(lyrics)
-    results = []
-    for i, line in enumerate(lyrics):
-        results.append({
-            "text": line,
-            "startTime": round(i * time_per_line, 1),
-            "endTime": round((i + 1) * time_per_line, 1),
-            "confidence": 0,
-        })
-    return results
 
 
 def main():
     if len(sys.argv) < 3:
         print("Usage: python3 scripts/whisper-sync.py <audio_file> <lyrics_json> [total_duration]")
         print('  lyrics_json: JSON array of strings, e.g. \'["line1", "line2"]\'')
-        print("  total_duration: optional fallback duration in seconds")
         sys.exit(1)
 
     audio_path = sys.argv[1]
@@ -289,20 +264,59 @@ def main():
 
     if segments and len(segments) > 0:
         matched = match_lyrics_to_segments(lyrics, segments)
+
+        # audioStartOffset = absolute time in audio where first lyric starts
+        audio_start_offset = matched[0]["absStart"]
+
+        # Convert to relative times (starting from 0)
+        lines = []
+        for m in matched:
+            lines.append({
+                "text": m["text"],
+                "startTime": round(m["absStart"] - audio_start_offset, 1),
+                "endTime": round(m["absEnd"] - audio_start_offset, 1),
+                "confidence": m["confidence"],
+            })
+
+        # hookAudioOffset = where to start audio during hook (a few seconds before lyrics)
+        hook_audio_offset = round(max(0, audio_start_offset - HOOK_DURATION), 1)
+
+        output = {
+            "audioStartOffset": round(audio_start_offset, 1),
+            "hookAudioOffset": hook_audio_offset,
+            "lines": lines,
+        }
+
+        log(f"Audio offset: lyrics start at {audio_start_offset:.1f}s in audio")
+        log(f"Hook audio starts at {hook_audio_offset:.1f}s in audio")
         log("Sync complete (speech recognition)")
-        print(json.dumps(matched, ensure_ascii=False, indent=2))
+        print(json.dumps(output, ensure_ascii=False, indent=2))
     else:
-        # Fallback: uniform timing
+        # Fallback: no offset, uniform timing
         log("No speech recognition available, using uniform timing")
         duration = fallback_duration
         if duration is None:
             duration = get_audio_duration(audio_path)
         if duration is None:
-            duration = len(lyrics) * 2  # default 2s per line
+            duration = len(lyrics) * 2
             log(f"Could not determine audio duration, using {duration}s")
 
-        result = uniform_timing(lyrics, duration)
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        time_per_line = duration / len(lyrics)
+        lines = []
+        for i, line in enumerate(lyrics):
+            lines.append({
+                "text": line,
+                "startTime": round(i * time_per_line, 1),
+                "endTime": round((i + 1) * time_per_line, 1),
+                "confidence": 0,
+            })
+
+        output = {
+            "audioStartOffset": 0,
+            "hookAudioOffset": 0,
+            "lines": lines,
+        }
+        print(json.dumps(output, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
