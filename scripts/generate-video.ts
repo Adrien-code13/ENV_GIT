@@ -74,59 +74,57 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-function tryWhisperSync(audioPath: string, lyrics: string[]): number[] | null {
-  // Check if whisper is available
+interface WhisperResult {
+  text: string;
+  startTime: number;
+  endTime: number;
+  confidence: number;
+}
+
+function tryWhisperSync(
+  audioPath: string,
+  lyrics: string[],
+  totalDuration?: number
+): WhisperResult[] | null {
+  // Check if python3 is available
   try {
-    execSync("which whisper", { stdio: "ignore" });
+    execSync("which python3", { stdio: "ignore" });
   } catch {
-    console.log("Whisper not found, using uniform timing distribution.");
+    console.log("Python3 not found, using uniform timing distribution.");
+    return null;
+  }
+
+  const syncScript = path.join(__dirname, "whisper-sync.py");
+  if (!fs.existsSync(syncScript)) {
+    console.log("whisper-sync.py not found, using uniform timing distribution.");
     return null;
   }
 
   try {
-    console.log("Running Whisper for audio sync...");
-    const tmpDir = path.join(__dirname, "../.tmp-whisper");
-    fs.mkdirSync(tmpDir, { recursive: true });
-
-    execSync(
-      `whisper "${audioPath}" --model tiny --language fr --output_format json --output_dir "${tmpDir}"`,
-      { stdio: "pipe", timeout: 60000 }
-    );
-
-    const baseName = path.basename(audioPath, path.extname(audioPath));
-    const jsonPath = path.join(tmpDir, `${baseName}.json`);
-
-    if (!fs.existsSync(jsonPath)) return null;
-
-    const whisperData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-    const segments: Array<{ start: number; end: number; text: string }> = whisperData.segments || [];
-
-    if (segments.length === 0) return null;
-
-    // Match each lyric line to the closest whisper segment
-    const timestamps: number[] = [];
-    for (const line of lyrics) {
-      const lineWords = line.toLowerCase().split(/\s+/);
-      let bestMatch = segments[0];
-      let bestScore = 0;
-
-      for (const seg of segments) {
-        const segWords = seg.text.toLowerCase().split(/\s+/);
-        const matches = lineWords.filter((w) => segWords.some((sw) => sw.includes(w) || w.includes(sw)));
-        const score = matches.length / lineWords.length;
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = seg;
-        }
-      }
-      timestamps.push(bestMatch.start);
+    console.log("Running whisper-sync.py for audio sync...");
+    const lyricsJson = JSON.stringify(lyrics);
+    const args = [
+      "python3",
+      syncScript,
+      audioPath,
+      lyricsJson,
+    ];
+    if (totalDuration) {
+      args.push(String(totalDuration));
     }
 
-    // Clean up
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    const result = execSync(args.join(" "), {
+      stdio: ["pipe", "pipe", "inherit"],
+      timeout: 120000,
+      encoding: "utf-8",
+    });
 
-    console.log("Whisper sync successful!");
-    return timestamps;
+    const parsed: WhisperResult[] = JSON.parse(result);
+    if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+      console.log("Audio sync successful!");
+      return parsed;
+    }
+    return null;
   } catch (err) {
     console.log("Whisper sync failed, using uniform timing distribution.");
     return null;
@@ -194,12 +192,13 @@ async function generateVideo(config: VideoConfig) {
 
   // Step 3: Calculate timings
   const audioPath = path.join(PUBLIC_DIR, audioFile);
-  let startTimes: number[] | null = null;
+  let syncResults: WhisperResult[] | null = null;
 
   if (fs.existsSync(audioPath)) {
-    startTimes = tryWhisperSync(
+    syncResults = tryWhisperSync(
       audioPath,
-      lyrics.map((l) => l.text)
+      lyrics.map((l) => l.text),
+      totalDuration
     );
   }
 
@@ -208,12 +207,8 @@ async function generateVideo(config: VideoConfig) {
   const timePerLine = duration / lyrics.length;
 
   const lyricsData = lyrics.map((line, i) => {
-    const startTime = startTimes ? startTimes[i] : i * timePerLine;
-    const endTime = startTimes
-      ? i < lyrics.length - 1
-        ? startTimes[i + 1]
-        : startTime + timePerLine
-      : (i + 1) * timePerLine;
+    const startTime = syncResults ? syncResults[i].startTime : i * timePerLine;
+    const endTime = syncResults ? syncResults[i].endTime : (i + 1) * timePerLine;
 
     return {
       id: `line-${String(i + 1).padStart(3, "0")}`,
