@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "track": {
     "title": "Flying Blue",
-    "artist": "SCH",
+    "artist": "L2B & La Fouine",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
@@ -18,7 +18,7 @@
       "id": "line-001",
       "text": "J'vois ma tess dans l'hublot",
       "startTime": 0,
-      "endTime": 3,
+      "endTime": 2,
       "terms": [
         {
           "term": "tess",
@@ -31,8 +31,8 @@
     {
       "id": "line-002",
       "text": "J'fais grimper les miles sur Flying Blue",
-      "startTime": 3,
-      "endTime": 6.5,
+      "startTime": 2,
+      "endTime": 4.5,
       "terms": [
         {
           "term": "Flying Blue",
@@ -45,8 +45,8 @@
     {
       "id": "line-003",
       "text": "Bou-bou-bounce, baby rebondit",
-      "startTime": 6.5,
-      "endTime": 9.5,
+      "startTime": 4.5,
+      "endTime": 6.5,
       "terms": [
         {
           "term": "baby rebondit",
@@ -59,8 +59,8 @@
     {
       "id": "line-004",
       "text": "Moi, j'étais au shtar avec les gars de Bondy",
-      "startTime": 9.5,
-      "endTime": 13,
+      "startTime": 6.5,
+      "endTime": 9,
       "terms": [
         {
           "term": "shtar",
