@@ -662,8 +662,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               )}
                             </div>
 
-                            {/* "TU SAVAIS ?" flash */}
-                            {defDone && tuSavaisFrame > 0 && (
+                            {/* "TU SAVAIS ?" flash — only for the hook term */}
+                            {defDone && tuSavaisFrame > 0 && hook && term.term === hook.term && (
                               <div style={{
                                 marginTop: 10,
                                 transform: `scale(${tuSavaisScale})`,

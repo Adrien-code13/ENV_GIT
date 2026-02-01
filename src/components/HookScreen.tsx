@@ -38,19 +38,8 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     config: { damping: 6, stiffness: 300, mass: 0.3 },
   });
 
-  // === PHASE 2: "ÇA VEUT DIRE QUOI" ===
-  const phase2Scale = spring({
-    frame: frame - 6,
-    fps,
-    config: { damping: 8, stiffness: 250, mass: 0.4 },
-  });
-  const phase2Y = interpolate(frame, [6, 16], [80, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // === PHASE 3: TERM drops in ===
-  const termDelay = 18;
+  // === PHASE 2: TERM drops in ===
+  const termDelay = 12;
   const termScale = spring({
     frame: frame - termDelay,
     fps,
@@ -153,27 +142,11 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         }} />
       )}
 
-      {/* === "AU FAIT..." === */}
+      {/* === "ÇA VEUT DIRE QUOI..." === */}
       <div style={{
         position: "absolute", top: "22%",
         transform: `scale(${phase1Scale})`,
         opacity: phase1Scale,
-      }}>
-        <div style={{
-          fontSize: 90, color: "rgba(255,255,255,0.8)",
-          fontFamily: FONT, fontWeight: 900,
-          textAlign: "center", letterSpacing: 6,
-          textTransform: "uppercase",
-        }}>
-          AU FAIT...
-        </div>
-      </div>
-
-      {/* === "ÇA VEUT DIRE QUOI" === */}
-      <div style={{
-        position: "absolute", top: "30%",
-        transform: `scale(${phase2Scale}) translateY(${phase2Y}px)`,
-        opacity: phase2Scale,
       }}>
         <div style={{
           fontSize: 100, color: "#ffffff",
@@ -182,7 +155,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           textTransform: "uppercase",
           textShadow: `0 4px 40px rgba(0,0,0,0.7), 0 0 30px ${ACCENT}30`,
         }}>
-          ÇA VEUT DIRE QUOI
+          ÇA VEUT DIRE QUOI...
         </div>
       </div>
 

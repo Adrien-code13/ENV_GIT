@@ -10,7 +10,7 @@
   "hook": {
     "term": "Takeshi Kitano",
     "line": "Outillé comme Takeshi Kitano",
-    "duration": 2.5,
+    "duration": 2,
     "difficulty": 2
   },
   "lyrics": [
@@ -21,9 +21,14 @@
       "endTime": 4.5,
       "terms": [
         {
-          "term": "sapé comme un MAC",
-          "definition": "Habillé classe (MAC = MAC-10, double sens arme/style)",
-          "category": "expression"
+          "term": "Ghini-Lambo'",
+          "definition": "Lamborghini (abréviation)",
+          "category": "argot"
+        },
+        {
+          "term": "47 AK",
+          "definition": "Fusil d'assaut AK-47 (Kalachnikov)",
+          "category": "reference"
         }
       ],
       "showExplanation": true
