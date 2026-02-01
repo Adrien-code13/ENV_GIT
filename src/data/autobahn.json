@@ -17,8 +17,8 @@
     {
       "id": "line-001",
       "text": "Ghini-Lambo', 47 AK, j'sors de la caisse sapé comme un MAC",
-      "startTime": 2.5,
-      "endTime": 7,
+      "startTime": 0,
+      "endTime": 4.5,
       "terms": [
         {
           "term": "sapé comme un MAC",
@@ -31,24 +31,24 @@
     {
       "id": "line-002",
       "text": "Tu veux m'faire le chaud? Tu vas voir la claque",
-      "startTime": 7,
-      "endTime": 8.75,
+      "startTime": 4.5,
+      "endTime": 6.25,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-003",
       "text": "Tu veux faire la course? Tu vas voir qu'la plaque, gang",
-      "startTime": 8.75,
-      "endTime": 10.5,
+      "startTime": 6.25,
+      "endTime": 8,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-004",
       "text": "Que c'est bouché sur Rabateau",
-      "startTime": 10.5,
-      "endTime": 12.5,
+      "startTime": 8,
+      "endTime": 10,
       "terms": [
         {
           "term": "Rabateau",
@@ -61,8 +61,8 @@
     {
       "id": "line-005",
       "text": "D-deux-quarante dans la L2, outillé comme Takeshi Kitano",
-      "startTime": 12.5,
-      "endTime": 15,
+      "startTime": 10,
+      "endTime": 12.5,
       "terms": [
         {
           "term": "la L2",
