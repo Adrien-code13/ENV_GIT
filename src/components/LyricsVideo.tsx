@@ -25,7 +25,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   const hookDurationFrames = hook ? Math.ceil(hook.duration * fps) : 0;
 
   const contentFrame = frame - hookDurationFrames;
-  const currentTime = contentFrame / fps;
+  const currentTime = frame / fps; // absolute time = audio position
   const isHookPhase = frame < hookDurationFrames;
 
   // Calculate when all lyrics end
@@ -714,19 +714,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
         </AbsoluteFill>
       </Sequence>
 
-      {/* ========== AUDIO - starts after hook, synced with lyrics ========== */}
-      {track.audioFile && (() => {
-        const audioOffset = track.audioStartOffset ?? 0;
-        const startFromFrames = Math.round(audioOffset * fps);
-        return (
-          <Sequence from={hookDurationFrames}>
-            <Audio
-              src={staticFile(track.audioFile)}
-              startFrom={startFromFrames}
-            />
-          </Sequence>
-        );
-      })()}
+      {/* ========== AUDIO - plays from start of video ========== */}
+      {track.audioFile && <Audio src={staticFile(track.audioFile)} />}
     </AbsoluteFill>
   );
 };
