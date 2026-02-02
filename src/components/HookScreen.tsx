@@ -218,7 +218,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
 
       {/* === Giant "?" === */}
       <div style={{
-        position: "absolute", top: "72%",
+        position: "absolute", top: "76%",
         opacity: qScale,
         transform: `scale(${qScale}) translateY(${qBounce}px)`,
       }}>
