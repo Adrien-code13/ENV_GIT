@@ -1,5 +1,5 @@
 {
-  "id": "autobahn-001",
+  "id": "autobahn-002",
   "version": "1.0.0",
   "track": {
     "title": "Autobahn",
@@ -8,26 +8,21 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "Takeshi Kitano",
-    "line": "Outillé comme Takeshi Kitano",
+    "term": "Napoli",
+    "line": "Qu'une seule mif, mentalité Napoli",
     "duration": 2,
     "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "Ghini-Lambo', 47 AK, j'sors de la caisse sapé comme un MAC",
+      "text": "Qu'une seule mif, mentalité Napoli, P38, piaggio, cannelloni",
       "startTime": 0,
-      "endTime": 7,
+      "endTime": 5,
       "terms": [
         {
-          "term": "Ghini-Lambo'",
-          "definition": "Lamborghini",
-          "category": "argot"
-        },
-        {
-          "term": "47 AK",
-          "definition": "Fusil d'assaut AK-47 (Kalachnikov)",
+          "term": "Napoli",
+          "definition": "Réf à Naples, ville connue pour sa mafia (Camorra)",
           "category": "reference"
         }
       ],
@@ -35,48 +30,41 @@
     },
     {
       "id": "line-002",
-      "text": "Tu veux m'faire le chaud? Tu vas voir la claque",
-      "startTime": 7,
-      "endTime": 8.75,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-003",
-      "text": "Tu veux faire la course? Tu vas voir qu'la plaque, gang",
-      "startTime": 8.75,
-      "endTime": 13,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-004",
-      "text": "Que c'est bouché sur Rabateau",
-      "startTime": 13,
-      "endTime": 15,
+      "text": "Trop faim des llets-bi, j'aurais ni casser Tokyo ni Nairobi, hey",
+      "startTime": 5,
+      "endTime": 9,
       "terms": [
         {
-          "term": "Rabateau",
-          "definition": "Avenue du 10ème de Marseille",
+          "term": "Tokyo ni Nairobi",
+          "definition": "Personnages de La Casa de Papel (pas besoin de braquer)",
           "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
-      "id": "line-005",
-      "text": "D-deux-quarante dans la L2, outillé comme Takeshi Kitano",
-      "startTime": 15,
-      "endTime": 18,
+      "id": "line-003",
+      "text": "J'ai un Sauer-SIG si t'es galbé comme Iron Man, hey",
+      "startTime": 9,
+      "endTime": 13,
       "terms": [
         {
-          "term": "la L2",
-          "definition": "Rocade autoroutière de Marseille",
-          "category": "reference"
-        },
+          "term": "Sauer-SIG",
+          "definition": "Pistolet SIG Sauer (dit à l'envers)",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "A50, Autobahn",
+      "startTime": 13,
+      "endTime": 16,
+      "terms": [
         {
-          "term": "Takeshi Kitano",
-          "definition": "Réalisateur japonais de films ultra-violents",
+          "term": "A50",
+          "definition": "Autoroute qui traverse Marseille",
           "category": "reference"
         }
       ],
