@@ -179,7 +179,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       {/* === Difficulty gauge === */}
       {difficulty > 0 && diffConfig && (
         <div style={{
-          position: "absolute", top: "60%",
+          position: "absolute", top: "66%",
           opacity: diffOpacity,
           transform: `scale(${diffScale})`,
           display: "flex", flexDirection: "column",

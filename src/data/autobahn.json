@@ -11,7 +11,7 @@
     "term": "Takeshi Kitano",
     "line": "Outillé comme Takeshi Kitano",
     "duration": 2,
-    "difficulty": 2
+    "difficulty": 3
   },
   "lyrics": [
     {
@@ -22,7 +22,7 @@
       "terms": [
         {
           "term": "Ghini-Lambo'",
-          "definition": "Lamborghini (abréviation)",
+          "definition": "Lamborghini",
           "category": "argot"
         },
         {
@@ -45,15 +45,15 @@
       "id": "line-003",
       "text": "Tu veux faire la course? Tu vas voir qu'la plaque, gang",
       "startTime": 8.75,
-      "endTime": 10.5,
+      "endTime": 13,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-004",
       "text": "Que c'est bouché sur Rabateau",
-      "startTime": 10.5,
-      "endTime": 12.5,
+      "startTime": 13,
+      "endTime": 15,
       "terms": [
         {
           "term": "Rabateau",
@@ -66,8 +66,8 @@
     {
       "id": "line-005",
       "text": "D-deux-quarante dans la L2, outillé comme Takeshi Kitano",
-      "startTime": 12.5,
-      "endTime": 15,
+      "startTime": 15,
+      "endTime": 18,
       "terms": [
         {
           "term": "la L2",
