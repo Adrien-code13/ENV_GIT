@@ -297,7 +297,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   opacity: 0.7 + Math.sin(frame * 0.15) * 0.3,
                 }}>
                   <div style={{
-                    fontSize: 30, fontWeight: 900, color: "rgba(255,255,255,0.8)",
+                    fontSize: 36, fontWeight: 900, color: "rgba(255,255,255,0.8)",
                     fontFamily: FONT, letterSpacing: 6,
                     textTransform: "uppercase",
                   }}>
