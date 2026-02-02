@@ -25,7 +25,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   const hookDurationFrames = hook ? Math.ceil(hook.duration * fps) : 0;
 
   const contentFrame = frame - hookDurationFrames;
-  const currentTime = frame / fps; // absolute time = audio position
+  const currentTime = contentFrame / fps;
   const isHookPhase = frame < hookDurationFrames;
 
   // Calculate when all lyrics end
