@@ -8,8 +8,8 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "Napoli",
-    "line": "Qu'une seule mif, mentalité Napoli",
+    "term": "Sauer-SIG",
+    "line": "J'ai un Sauer-SIG si t'es galbé comme Iron Man",
     "duration": 2,
     "difficulty": 3
   },
@@ -18,11 +18,16 @@
       "id": "line-001",
       "text": "Qu'une seule mif, mentalité Napoli, P38, piaggio, cannelloni",
       "startTime": 0,
-      "endTime": 5,
+      "endTime": 3,
       "terms": [
         {
-          "term": "Napoli",
-          "definition": "Réf à Naples, ville connue pour sa mafia (Camorra)",
+          "term": "mif",
+          "definition": "Famille (verlan de famille)",
+          "category": "verlan"
+        },
+        {
+          "term": "P38",
+          "definition": "Pistolet Walther P38",
           "category": "reference"
         }
       ],
@@ -31,12 +36,17 @@
     {
       "id": "line-002",
       "text": "Trop faim des llets-bi, j'aurais ni casser Tokyo ni Nairobi, hey",
-      "startTime": 5,
-      "endTime": 9,
+      "startTime": 3,
+      "endTime": 6,
       "terms": [
         {
+          "term": "llets-bi",
+          "definition": "Billets (verlan)",
+          "category": "verlan"
+        },
+        {
           "term": "Tokyo ni Nairobi",
-          "definition": "Personnages de La Casa de Papel (pas besoin de braquer)",
+          "definition": "Personnages de La Casa de Papel",
           "category": "reference"
         }
       ],
@@ -45,8 +55,8 @@
     {
       "id": "line-003",
       "text": "J'ai un Sauer-SIG si t'es galbé comme Iron Man, hey",
-      "startTime": 9,
-      "endTime": 13,
+      "startTime": 6,
+      "endTime": 10,
       "terms": [
         {
           "term": "Sauer-SIG",
@@ -59,8 +69,8 @@
     {
       "id": "line-004",
       "text": "A50, Autobahn",
-      "startTime": 13,
-      "endTime": 16,
+      "startTime": 10,
+      "endTime": 12.5,
       "terms": [
         {
           "term": "A50",
