@@ -22,7 +22,7 @@
       "terms": [
         {
           "term": "mif",
-          "definition": "Famille (verlan de famille)",
+          "definition": "Famille",
           "category": "verlan"
         },
         {
@@ -41,7 +41,7 @@
       "terms": [
         {
           "term": "llets-bi",
-          "definition": "Billets (verlan)",
+          "definition": "Billets",
           "category": "verlan"
         },
         {
@@ -60,7 +60,7 @@
       "terms": [
         {
           "term": "Sauer-SIG",
-          "definition": "Pistolet SIG Sauer (dit à l'envers)",
+          "definition": "Pistolet SIG Sauer",
           "category": "argot"
         }
       ],
