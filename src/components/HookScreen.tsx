@@ -35,7 +35,6 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const diffConfig = DIFFICULTY_CONFIG[difficulty];
 
   // === PHASE 1: "ÇA VEUT DIRE QUOI..." — INSTANT (frame 0) ===
-  // No spring — appears immediately with a quick scale pulse (1.05 → 1)
   const phase1Scale = interpolate(frame, [0, 4], [1.08, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -101,7 +100,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     fps,
     config: { damping: 4, stiffness: 300, mass: 0.5 },
   });
-  const qBounce = frame > qDelay ? Math.sin((frame - qDelay) * 0.15) * 12 : 0;
+  const qBounce = frame > qDelay ? Math.sin((frame - qDelay) * 0.15) * 10 : 0;
 
   // === PHASE 5: "Décodons les paroles" (frame 30) ===
   const decodonsDelay = 30;
@@ -123,15 +122,10 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const pulse = Math.sin(frame * 0.15) * 0.4 + 0.6;
   const gradientAngle = interpolate(frame, [0, 90], [135, 225]);
 
-  // Term count badge
-  const totalTerms = 6; // will be overridden by actual count in future
-
   return (
     <AbsoluteFill
       style={{
         background: `linear-gradient(${gradientAngle}deg, #0b1120 0%, #0f1a30 30%, #131f3a 60%, #0b1120 100%)`,
-        justifyContent: "center",
-        alignItems: "center",
         transform: `translate(${shakeX}px, ${shakeY}px)`,
       }}
     >
@@ -167,8 +161,11 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          width: 900,
-          height: 900,
+          top: "25%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 800,
+          height: 800,
           borderRadius: "50%",
           background: `radial-gradient(circle, ${HL}35 0%, ${ACCENT}15 40%, transparent 60%)`,
           opacity: termOpacity * pulse,
@@ -190,11 +187,11 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         />
       )}
 
-      {/* === "ÇA VEUT DIRE QUOI..." — INSTANT === */}
+      {/* === "ÇA VEUT DIRE QUOI..." — top zone === */}
       <div
         style={{
           position: "absolute",
-          top: SAFE.top + 80,
+          top: SAFE.top + 40,
           left: SAFE.left,
           right: SAFE.right,
           transform: `scale(${phase1Scale})`,
@@ -203,7 +200,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       >
         <div
           style={{
-            fontSize: 88,
+            fontSize: 82,
             color: "#ffffff",
             fontFamily: FONT,
             fontWeight: 900,
@@ -217,20 +214,21 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         </div>
       </div>
 
-      {/* === THE TERM — SLAM === */}
+      {/* === THE TERM — positioned clearly below question === */}
       <div
         style={{
+          position: "absolute",
+          top: "30%",
+          left: SAFE.left,
+          right: SAFE.right,
           transform: `scale(${termScale})`,
           opacity: termOpacity,
           textAlign: "center",
-          marginTop: 60,
-          paddingLeft: SAFE.left,
-          paddingRight: SAFE.right,
         }}
       >
         <div
           style={{
-            fontSize: 160,
+            fontSize: 150,
             fontWeight: 900,
             color: HL,
             fontFamily: FONT,
@@ -243,12 +241,12 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         </div>
       </div>
 
-      {/* === Difficulty gauge === */}
+      {/* === Difficulty gauge — below term === */}
       {difficulty > 0 && diffConfig && (
         <div
           style={{
             position: "absolute",
-            top: "66%",
+            top: "54%",
             left: SAFE.left,
             right: SAFE.right,
             opacity: diffOpacity,
@@ -306,18 +304,21 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         </div>
       )}
 
-      {/* === Giant "?" === */}
+      {/* === "?" — below difficulty === */}
       <div
         style={{
           position: "absolute",
-          top: "78%",
+          top: "68%",
+          left: 0,
+          right: 0,
+          textAlign: "center",
           opacity: qScale,
           transform: `scale(${qScale}) translateY(${qBounce}px)`,
         }}
       >
         <div
           style={{
-            fontSize: 220,
+            fontSize: 200,
             fontWeight: 900,
             color: HL,
             fontFamily: FONT,
