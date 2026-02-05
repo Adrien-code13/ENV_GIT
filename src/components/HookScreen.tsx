@@ -265,7 +265,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
                 <div
                   key={i}
                   style={{
-                    fontSize: 50,
+                    fontSize: 58,
                     transform: `scale(${starS})`,
                     opacity: isFilled ? 1 : 0.2,
                     filter: isFilled
@@ -286,10 +286,10 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
               marginTop: 6,
             }}
           >
-            <div style={{ fontSize: 52 }}>{diffConfig.emoji}</div>
+            <div style={{ fontSize: 60 }}>{diffConfig.emoji}</div>
             <div
               style={{
-                fontSize: 36,
+                fontSize: 44,
                 fontFamily: FONT,
                 fontWeight: 900,
                 color: HL,
@@ -347,8 +347,8 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       >
         <div
           style={{
-            fontSize: 38,
-            color: "rgba(255,255,255,0.85)",
+            fontSize: 48,
+            color: "rgba(255,255,255,0.90)",
             fontFamily: FONT,
             fontWeight: 900,
             textTransform: "uppercase",
@@ -365,8 +365,8 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           }}
         >
           <svg
-            width="50"
-            height="50"
+            width="56"
+            height="56"
             viewBox="0 0 24 24"
             fill="none"
             stroke={HL}

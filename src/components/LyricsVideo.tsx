@@ -85,12 +85,15 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
     return Math.min(count, totalTerms);
   }, [lyrics, currentTime, totalTerms, isHookPhase]);
 
-  // Current terms to display
+  // Current terms to display — if active line has no terms, show nothing
   const currentTerms = useMemo(() => {
-    if (activeLine && activeLine.terms.length > 0) {
+    if (activeLine) {
+      if (activeLine.terms.length === 0) return [];
       const progress = getLineProgress(activeLine);
       if (progress >= 0.05) return activeLine.terms;
+      return [];
     }
+    // Between lines: keep showing previous line's terms briefly
     for (let i = activeLineIndex; i >= 0; i--) {
       const line = lyrics[i];
       if (line && line.terms.length > 0 && currentTime >= line.startTime) {
@@ -419,13 +422,13 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                   <div
                     style={{
-                      fontSize: 28,
+                      fontSize: 34,
                       color: "rgba(255,255,255,0.6)",
                       fontFamily: FONT,
                       fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: 4,
-                      marginTop: 2,
+                      marginTop: 4,
                     }}
                   >
                     {track.artist}
@@ -437,7 +440,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 110,
+                  top: SAFE.top + 120,
                   left: SAFE.left,
                   right: SAFE.right,
                   zIndex: 20,
@@ -520,7 +523,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 210,
+                  top: SAFE.top + 225,
                   left: SAFE.left,
                   right: SAFE.right,
                   bottom: 700,
@@ -631,7 +634,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                       <div
                         style={{
-                          fontSize: isActive ? 50 : 42,
+                          fontSize: isActive ? 54 : 46,
                           fontWeight: 900,
                           color: isPast
                             ? "rgba(255,255,255,0.40)"
