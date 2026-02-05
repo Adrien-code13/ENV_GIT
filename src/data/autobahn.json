@@ -1,5 +1,5 @@
 {
-  "id": "autobahn-002",
+  "id": "autobahn-003",
   "version": "1.0.0",
   "track": {
     "title": "Autobahn",
@@ -8,26 +8,31 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "Sauer-SIG",
-    "line": "J'ai un Sauer-SIG si t'es galbé comme Iron Man",
+    "term": "Kalashé",
+    "line": "Kalashé dans le vestiaire",
     "duration": 2,
     "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "Qu'une seule mif, mentalité Napoli, P38, piaggio, cannelloni",
+      "text": "R1, RR, Panigale, GSXR",
       "startTime": 0,
       "endTime": 3,
       "terms": [
         {
-          "term": "mif",
-          "definition": "Famille",
-          "category": "verlan"
+          "term": "R1",
+          "definition": "Moto Yamaha YZF-R1",
+          "category": "reference"
         },
         {
-          "term": "P38",
-          "definition": "Pistolet Walther P38",
+          "term": "Panigale",
+          "definition": "Moto Ducati Panigale",
+          "category": "reference"
+        },
+        {
+          "term": "GSXR",
+          "definition": "Moto Suzuki GSX-R",
           "category": "reference"
         }
       ],
@@ -35,47 +40,41 @@
     },
     {
       "id": "line-002",
-      "text": "Trop faim des llets-bi, j'aurais ni casser Tokyo ni Nairobi, hey",
+      "text": "J'mets la caisse en équerre, usual suspect, kalashé dans le vestiaire",
       "startTime": 3,
       "endTime": 6,
       "terms": [
         {
-          "term": "llets-bi",
-          "definition": "Billets",
-          "category": "verlan"
+          "term": "caisse en équerre",
+          "definition": "Faire déraper la voiture",
+          "category": "argot"
         },
         {
-          "term": "Tokyo ni Nairobi",
-          "definition": "Personnages de La Casa de Papel",
-          "category": "reference"
-        }
-      ],
-      "showExplanation": true
-    },
-    {
-      "id": "line-003",
-      "text": "J'ai un Sauer-SIG si t'es galbé comme Iron Man, hey",
-      "startTime": 6,
-      "endTime": 10,
-      "terms": [
-        {
-          "term": "Sauer-SIG",
-          "definition": "Pistolet SIG Sauer",
+          "term": "kalashé",
+          "definition": "Kalachnikov (AK-47)",
           "category": "argot"
         }
       ],
       "showExplanation": true
     },
     {
+      "id": "line-003",
+      "text": "Hier, y avait R, là, il m'faut un hélicoptère (tou-tou-touh)",
+      "startTime": 6,
+      "endTime": 10,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
       "id": "line-004",
-      "text": "A50, Autobahn",
+      "text": "Plata dans l'ADN, regarde bien la dégaine",
       "startTime": 10,
       "endTime": 12.5,
       "terms": [
         {
-          "term": "A50",
-          "definition": "Autoroute qui traverse Marseille",
-          "category": "reference"
+          "term": "Plata",
+          "definition": "Argent (de l'espagnol)",
+          "category": "argot"
         }
       ],
       "showExplanation": true

@@ -382,18 +382,18 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   zIndex: 20,
                   display: "flex",
                   alignItems: "center",
-                  gap: 14,
+                  gap: 18,
                 }}
               >
                 {track.coverImage && (
                   <div
                     style={{
-                      width: 58,
-                      height: 58,
-                      borderRadius: 8,
+                      width: 90,
+                      height: 90,
+                      borderRadius: 12,
                       overflow: "hidden",
                       flexShrink: 0,
-                      boxShadow: `0 0 0 2px ${HL}80, 0 0 15px ${HL}30`,
+                      boxShadow: `0 0 0 3px ${HL}80, 0 0 20px ${HL}40, 0 4px 20px rgba(0,0,0,0.5)`,
                     }}
                   >
                     <Img
@@ -405,26 +405,27 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 <div style={{ flex: 1 }}>
                   <div
                     style={{
-                      fontSize: 32,
+                      fontSize: 46,
                       fontWeight: 900,
                       color: "#fff",
                       fontFamily: FONT,
                       textTransform: "uppercase",
-                      letterSpacing: 1,
+                      letterSpacing: 2,
                       lineHeight: 1.1,
-                      textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+                      textShadow: "0 2px 12px rgba(0,0,0,0.6)",
                     }}
                   >
                     {track.title}
                   </div>
                   <div
                     style={{
-                      fontSize: 20,
-                      color: "rgba(255,255,255,0.55)",
+                      fontSize: 28,
+                      color: "rgba(255,255,255,0.6)",
                       fontFamily: FONT,
-                      fontWeight: 600,
+                      fontWeight: 700,
                       textTransform: "uppercase",
-                      letterSpacing: 3,
+                      letterSpacing: 4,
+                      marginTop: 2,
                     }}
                   >
                     {track.artist}
@@ -436,7 +437,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 72,
+                  top: SAFE.top + 110,
                   left: SAFE.left,
                   right: SAFE.right,
                   zIndex: 20,
@@ -519,10 +520,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 160,
+                  top: SAFE.top + 210,
                   left: SAFE.left,
                   right: SAFE.right,
-                  bottom: 960,
+                  bottom: 700,
                   zIndex: 10,
                   display: "flex",
                   flexDirection: "column",
