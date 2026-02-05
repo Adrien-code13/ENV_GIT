@@ -11,8 +11,8 @@ const calculateDuration = (data: RapLyricsVideo, fps: number): number => {
   const hookDuration = data.hook?.duration ?? 0;
   if (data.lyrics.length === 0) return Math.ceil((hookDuration + 10) * fps);
   const lastLine = data.lyrics[data.lyrics.length - 1];
-  // Hook duration + lyrics duration + 2s buffer for end screen
-  return Math.ceil((hookDuration + lastLine.endTime + 2) * fps);
+  // Hook duration + lyrics duration + 1.5s buffer for end screen
+  return Math.ceil((hookDuration + lastLine.endTime + 1.5) * fps);
 };
 
 export const RemotionRoot: React.FC = () => {
