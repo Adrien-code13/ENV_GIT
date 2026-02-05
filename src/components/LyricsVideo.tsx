@@ -372,11 +372,71 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             </AbsoluteFill>
           ) : (
             <>
-              {/* ========== GAMIFIED PROGRESS BAR ========== */}
+              {/* ========== HEADER (cover + track) ABOVE progress bar ========== */}
               <div
                 style={{
                   position: "absolute",
                   top: SAFE.top,
+                  left: SAFE.left,
+                  right: SAFE.right,
+                  zIndex: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                }}
+              >
+                {track.coverImage && (
+                  <div
+                    style={{
+                      width: 58,
+                      height: 58,
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      flexShrink: 0,
+                      boxShadow: `0 0 0 2px ${HL}80, 0 0 15px ${HL}30`,
+                    }}
+                  >
+                    <Img
+                      src={staticFile(track.coverImage)}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                )}
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: 32,
+                      fontWeight: 900,
+                      color: "#fff",
+                      fontFamily: FONT,
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      lineHeight: 1.1,
+                      textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+                    }}
+                  >
+                    {track.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 20,
+                      color: "rgba(255,255,255,0.55)",
+                      fontFamily: FONT,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: 3,
+                    }}
+                  >
+                    {track.artist}
+                  </div>
+                </div>
+              </div>
+
+              {/* ========== GAMIFIED PROGRESS BAR (below header) ========== */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: SAFE.top + 72,
                   left: SAFE.left,
                   right: SAFE.right,
                   zIndex: 20,
@@ -386,8 +446,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 <div
                   style={{
                     display: "flex",
-                    gap: 4,
-                    height: 18,
+                    gap: 5,
+                    height: 20,
                     alignItems: "center",
                   }}
                 >
@@ -410,7 +470,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                               ? `rgba(255,255,255,${0.08 + segPulse * 0.12})`
                               : "rgba(255,255,255,0.06)",
                           boxShadow: isFilled
-                            ? `0 0 12px ${HL}60`
+                            ? `0 0 14px ${HL}60`
                             : "none",
                           transition: "background 0.3s ease",
                         }}
@@ -419,116 +479,55 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   })}
                 </div>
 
-                {/* Score badge row */}
+                {/* Score text — bigger */}
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
                     alignItems: "center",
-                    marginTop: 8,
+                    gap: 12,
+                    marginTop: 10,
                   }}
                 >
-                  {/* Left: decoded label */}
                   <div
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
+                      fontSize: 40,
+                      fontWeight: 900,
+                      color: HL,
+                      fontFamily: FONT,
+                      letterSpacing: 2,
+                      textShadow: `0 0 20px ${HL}60`,
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: 30,
-                        fontWeight: 900,
-                        color: HL,
-                        fontFamily: FONT,
-                        letterSpacing: 2,
-                        textShadow: `0 0 15px ${HL}50`,
-                      }}
-                    >
-                      {decodedTerms}/{totalTerms}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 22,
-                        fontWeight: 900,
-                        color: "rgba(255,255,255,0.5)",
-                        fontFamily: FONT,
-                        letterSpacing: 3,
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      DÉCODÉS
-                    </div>
+                    {decodedTerms}/{totalTerms}
                   </div>
-
-                  {/* Right: cover + track info */}
                   <div
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
+                      fontSize: 30,
+                      fontWeight: 900,
+                      color: "rgba(255,255,255,0.55)",
+                      fontFamily: FONT,
+                      letterSpacing: 4,
+                      textTransform: "uppercase",
                     }}
                   >
-                    <div style={{ textAlign: "right" }}>
-                      <div
-                        style={{
-                          fontSize: 26,
-                          fontWeight: 900,
-                          color: "#fff",
-                          fontFamily: FONT,
-                          textTransform: "uppercase",
-                          letterSpacing: 1,
-                          lineHeight: 1.1,
-                        }}
-                      >
-                        {track.title}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 18,
-                          color: "rgba(255,255,255,0.5)",
-                          fontFamily: FONT,
-                          fontWeight: 600,
-                          textTransform: "uppercase",
-                          letterSpacing: 2,
-                        }}
-                      >
-                        {track.artist}
-                      </div>
-                    </div>
-                    {track.coverImage && (
-                      <div
-                        style={{
-                          width: 52,
-                          height: 52,
-                          borderRadius: 8,
-                          overflow: "hidden",
-                          flexShrink: 0,
-                          boxShadow: `0 0 0 2px ${HL}80, 0 0 15px ${HL}30`,
-                        }}
-                      >
-                        <Img
-                          src={staticFile(track.coverImage)}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      </div>
-                    )}
+                    DÉCODÉS
                   </div>
                 </div>
               </div>
 
-              {/* ========== LYRICS — ALL lines visible, active highlighted ========== */}
+              {/* ========== LYRICS — ALL lines visible, active highlighted, bigger ========== */}
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 120,
+                  top: SAFE.top + 160,
                   left: SAFE.left,
                   right: SAFE.right,
+                  bottom: 960,
                   zIndex: 10,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 6,
+                  justifyContent: "flex-start",
+                  gap: 10,
                 }}
               >
                 {lyrics.map((line, index) => {
@@ -537,10 +536,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   const isFuture = currentTime < line.startTime;
                   const progress = isActive ? getLineProgress(line) : 0;
 
-                  // All lines always visible — different opacity
-                  let opacity = 0.15;
+                  // All lines visible — more visible inactive
+                  let opacity = 0.35;
                   if (isActive) opacity = 1;
-                  else if (isPast) opacity = 0.25;
+                  else if (isPast) opacity = 0.40;
 
                   // Subtle scale for active
                   const lineEntrance = isActive
@@ -580,7 +579,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                             color: "#000",
                             fontWeight: 900,
                             background: HL,
-                            padding: "2px 10px",
+                            padding: "2px 12px",
                             borderRadius: 5,
                             marginLeft: 3,
                             marginRight: 3,
@@ -607,7 +606,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       key={line.id}
                       style={{
                         opacity,
-                        padding: "8px 0",
+                        padding: "10px 0",
                         position: "relative",
                         transform: isActive ? `scale(${0.95 + lineEntrance * 0.05})` : "scale(1)",
                         transformOrigin: "left center",
@@ -619,8 +618,8 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                           style={{
                             position: "absolute",
                             left: -4,
-                            top: 4,
-                            bottom: 4,
+                            top: 6,
+                            bottom: 6,
                             width: 5,
                             borderRadius: 3,
                             background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
@@ -631,12 +630,12 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                       <div
                         style={{
-                          fontSize: isActive ? 44 : 34,
+                          fontSize: isActive ? 50 : 42,
                           fontWeight: 900,
                           color: isPast
-                            ? "rgba(255,255,255,0.25)"
+                            ? "rgba(255,255,255,0.40)"
                             : isFuture
-                              ? "rgba(255,255,255,0.15)"
+                              ? "rgba(255,255,255,0.30)"
                               : "#ffffff",
                           fontFamily: FONT,
                           textTransform: "uppercase",
