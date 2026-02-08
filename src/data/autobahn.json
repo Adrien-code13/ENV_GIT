@@ -18,7 +18,7 @@
       "id": "line-001",
       "text": "J'ai l'élégance à Sarkozy",
       "startTime": 0,
-      "endTime": 2.5,
+      "endTime": 2,
       "terms": [
         {
           "term": "élégance à Sarkozy",
@@ -31,7 +31,7 @@
     {
       "id": "line-002",
       "text": "Si y a mes nintch', c'est pas pour causer",
-      "startTime": 2.5,
+      "startTime": 2,
       "endTime": 5,
       "terms": [
         {
@@ -46,7 +46,7 @@
       "id": "line-003",
       "text": "J'ai calé un nine dans l'cosy",
       "startTime": 5,
-      "endTime": 7.5,
+      "endTime": 6.5,
       "terms": [
         {
           "term": "nine",
@@ -64,7 +64,7 @@
     {
       "id": "line-004",
       "text": "Proximité, près d'un pour les dossiers",
-      "startTime": 7.5,
+      "startTime": 6.5,
       "endTime": 10,
       "terms": [],
       "showExplanation": false
