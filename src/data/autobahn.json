@@ -1,5 +1,5 @@
 {
-  "id": "autobahn-003",
+  "id": "autobahn-004",
   "version": "1.0.0",
   "track": {
     "title": "Autobahn",
@@ -8,31 +8,21 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "GSXR",
-    "line": "R1, RR, Panigale, GSXR",
+    "term": "NINTCH'",
+    "line": "Si y a mes nintch', c'est pas pour causer",
     "duration": 2,
     "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "R1, RR, Panigale, GSXR",
+      "text": "J'ai l'élégance à Sarkozy",
       "startTime": 0,
-      "endTime": 3,
+      "endTime": 2.5,
       "terms": [
         {
-          "term": "R1",
-          "definition": "Moto Yamaha YZF-R1",
-          "category": "reference"
-        },
-        {
-          "term": "Panigale",
-          "definition": "Moto Ducati Panigale",
-          "category": "reference"
-        },
-        {
-          "term": "GSXR",
-          "definition": "Moto Suzuki GSX-R",
+          "term": "élégance à Sarkozy",
+          "definition": "Style luxueux, référence aux costumes chers de l'ex-président",
           "category": "reference"
         }
       ],
@@ -40,41 +30,55 @@
     },
     {
       "id": "line-002",
-      "text": "J'mets la caisse en équerre, usual suspect, kalashé dans le vestiaire",
-      "startTime": 3,
-      "endTime": 6,
+      "text": "Si y a mes nintch', c'est pas pour causer",
+      "startTime": 2.5,
+      "endTime": 5,
       "terms": [
         {
-          "term": "caisse en équerre",
-          "definition": "Faire déraper la voiture",
-          "category": "argot"
-        },
-        {
-          "term": "kalashé",
-          "definition": "Kalachnikov (AK-47)",
-          "category": "argot"
+          "term": "nintch'",
+          "definition": "Verlan de \"chintis\" → amis, potes",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-003",
-      "text": "Hier, y avait R, là, il m'faut un hélicoptère (tou-tou-touh)",
-      "startTime": 6,
+      "text": "J'ai calé un nine dans l'cosy",
+      "startTime": 5,
+      "endTime": 7.5,
+      "terms": [
+        {
+          "term": "nine",
+          "definition": "Pistolet 9mm",
+          "category": "argot"
+        },
+        {
+          "term": "cosy",
+          "definition": "Canapé confortable",
+          "category": "anglicisme"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "Proximité, près d'un pour les dossiers",
+      "startTime": 7.5,
       "endTime": 10,
       "terms": [],
       "showExplanation": false
     },
     {
-      "id": "line-004",
-      "text": "Plata dans l'ADN, regarde bien la dégaine",
+      "id": "line-005",
+      "text": "Toujours sur Flying Blue",
       "startTime": 10,
       "endTime": 12.5,
       "terms": [
         {
-          "term": "Plata",
-          "definition": "Argent (de l'espagnol)",
-          "category": "argot"
+          "term": "Flying Blue",
+          "definition": "Programme fidélité Air France → il voyage beaucoup",
+          "category": "reference"
         }
       ],
       "showExplanation": true

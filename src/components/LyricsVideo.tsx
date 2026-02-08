@@ -350,25 +350,89 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                 </div>
 
-                {/* FOLLOW */}
+                {/* ABONNE-TOI — Strong CTA */}
                 <div
                   style={{
-                    marginTop: 30,
-                    opacity: 0.7 + Math.sin(frame * 0.15) * 0.3,
+                    marginTop: 40,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 16,
                   }}
                 >
+                  {/* Subscribe button */}
                   <div
                     style={{
-                      fontSize: 44,
-                      fontWeight: 900,
-                      color: "rgba(255,255,255,0.9)",
-                      fontFamily: FONT,
-                      letterSpacing: 6,
-                      textTransform: "uppercase",
-                      textShadow: `0 0 20px ${ACCENT}40`,
+                      background: "#ff0000",
+                      borderRadius: 14,
+                      padding: "18px 50px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 16,
+                      boxShadow: `0 0 50px rgba(255,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4)`,
+                      transform: `scale(${1 + Math.sin(frame * 0.12) * 0.06})`,
                     }}
                   >
-                    FOLLOW POUR LA SUITE
+                    {/* Bell icon */}
+                    <svg
+                      width="42"
+                      height="42"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                      style={{
+                        filter: "drop-shadow(0 0 8px rgba(255,255,255,0.5))",
+                      }}
+                    >
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                    </svg>
+                    <div
+                      style={{
+                        fontSize: 48,
+                        fontWeight: 900,
+                        color: "#fff",
+                        fontFamily: FONT,
+                        letterSpacing: 4,
+                        textTransform: "uppercase",
+                        textShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                      }}
+                    >
+                      ABONNE-TOI
+                    </div>
+                  </div>
+
+                  {/* Arrow pointing up */}
+                  <div
+                    style={{
+                      transform: `translateY(${Math.sin(frame * 0.15) * 8}px)`,
+                      opacity: 0.8,
+                    }}
+                  >
+                    <svg
+                      width="50"
+                      height="50"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                  </div>
+
+                  {/* Teaser text */}
+                  <div
+                    style={{
+                      fontSize: 32,
+                      fontWeight: 700,
+                      color: "rgba(255,255,255,0.7)",
+                      fontFamily: FONT,
+                      letterSpacing: 3,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    POUR NE RIEN RATER
                   </div>
                 </div>
               </div>
