@@ -2,8 +2,8 @@
   "id": "autobahn-004",
   "version": "1.0.0",
   "track": {
-    "title": "Autobahn",
-    "artist": "SCH",
+    "title": "Flying blue",
+    "artist": "L2B & La Fouine",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
@@ -36,7 +36,7 @@
       "terms": [
         {
           "term": "nintch'",
-          "definition": "Verlan de \"chintis\" → amis, potes",
+          "definition": "Mes potes",
           "category": "verlan"
         }
       ],
@@ -55,7 +55,7 @@
         },
         {
           "term": "cosy",
-          "definition": "Canapé confortable",
+          "definition": "Canapé",
           "category": "anglicisme"
         }
       ],
@@ -68,20 +68,6 @@
       "endTime": 10,
       "terms": [],
       "showExplanation": false
-    },
-    {
-      "id": "line-005",
-      "text": "Toujours sur Flying Blue",
-      "startTime": 10,
-      "endTime": 12.5,
-      "terms": [
-        {
-          "term": "Flying Blue",
-          "definition": "Programme fidélité Air France → il voyage beaucoup",
-          "category": "reference"
-        }
-      ],
-      "showExplanation": true
     }
   ],
   "style": {
