@@ -1,5 +1,5 @@
 {
-  "id": "autobahn-004",
+  "id": "flying-blue-002",
   "version": "1.0.0",
   "track": {
     "title": "Flying blue",
@@ -8,21 +8,21 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "NINTCH'",
-    "line": "Si y a mes nintch', c'est pas pour causer",
+    "term": "NOBU",
+    "line": "J'vais manger au Nobu mais pas pour la frime",
     "duration": 2.5,
     "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'ai l'élégance à Sarkozy",
+      "text": "J'vais manger au Nobu mais pas pour la frime",
       "startTime": 0.5,
       "endTime": 2,
       "terms": [
         {
-          "term": "élégance à Sarkozy",
-          "definition": "Style luxueux, référence aux costumes chers de l'ex-président",
+          "term": "Nobu",
+          "definition": "Restaurant japonais de luxe",
           "category": "reference"
         }
       ],
@@ -30,44 +30,39 @@
     },
     {
       "id": "line-002",
-      "text": "Si y a mes nintch', c'est pas pour causer",
+      "text": "Ils ont pas un euro, donc ils veulent ma vie",
       "startTime": 2,
       "endTime": 4.5,
-      "terms": [
-        {
-          "term": "nintch'",
-          "definition": "Mes potes",
-          "category": "verlan"
-        }
-      ],
-      "showExplanation": true
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-003",
-      "text": "J'ai calé un nine dans l'cosy",
+      "text": "J'arrive en Velar, ouais, tellement on brille",
       "startTime": 4.5,
       "endTime": 6,
       "terms": [
         {
-          "term": "nine",
-          "definition": "Pistolet 9mm",
-          "category": "argot"
-        },
-        {
-          "term": "cosy",
-          "definition": "Canapé",
-          "category": "anglicisme"
+          "term": "Velar",
+          "definition": "Range Rover Velar, SUV de luxe",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-004",
-      "text": "Proximité, près d'un pour les dossiers",
+      "text": "Tellement on brille, c'est même pas mon anniv' (j'suis avec Laouni)",
       "startTime": 6,
       "endTime": 7.5,
-      "terms": [],
-      "showExplanation": false
+      "terms": [
+        {
+          "term": "Laouni",
+          "definition": "Vrai prénom de La Fouine",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
     }
   ],
   "style": {
