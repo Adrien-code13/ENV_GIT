@@ -1,28 +1,38 @@
 {
-  "id": "flying-blue-002",
+  "id": "ninho-971-001",
   "version": "1.0.0",
   "track": {
-    "title": "Flying blue",
-    "artist": "L2B & La Fouine",
+    "title": "+971",
+    "artist": "Ninho",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "VELAR",
-    "line": "J'arrive en Velar, ouais, tellement on brille",
+    "term": "FUMBWA",
+    "line": "J'ai le pondu, le fumbwa dans l'Falcon",
     "duration": 2,
     "difficulty": 4
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'vais manger au Nobu mais pas pour la frime",
+      "text": "J'ai le pondu, le fumbwa dans l'Falcon (Falcon)",
       "startTime": 0,
       "endTime": 2,
       "terms": [
         {
-          "term": "Nobu",
-          "definition": "Restaurant japonais de luxe",
+          "term": "pondu",
+          "definition": "Plat congolais (feuilles de manioc)",
+          "category": "reference"
+        },
+        {
+          "term": "fumbwa",
+          "definition": "Plat congolais (légumes)",
+          "category": "reference"
+        },
+        {
+          "term": "Falcon",
+          "definition": "Jet privé Dassault",
           "category": "reference"
         }
       ],
@@ -30,36 +40,47 @@
     },
     {
       "id": "line-002",
-      "text": "Ils ont pas un euro, donc ils veulent ma vie",
+      "text": "Dans l'Viano, les sins-cou (Binks)",
       "startTime": 2,
       "endTime": 3.5,
-      "terms": [],
-      "showExplanation": false
+      "terms": [
+        {
+          "term": "Viano",
+          "definition": "Mercedes Viano, van de luxe",
+          "category": "reference"
+        },
+        {
+          "term": "sins-cou",
+          "definition": "Verlan de cousins",
+          "category": "verlan"
+        }
+      ],
+      "showExplanation": true
     },
     {
       "id": "line-003",
-      "text": "J'arrive en Velar, ouais, tellement on brille",
+      "text": "Un peu plus de zingués, un peu plus de stress (Binks)",
       "startTime": 3.5,
       "endTime": 6,
       "terms": [
         {
-          "term": "Velar",
-          "definition": "Range Rover Velar, SUV de luxe",
-          "category": "reference"
+          "term": "zingués",
+          "definition": "Armes, flingues",
+          "category": "argot"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-004",
-      "text": "Tellement on brille, c'est même pas mon anniv' (j'suis avec Laouni)",
+      "text": "Mais je l'avais déjà quand j'avais les condés aux trousses",
       "startTime": 6,
       "endTime": 8.5,
       "terms": [
         {
-          "term": "Laouni",
-          "definition": "Vrai prénom de La Fouine",
-          "category": "reference"
+          "term": "condés",
+          "definition": "Policiers",
+          "category": "argot"
         }
       ],
       "showExplanation": true
