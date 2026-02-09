@@ -1,5 +1,5 @@
 {
-  "id": "ninho-971-001",
+  "id": "ninho-971-002",
   "version": "1.0.0",
   "track": {
     "title": "+971",
@@ -8,79 +8,97 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "FUMBWA",
-    "line": "J'ai le pondu, le fumbwa dans l'Falcon",
+    "term": "DJAOS",
+    "line": "Dans le gang, il n'y a pas d'djaos",
     "duration": 2,
-    "difficulty": 4
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'ai le pondu, le fumbwa dans l'Falcon (Falcon)",
+      "text": "J'ai caché le hasch' là-haut (là-haut)",
       "startTime": 0,
       "endTime": 2,
       "terms": [
         {
-          "term": "pondu",
-          "definition": "Plat congolais (feuilles de manioc)",
-          "category": "reference"
-        },
-        {
-          "term": "fumbwa",
-          "definition": "Plat congolais (légumes)",
-          "category": "reference"
-        },
-        {
-          "term": "Falcon",
-          "definition": "Jet privé Dassault",
-          "category": "reference"
+          "term": "hasch'",
+          "definition": "Haschich, drogue",
+          "category": "argot"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-002",
-      "text": "Dans l'Viano, les sins-cou (Binks)",
+      "text": "J'compte, j'fais le chleuh, j'suis comme Fresh (comme Fresh)",
       "startTime": 2,
-      "endTime": 3.5,
+      "endTime": 4,
       "terms": [
         {
-          "term": "Viano",
-          "definition": "Mercedes Viano, van de luxe",
-          "category": "reference"
+          "term": "chleuh",
+          "definition": "Compter l'argent (argot marocain)",
+          "category": "argot"
         },
         {
-          "term": "sins-cou",
-          "definition": "Verlan de cousins",
-          "category": "verlan"
+          "term": "Fresh",
+          "definition": "Rappeur de La Sauce",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-003",
-      "text": "Un peu plus de zingués, un peu plus de stress (Binks)",
-      "startTime": 3.5,
-      "endTime": 6,
+      "text": "Dans le gang, il n'y a pas d'djaos (nan)",
+      "startTime": 4,
+      "endTime": 5.5,
       "terms": [
         {
-          "term": "zingués",
-          "definition": "Armes, flingues",
-          "category": "argot"
+          "term": "djaos",
+          "definition": "Verlan de jaloux",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-004",
-      "text": "Mais je l'avais déjà quand j'avais les condés aux trousses",
-      "startTime": 6,
-      "endTime": 8.5,
+      "text": "J'suis plus dans la zone, j'ai déjà mis tempête (tempête)",
+      "startTime": 5.5,
+      "endTime": 7.5,
       "terms": [
         {
-          "term": "condés",
-          "definition": "Policiers",
+          "term": "tempête",
+          "definition": "Mettre le chaos, tout casser",
+          "category": "expression"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-005",
+      "text": "Appelle-moi sur le plus (appelle-moi sur le plus)",
+      "startTime": 7.5,
+      "endTime": 9,
+      "terms": [
+        {
+          "term": "le plus",
+          "definition": "Téléphone jetable prépayé",
           "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-006",
+      "text": "Neuf-cent soixante-et-onze, reuf (reuf)",
+      "startTime": 9,
+      "endTime": 11,
+      "terms": [
+        {
+          "term": "reuf",
+          "definition": "Verlan de frère",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
