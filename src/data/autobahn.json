@@ -55,8 +55,8 @@
       "terms": [
         {
           "term": "djaos",
-          "definition": "Verlan de jaloux",
-          "category": "verlan"
+          "definition": "Balance",
+          "category": "argot"
         }
       ],
       "showExplanation": true
@@ -80,20 +80,14 @@
       "text": "Appelle-moi sur le plus (appelle-moi sur le plus)",
       "startTime": 7.5,
       "endTime": 9,
-      "terms": [
-        {
-          "term": "le plus",
-          "definition": "Téléphone jetable prépayé",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-006",
       "text": "Neuf-cent soixante-et-onze, reuf (reuf)",
       "startTime": 9,
-      "endTime": 11,
+      "endTime": 11.5,
       "terms": [
         {
           "term": "reuf",
