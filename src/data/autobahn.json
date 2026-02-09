@@ -8,16 +8,16 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "NOBU",
-    "line": "J'vais manger au Nobu mais pas pour la frime",
-    "duration": 2.5,
-    "difficulty": 3
+    "term": "VELAR",
+    "line": "J'arrive en Velar, ouais, tellement on brille",
+    "duration": 2,
+    "difficulty": 4
   },
   "lyrics": [
     {
       "id": "line-001",
       "text": "J'vais manger au Nobu mais pas pour la frime",
-      "startTime": 0.5,
+      "startTime": 0,
       "endTime": 2,
       "terms": [
         {
@@ -32,14 +32,14 @@
       "id": "line-002",
       "text": "Ils ont pas un euro, donc ils veulent ma vie",
       "startTime": 2,
-      "endTime": 4.5,
+      "endTime": 3.5,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-003",
       "text": "J'arrive en Velar, ouais, tellement on brille",
-      "startTime": 4.5,
+      "startTime": 3.5,
       "endTime": 6,
       "terms": [
         {
@@ -54,7 +54,7 @@
       "id": "line-004",
       "text": "Tellement on brille, c'est même pas mon anniv' (j'suis avec Laouni)",
       "startTime": 6,
-      "endTime": 7.5,
+      "endTime": 8.5,
       "terms": [
         {
           "term": "Laouni",
