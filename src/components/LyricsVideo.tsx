@@ -583,169 +583,207 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 </div>
               </div>
 
-              {/* ========== LYRICS — ALL lines visible, active highlighted, bigger ========== */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: SAFE.top + 225,
-                  left: SAFE.left,
-                  right: SAFE.right,
-                  bottom: 700,
-                  zIndex: 10,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  gap: 10,
-                }}
-              >
-                {lyrics.map((line, index) => {
-                  const isActive = index === activeLineIndex;
-                  const isPast = currentTime >= line.endTime;
-                  const isFuture = currentTime < line.startTime;
-                  const progress = isActive ? getLineProgress(line) : 0;
+              {/* ========== LYRICS — Sliding window, max 5 lines visible ========== */}
+              {(() => {
+                // Sliding window: show 2 lines before, active, 2 lines after (max 5)
+                const WINDOW_BEFORE = 2;
+                const WINDOW_AFTER = 2;
+                const LINE_HEIGHT = 85; // Approximate height per line
 
-                  // All lines visible — more visible inactive
-                  let opacity = 0.35;
-                  if (isActive) opacity = 1;
-                  else if (isPast) opacity = 0.40;
+                // Calculate which lines to show
+                const effectiveIndex = Math.max(0, activeLineIndex);
+                const windowStart = Math.max(0, effectiveIndex - WINDOW_BEFORE);
+                const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + WINDOW_AFTER);
 
-                  // Subtle scale for active
-                  const lineEntrance = isActive
-                    ? spring({
-                        frame: Math.max(0, contentFrame - line.startTime * fps),
-                        fps,
-                        config: { damping: 8, stiffness: 200, mass: 0.4 },
-                      })
-                    : 1;
+                // Smooth scroll offset based on active line
+                const scrollProgress = activeLine
+                  ? interpolate(
+                      getLineProgress(activeLine),
+                      [0.7, 1],
+                      [0, 1],
+                      { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+                    )
+                  : 0;
 
-                  const renderText = () => {
-                    if (line.terms.length === 0 || !isActive) return line.text;
+                const baseOffset = Math.max(0, effectiveIndex - WINDOW_BEFORE) * LINE_HEIGHT;
+                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.3);
 
-                    const elements: React.ReactNode[] = [];
-                    let lastIdx = 0;
-
-                    const termPositions = line.terms
-                      .map((t) => ({
-                        term: t,
-                        index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
-                      }))
-                      .filter((t) => t.index !== -1)
-                      .sort((a, b) => a.index - b.index);
-
-                    termPositions.forEach(({ term, index: tIdx }, i) => {
-                      if (tIdx > lastIdx) {
-                        elements.push(
-                          <span key={`pre-${i}`}>
-                            {line.text.slice(lastIdx, tIdx)}
-                          </span>
-                        );
-                      }
-                      elements.push(
-                        <span
-                          key={`term-${i}`}
-                          style={{
-                            color: "#000",
-                            fontWeight: 900,
-                            background: HL,
-                            padding: "2px 12px",
-                            borderRadius: 5,
-                            marginLeft: 3,
-                            marginRight: 3,
-                            boxShadow: `0 0 20px ${HL}70`,
-                            display: "inline-block",
-                          }}
-                        >
-                          {line.text.slice(tIdx, tIdx + term.term.length)}
-                        </span>
-                      );
-                      lastIdx = tIdx + term.term.length;
-                    });
-
-                    if (lastIdx < line.text.length) {
-                      elements.push(
-                        <span key="rest">{line.text.slice(lastIdx)}</span>
-                      );
-                    }
-                    return elements.length > 0 ? elements : line.text;
-                  };
-
-                  return (
+                return (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: SAFE.top + 225,
+                      left: SAFE.left,
+                      right: SAFE.right,
+                      height: 380,
+                      zIndex: 10,
+                      overflow: "hidden",
+                    }}
+                  >
                     <div
-                      key={line.id}
                       style={{
-                        opacity,
-                        padding: "10px 0",
-                        position: "relative",
-                        transform: isActive ? `scale(${0.95 + lineEntrance * 0.05})` : "scale(1)",
-                        transformOrigin: "left center",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6,
+                        transform: `translateY(-${smoothOffset}px)`,
+                        transition: "transform 0.3s ease-out",
                       }}
                     >
-                      {/* Active indicator bar */}
-                      {isActive && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: -4,
-                            top: 6,
-                            bottom: 6,
-                            width: 5,
-                            borderRadius: 3,
-                            background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
-                            boxShadow: `0 0 18px ${HL}80`,
-                          }}
-                        />
-                      )}
+                      {lyrics.map((line, index) => {
+                        const isActive = index === activeLineIndex;
+                        const isPast = currentTime >= line.endTime;
+                        const isFuture = currentTime < line.startTime;
+                        const progress = isActive ? getLineProgress(line) : 0;
 
-                      <div
-                        style={{
-                          fontSize: isActive ? 54 : 46,
-                          fontWeight: 900,
-                          color: isPast
-                            ? "rgba(255,255,255,0.40)"
-                            : isFuture
-                              ? "rgba(255,255,255,0.30)"
-                              : "#ffffff",
-                          fontFamily: FONT,
-                          textTransform: "uppercase",
-                          lineHeight: 1.3,
-                          letterSpacing: 1,
-                          paddingLeft: isActive ? 18 : 8,
-                          textShadow: isActive
-                            ? `0 2px 12px rgba(0,0,0,0.5), 0 0 25px ${HL}15`
-                            : "none",
-                        }}
-                      >
-                        {renderText()}
-                      </div>
+                        // Distance from active line for opacity
+                        const distanceFromActive = Math.abs(index - effectiveIndex);
+                        let opacity = 0;
+                        if (isActive) opacity = 1;
+                        else if (distanceFromActive === 1) opacity = isPast ? 0.45 : 0.35;
+                        else if (distanceFromActive === 2) opacity = isPast ? 0.25 : 0.20;
+                        else opacity = 0.1;
 
-                      {/* Progress bar under active line */}
-                      {isActive && (
-                        <div
-                          style={{
-                            marginTop: 8,
-                            marginLeft: 18,
-                            height: 3,
-                            borderRadius: 2,
-                            background: "rgba(255,255,255,0.06)",
-                            overflow: "hidden",
-                            width: "85%",
-                          }}
-                        >
+                        // Subtle scale for active
+                        const lineEntrance = isActive
+                          ? spring({
+                              frame: Math.max(0, contentFrame - line.startTime * fps),
+                              fps,
+                              config: { damping: 8, stiffness: 200, mass: 0.4 },
+                            })
+                          : 1;
+
+                        const renderText = () => {
+                          if (line.terms.length === 0 || !isActive) return line.text;
+
+                          const elements: React.ReactNode[] = [];
+                          let lastIdx = 0;
+
+                          const termPositions = line.terms
+                            .map((t) => ({
+                              term: t,
+                              index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
+                            }))
+                            .filter((t) => t.index !== -1)
+                            .sort((a, b) => a.index - b.index);
+
+                          termPositions.forEach(({ term, index: tIdx }, i) => {
+                            if (tIdx > lastIdx) {
+                              elements.push(
+                                <span key={`pre-${i}`}>
+                                  {line.text.slice(lastIdx, tIdx)}
+                                </span>
+                              );
+                            }
+                            elements.push(
+                              <span
+                                key={`term-${i}`}
+                                style={{
+                                  color: "#000",
+                                  fontWeight: 900,
+                                  background: HL,
+                                  padding: "2px 12px",
+                                  borderRadius: 5,
+                                  marginLeft: 3,
+                                  marginRight: 3,
+                                  boxShadow: `0 0 20px ${HL}70`,
+                                  display: "inline-block",
+                                }}
+                              >
+                                {line.text.slice(tIdx, tIdx + term.term.length)}
+                              </span>
+                            );
+                            lastIdx = tIdx + term.term.length;
+                          });
+
+                          if (lastIdx < line.text.length) {
+                            elements.push(
+                              <span key="rest">{line.text.slice(lastIdx)}</span>
+                            );
+                          }
+                          return elements.length > 0 ? elements : line.text;
+                        };
+
+                        return (
                           <div
+                            key={line.id}
                             style={{
-                              width: `${progress * 100}%`,
-                              height: "100%",
-                              background: `linear-gradient(90deg, ${HL}, ${ACCENT})`,
-                              boxShadow: `0 0 10px ${HL}60`,
-                              borderRadius: 2,
+                              opacity,
+                              padding: "8px 0",
+                              position: "relative",
+                              transform: isActive ? `scale(${0.95 + lineEntrance * 0.05})` : "scale(1)",
+                              transformOrigin: "left center",
+                              transition: "opacity 0.3s ease",
                             }}
-                          />
-                        </div>
-                      )}
+                          >
+                            {/* Active indicator bar */}
+                            {isActive && (
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  left: -4,
+                                  top: 6,
+                                  bottom: 6,
+                                  width: 5,
+                                  borderRadius: 3,
+                                  background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
+                                  boxShadow: `0 0 18px ${HL}80`,
+                                }}
+                              />
+                            )}
+
+                            <div
+                              style={{
+                                fontSize: isActive ? 50 : 42,
+                                fontWeight: 900,
+                                color: isPast
+                                  ? "rgba(255,255,255,0.45)"
+                                  : isFuture
+                                    ? "rgba(255,255,255,0.35)"
+                                    : "#ffffff",
+                                fontFamily: FONT,
+                                textTransform: "uppercase",
+                                lineHeight: 1.25,
+                                letterSpacing: 1,
+                                paddingLeft: isActive ? 18 : 8,
+                                textShadow: isActive
+                                  ? `0 2px 12px rgba(0,0,0,0.5), 0 0 25px ${HL}15`
+                                  : "none",
+                              }}
+                            >
+                              {renderText()}
+                            </div>
+
+                            {/* Progress bar under active line */}
+                            {isActive && (
+                              <div
+                                style={{
+                                  marginTop: 6,
+                                  marginLeft: 18,
+                                  height: 3,
+                                  borderRadius: 2,
+                                  background: "rgba(255,255,255,0.06)",
+                                  overflow: "hidden",
+                                  width: "85%",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    width: `${progress * 100}%`,
+                                    height: "100%",
+                                    background: `linear-gradient(90deg, ${HL}, ${ACCENT})`,
+                                    boxShadow: `0 0 10px ${HL}60`,
+                                    borderRadius: 2,
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })()}
 
               {/* ========== DECODE CARDS — Full width, bottom, BIGGER ========== */}
               <div
