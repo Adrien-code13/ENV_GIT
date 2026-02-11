@@ -8,8 +8,8 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "TRES-MON",
-    "line": "Pour rattraper l'temps, faudra plusieurs tres-mon",
+    "term": "IGO",
+    "line": "Là, igo, j'suis pressé",
     "duration": 2,
     "difficulty": 3
   },
