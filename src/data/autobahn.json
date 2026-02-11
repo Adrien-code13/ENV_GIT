@@ -1,5 +1,5 @@
 {
-  "id": "ninho-971-002",
+  "id": "ninho-971-003",
   "version": "1.0.0",
   "track": {
     "title": "+971",
@@ -8,40 +8,29 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "DJAOS",
-    "line": "Dans le gang, il n'y a pas d'djaos",
+    "term": "TRES-MON",
+    "line": "Pour rattraper l'temps, faudra plusieurs tres-mon",
     "duration": 2,
     "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'ai caché le hasch' là-haut (là-haut)",
+      "text": "C'est nous les bad boys (Bad boys)",
       "startTime": 0,
-      "endTime": 2,
-      "terms": [
-        {
-          "term": "hasch'",
-          "definition": "Haschich, drogue",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "endTime": 1.5,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-002",
-      "text": "J'compte, j'fais le chleuh, j'suis comme Fresh (comme Fresh)",
-      "startTime": 2,
-      "endTime": 4,
+      "text": "Le label, c'est Jefe (Jefe)",
+      "startTime": 1.5,
+      "endTime": 3,
       "terms": [
         {
-          "term": "chleuh",
-          "definition": "Compter l'argent (argot marocain)",
-          "category": "argot"
-        },
-        {
-          "term": "Fresh",
-          "definition": "Rappeur de La Sauce",
+          "term": "Jefe",
+          "definition": "Chef en espagnol, label de Ninho",
           "category": "reference"
         }
       ],
@@ -49,49 +38,75 @@
     },
     {
       "id": "line-003",
-      "text": "Dans le gang, il n'y a pas d'djaos (nan)",
-      "startTime": 4,
-      "endTime": 5.5,
+      "text": "Le Mahel aussi, j'suis die sous le keffieh (Keffieh, han, han)",
+      "startTime": 3,
+      "endTime": 5,
       "terms": [
         {
-          "term": "djaos",
-          "definition": "Balance",
+          "term": "Mahel",
+          "definition": "Quartier de Ninho (Les Musiciens)",
+          "category": "reference"
+        },
+        {
+          "term": "die",
+          "definition": "Loyal, dévoué",
           "category": "argot"
+        },
+        {
+          "term": "keffieh",
+          "definition": "Foulard palestinien",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-004",
-      "text": "J'suis plus dans la zone, j'ai déjà mis tempête (tempête)",
-      "startTime": 5.5,
-      "endTime": 7.5,
-      "terms": [
-        {
-          "term": "tempête",
-          "definition": "Mettre le chaos, tout casser",
-          "category": "expression"
-        }
-      ],
-      "showExplanation": true
+      "text": "C'est pas lourd, c'est léger (c'est léger)",
+      "startTime": 5,
+      "endTime": 6.5,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-005",
-      "text": "Appelle-moi sur le plus (appelle-moi sur le plus)",
+      "text": "Tu connais ma logistique",
+      "startTime": 6.5,
+      "endTime": 7.5,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-006",
+      "text": "J'aime bien quand c'est logique (quand c'est logique)",
       "startTime": 7.5,
       "endTime": 9,
       "terms": [],
       "showExplanation": false
     },
     {
-      "id": "line-006",
-      "text": "Neuf-cent soixante-et-onze, reuf (reuf)",
+      "id": "line-007",
+      "text": "Là, igo, j'suis pressé (pressé, han)",
       "startTime": 9,
-      "endTime": 11.5,
+      "endTime": 10.5,
       "terms": [
         {
-          "term": "reuf",
-          "definition": "Verlan de frère",
+          "term": "igo",
+          "definition": "Moi en argot",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-008",
+      "text": "Pour rattraper l'temps, faudra plusieurs tres-mon (ouh, ouh)",
+      "startTime": 10.5,
+      "endTime": 13,
+      "terms": [
+        {
+          "term": "tres-mon",
+          "definition": "Verlan de montres",
           "category": "verlan"
         }
       ],
