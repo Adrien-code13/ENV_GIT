@@ -1,36 +1,57 @@
 {
-  "id": "ninho-971-003",
+  "id": "kaaris-lafouine-vision-001",
   "version": "1.0.0",
   "track": {
-    "title": "+971",
-    "artist": "Ninho",
+    "title": "Vision",
+    "artist": "Kaaris & La Fouine",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "IGO",
-    "line": "Là, igo, j'suis pressé",
+    "term": "HAZI",
+    "line": "Petit, petit, j'alimente le hazi",
     "duration": 2,
-    "difficulty": 3
+    "difficulty": 4
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "C'est nous les bad boys (Bad boys)",
+      "text": "Petit, petit, j'alimente le hazi, dans le coffre du V8, j'ai l'armure de Ikki",
       "startTime": 0,
-      "endTime": 1.5,
-      "terms": [],
-      "showExplanation": false
+      "endTime": 4,
+      "terms": [
+        {
+          "term": "hazi",
+          "definition": "Business, activité illégale",
+          "category": "argot"
+        },
+        {
+          "term": "V8",
+          "definition": "Voiture avec moteur V8",
+          "category": "reference"
+        },
+        {
+          "term": "Ikki",
+          "definition": "Chevalier du Zodiaque (Phoenix)",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
     },
     {
       "id": "line-002",
-      "text": "Le label, c'est Jefe (Jefe)",
-      "startTime": 1.5,
-      "endTime": 3,
+      "text": "Le Glock trace le récit, alcool dans la vessie, j'lui mets une virgule dans l'cul, elle m'appelle Lionel Messi",
+      "startTime": 4,
+      "endTime": 8,
       "terms": [
         {
-          "term": "Jefe",
-          "definition": "Chef en espagnol, label de Ninho",
+          "term": "Glock",
+          "definition": "Pistolet automatique",
+          "category": "reference"
+        },
+        {
+          "term": "Lionel Messi",
+          "definition": "Référence au footballeur (10 = virgule)",
           "category": "reference"
         }
       ],
@@ -38,76 +59,84 @@
     },
     {
       "id": "line-003",
-      "text": "Le Mahel aussi, j'suis die sous le keffieh (Keffieh, han, han)",
-      "startTime": 3,
-      "endTime": 5,
+      "text": "Tu suces le régiment et tu veux faire la Sainte, j'ai l'odeur des humains, j'peux plus aller dans la jungle",
+      "startTime": 8,
+      "endTime": 12,
       "terms": [
         {
-          "term": "Mahel",
-          "definition": "Quartier de Ninho (Les Musiciens)",
-          "category": "reference"
-        },
-        {
-          "term": "die",
-          "definition": "Loyal, dévoué",
+          "term": "régiment",
+          "definition": "Tout le monde, beaucoup de monde",
           "category": "argot"
-        },
-        {
-          "term": "keffieh",
-          "definition": "Foulard palestinien",
-          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-004",
-      "text": "C'est pas lourd, c'est léger (c'est léger)",
-      "startTime": 5,
-      "endTime": 6.5,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-005",
-      "text": "Tu connais ma logistique",
-      "startTime": 6.5,
-      "endTime": 7.5,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-006",
-      "text": "J'aime bien quand c'est logique (quand c'est logique)",
-      "startTime": 7.5,
-      "endTime": 9,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-007",
-      "text": "Là, igo, j'suis pressé (pressé, han)",
-      "startTime": 9,
-      "endTime": 10.5,
+      "text": "2.7 gang, ainsi font, ainsi font, j'vois vos âmes à travers la fumée d'mon chichon",
+      "startTime": 12,
+      "endTime": 16,
       "terms": [
         {
-          "term": "igo",
-          "definition": "Moi en argot",
+          "term": "2.7",
+          "definition": "Département 93 + 94 (Seine-Saint-Denis + Val-de-Marne)",
+          "category": "reference"
+        },
+        {
+          "term": "chichon",
+          "definition": "Joint, cannabis",
           "category": "argot"
         }
       ],
       "showExplanation": true
     },
     {
-      "id": "line-008",
-      "text": "Pour rattraper l'temps, faudra plusieurs tres-mon (ouh, ouh)",
-      "startTime": 10.5,
-      "endTime": 13,
+      "id": "line-005",
+      "text": "Faut que j't'envoie sous terre, faut que j't'envoie sous terre, j'descends comme une fusée, j'brûle au contact de l'air",
+      "startTime": 16,
+      "endTime": 20,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-006",
+      "text": "J'ai du champ' dans la flûte, pas de plafond de verre, dans le binks, on te sert, sur l'bitume, on te serre",
+      "startTime": 20,
+      "endTime": 24,
       "terms": [
         {
-          "term": "tres-mon",
-          "definition": "Verlan de montres",
-          "category": "verlan"
+          "term": "champ'",
+          "definition": "Champagne",
+          "category": "argot"
+        },
+        {
+          "term": "flûte",
+          "definition": "Verre à champagne",
+          "category": "argot"
+        },
+        {
+          "term": "binks",
+          "definition": "Quartier, bloc",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-007",
+      "text": "RS ABT, toujours aux aguets, j'ai trois anneaux de plus que Frodon Sacquet",
+      "startTime": 24,
+      "endTime": 28,
+      "terms": [
+        {
+          "term": "RS ABT",
+          "definition": "Audi RS préparée par ABT (tuning)",
+          "category": "reference"
+        },
+        {
+          "term": "Frodon Sacquet",
+          "definition": "Personnage du Seigneur des Anneaux (1 anneau)",
+          "category": "reference"
         }
       ],
       "showExplanation": true
