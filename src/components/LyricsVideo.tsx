@@ -583,38 +583,48 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 </div>
               </div>
 
-              {/* ========== LYRICS — Sliding window, max 5 lines visible ========== */}
+              {/* ========== LYRICS — Adaptive sizing, only visible lines ========== */}
               {(() => {
-                // Sliding window config
-                const WINDOW_BEFORE = 1;
-                const WINDOW_AFTER = 2;
-                const LINE_HEIGHT = 200; // Large value for very long wrapped lines
-                const CONTAINER_HEIGHT = 480;
+                // Calculate adaptive font size based on content
+                const avgLineLength = lyrics.reduce((sum, l) => sum + l.text.length, 0) / lyrics.length;
+                const maxLineLength = Math.max(...lyrics.map(l => l.text.length));
+                const lineCount = lyrics.length;
 
-                // Calculate which lines to show
+                // Determine content "weight" for adaptive sizing
+                // Heavy content = many long lines = smaller font
+                const contentWeight = (lineCount * avgLineLength) / 100;
+
+                let baseFontSize: number;
+                let smallFontSize: number;
+                if (contentWeight > 6 || maxLineLength > 100) {
+                  // Heavy content: small fonts
+                  baseFontSize = 28;
+                  smallFontSize = 24;
+                } else if (contentWeight > 4 || maxLineLength > 70) {
+                  // Medium content
+                  baseFontSize = 32;
+                  smallFontSize = 26;
+                } else {
+                  // Light content: larger fonts
+                  baseFontSize = 38;
+                  smallFontSize = 30;
+                }
+
+                // Only show 3 lines max: previous, active, next
                 const effectiveIndex = Math.max(0, activeLineIndex);
-                const windowStart = Math.max(0, effectiveIndex - WINDOW_BEFORE);
-                const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + WINDOW_AFTER);
+                const windowStart = Math.max(0, effectiveIndex - 1);
+                const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + 1);
+                const visibleLines = lyrics.slice(windowStart, windowEnd + 1);
 
-                // Smooth scroll offset based on active line
+                // Smooth transition progress for line changes
                 const scrollProgress = activeLine
                   ? interpolate(
                       getLineProgress(activeLine),
-                      [0.85, 1],
+                      [0.9, 1],
                       [0, 1],
                       { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
                     )
                   : 0;
-
-                // Calculate max offset to prevent last lines from being cut off
-                const totalContentHeight = lyrics.length * LINE_HEIGHT;
-                const maxOffset = Math.max(0, totalContentHeight - CONTAINER_HEIGHT - 50);
-
-                // Offset calculation: start scrolling only after first line
-                // Use smaller multiplier to scroll more gradually
-                const rawOffset = Math.max(0, effectiveIndex - 0.5) * LINE_HEIGHT * 0.85;
-                const baseOffset = Math.min(rawOffset, maxOffset);
-                const smoothOffset = Math.max(0, baseOffset + (scrollProgress * LINE_HEIGHT * 0.1));
 
                 return (
                   <div
@@ -623,140 +633,143 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       top: SAFE.top + 270,
                       left: SAFE.left,
                       right: SAFE.right,
-                      height: CONTAINER_HEIGHT,
+                      bottom: SAFE.bottom + 340,
                       zIndex: 10,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                      gap: 16,
                       overflow: "hidden",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 12,
-                        transform: `translateY(-${smoothOffset}px)`,
-                        transition: "transform 0.5s ease-out",
-                      }}
-                    >
-                      {lyrics.map((line, index) => {
-                        const isActive = index === activeLineIndex;
-                        const isPast = currentTime >= line.endTime;
-                        const isFuture = currentTime < line.startTime;
-                        const progress = isActive ? getLineProgress(line) : 0;
+                    {visibleLines.map((line, visibleIdx) => {
+                      const actualIndex = windowStart + visibleIdx;
+                      const isActive = actualIndex === activeLineIndex;
+                      const isPast = currentTime >= line.endTime;
+                      const isFuture = currentTime < line.startTime;
+                      const progress = isActive ? getLineProgress(line) : 0;
 
-                        // Distance from active line for opacity
-                        const distanceFromActive = Math.abs(index - effectiveIndex);
-                        let opacity = 0;
-                        if (isActive) opacity = 1;
-                        else if (distanceFromActive === 1) opacity = isPast ? 0.5 : 0.4;
-                        else if (distanceFromActive === 2) opacity = isPast ? 0.3 : 0.25;
-                        else opacity = 0.15;
+                      // Position in visible window
+                      const positionInWindow = actualIndex - effectiveIndex;
 
-                        // Subtle scale for active
-                        const lineEntrance = isActive
-                          ? spring({
-                              frame: Math.max(0, contentFrame - line.startTime * fps),
-                              fps,
-                              config: { damping: 8, stiffness: 200, mass: 0.4 },
-                            })
-                          : 1;
+                      // Opacity based on position
+                      let opacity = 0;
+                      if (isActive) opacity = 1;
+                      else if (positionInWindow === -1) opacity = 0.4; // previous
+                      else if (positionInWindow === 1) opacity = 0.35; // next
+                      else opacity = 0.2;
 
-                        const renderText = () => {
-                          if (line.terms.length === 0 || !isActive) return line.text;
+                      // Fade out previous line as we approach transition
+                      if (positionInWindow === -1 && scrollProgress > 0) {
+                        opacity = 0.4 * (1 - scrollProgress);
+                      }
 
-                          const elements: React.ReactNode[] = [];
-                          let lastIdx = 0;
+                      // Subtle scale for active
+                      const lineEntrance = isActive
+                        ? spring({
+                            frame: Math.max(0, contentFrame - line.startTime * fps),
+                            fps,
+                            config: { damping: 8, stiffness: 200, mass: 0.4 },
+                          })
+                        : 1;
 
-                          const termPositions = line.terms
-                            .map((t) => ({
-                              term: t,
-                              index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
-                            }))
-                            .filter((t) => t.index !== -1)
-                            .sort((a, b) => a.index - b.index);
+                      const renderText = () => {
+                        if (line.terms.length === 0 || !isActive) return line.text;
 
-                          termPositions.forEach(({ term, index: tIdx }, i) => {
-                            if (tIdx > lastIdx) {
-                              elements.push(
-                                <span key={`pre-${i}`}>
-                                  {line.text.slice(lastIdx, tIdx)}
-                                </span>
-                              );
-                            }
+                        const elements: React.ReactNode[] = [];
+                        let lastIdx = 0;
+
+                        const termPositions = line.terms
+                          .map((t) => ({
+                            term: t,
+                            index: line.text.toLowerCase().indexOf(t.term.toLowerCase()),
+                          }))
+                          .filter((t) => t.index !== -1)
+                          .sort((a, b) => a.index - b.index);
+
+                        termPositions.forEach(({ term, index: tIdx }, i) => {
+                          if (tIdx > lastIdx) {
                             elements.push(
-                              <span
-                                key={`term-${i}`}
-                                style={{
-                                  color: "#000",
-                                  fontWeight: 900,
-                                  background: HL,
-                                  padding: "2px 12px",
-                                  borderRadius: 5,
-                                  marginLeft: 3,
-                                  marginRight: 3,
-                                  boxShadow: `0 0 20px ${HL}70`,
-                                  display: "inline-block",
-                                }}
-                              >
-                                {line.text.slice(tIdx, tIdx + term.term.length)}
+                              <span key={`pre-${i}`}>
+                                {line.text.slice(lastIdx, tIdx)}
                               </span>
                             );
-                            lastIdx = tIdx + term.term.length;
-                          });
-
-                          if (lastIdx < line.text.length) {
-                            elements.push(
-                              <span key="rest">{line.text.slice(lastIdx)}</span>
-                            );
                           }
-                          return elements.length > 0 ? elements : line.text;
-                        };
+                          elements.push(
+                            <span
+                              key={`term-${i}`}
+                              style={{
+                                color: "#000",
+                                fontWeight: 900,
+                                background: HL,
+                                padding: "2px 10px",
+                                borderRadius: 4,
+                                marginLeft: 2,
+                                marginRight: 2,
+                                boxShadow: `0 0 16px ${HL}70`,
+                                display: "inline-block",
+                              }}
+                            >
+                              {line.text.slice(tIdx, tIdx + term.term.length)}
+                            </span>
+                          );
+                          lastIdx = tIdx + term.term.length;
+                        });
 
-                        return (
-                          <div
-                            key={line.id}
-                            style={{
-                              opacity,
-                              padding: "8px 0",
-                              position: "relative",
-                              transform: isActive ? `scale(${0.95 + lineEntrance * 0.05})` : "scale(1)",
-                              transformOrigin: "left center",
-                              transition: "opacity 0.3s ease",
-                            }}
-                          >
-                            {/* Active indicator bar */}
-                            {isActive && (
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  left: -4,
-                                  top: 6,
-                                  bottom: 6,
-                                  width: 5,
-                                  borderRadius: 3,
-                                  background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
-                                  boxShadow: `0 0 18px ${HL}80`,
-                                }}
-                              />
-                            )}
+                        if (lastIdx < line.text.length) {
+                          elements.push(
+                            <span key="rest">{line.text.slice(lastIdx)}</span>
+                          );
+                        }
+                        return elements.length > 0 ? elements : line.text;
+                      };
 
+                      return (
+                        <div
+                          key={line.id}
+                          style={{
+                            opacity,
+                            padding: "6px 0",
+                            position: "relative",
+                            transform: isActive ? `scale(${0.97 + lineEntrance * 0.03})` : "scale(1)",
+                            transformOrigin: "left center",
+                            transition: "opacity 0.4s ease",
+                          }}
+                        >
+                          {/* Active indicator bar */}
+                          {isActive && (
                             <div
                               style={{
-                                fontSize: isActive ? 40 : 32,
-                                fontWeight: 900,
-                                color: isPast
-                                  ? "rgba(255,255,255,0.5)"
-                                  : isFuture
-                                    ? "rgba(255,255,255,0.4)"
-                                    : "#ffffff",
-                                fontFamily: FONT,
-                                textTransform: "uppercase",
-                                lineHeight: 1.35,
-                                letterSpacing: 0.5,
-                                paddingLeft: isActive ? 18 : 8,
-                                textShadow: isActive
-                                  ? `0 2px 12px rgba(0,0,0,0.5), 0 0 25px ${HL}15`
-                                  : "none",
+                                position: "absolute",
+                                left: -4,
+                                top: 4,
+                                bottom: 4,
+                                width: 4,
+                                borderRadius: 2,
+                                background: `linear-gradient(180deg, ${HL}, ${ACCENT})`,
+                                boxShadow: `0 0 14px ${HL}80`,
                               }}
+                            />
+                          )}
+
+                          <div
+                            style={{
+                              fontSize: isActive ? baseFontSize : smallFontSize,
+                              fontWeight: 900,
+                              color: isPast
+                                ? "rgba(255,255,255,0.5)"
+                                : isFuture
+                                  ? "rgba(255,255,255,0.4)"
+                                  : "#ffffff",
+                              fontFamily: FONT,
+                              textTransform: "uppercase",
+                              lineHeight: 1.3,
+                              letterSpacing: 0.3,
+                              paddingLeft: isActive ? 14 : 6,
+                              textShadow: isActive
+                                ? `0 2px 10px rgba(0,0,0,0.5), 0 0 20px ${HL}15`
+                                : "none",
+                            }}
                             >
                               {renderText()}
                             </div>
@@ -788,7 +801,6 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                           </div>
                         );
                       })}
-                    </div>
                   </div>
                 );
               })()}
