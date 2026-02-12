@@ -78,15 +78,15 @@
       "id": "line-005",
       "text": "Faut que j't'envoie sous terre, faut que j't'envoie sous terre, j'descends comme une fusée, j'brûle au contact de l'air",
       "startTime": 16,
-      "endTime": 20,
+      "endTime": 19.5,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-006",
       "text": "J'ai du champ' dans la flûte, pas de plafond de verre, dans le binks, on te sert, sur l'bitume, on te serre",
-      "startTime": 20,
-      "endTime": 24,
+      "startTime": 19.5,
+      "endTime": 23.5,
       "terms": [
         {
           "term": "champ'",
@@ -104,8 +104,8 @@
     {
       "id": "line-007",
       "text": "RS ABT, toujours aux aguets, j'ai trois anneaux de plus que Frodon Sacquet",
-      "startTime": 24,
-      "endTime": 28,
+      "startTime": 23.5,
+      "endTime": 27.5,
       "terms": [
         {
           "term": "RS ABT",
