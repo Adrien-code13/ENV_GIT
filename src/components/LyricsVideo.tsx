@@ -605,9 +605,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                     )
                   : 0;
 
+                // Calculate max offset to prevent last lines from being cut off
+                // Total content height minus visible container height
+                const totalContentHeight = lyrics.length * LINE_HEIGHT;
+                const containerHeight = 400;
+                const maxOffset = Math.max(0, totalContentHeight - containerHeight);
+
                 // Simple offset: move up by LINE_HEIGHT for each line past the first
-                const baseOffset = effectiveIndex * LINE_HEIGHT;
-                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.2);
+                // But cap it so last lines stay visible
+                const rawOffset = effectiveIndex * LINE_HEIGHT;
+                const baseOffset = Math.min(rawOffset, maxOffset);
+                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.15);
 
                 return (
                   <div
