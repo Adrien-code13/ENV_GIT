@@ -1,5 +1,5 @@
 {
-  "id": "kaaris-lafouine-vision-001",
+  "id": "kaaris-lafouine-vision-002",
   "version": "1.0.0",
   "track": {
     "title": "Vision",
@@ -8,31 +8,21 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "HAZI",
-    "line": "Petit, petit, j'alimente le hazi",
+    "term": "BYAKUGAN",
+    "line": "J'ai la vision, j'ai le Byakugan",
     "duration": 2,
     "difficulty": 4
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "Petit, petit, j'alimente le hazi, dans le coffre du V8, j'ai l'armure de Ikki",
+      "text": "J'ai la vision, j'ai le Byakugan",
       "startTime": 0,
       "endTime": 4,
       "terms": [
         {
-          "term": "hazi",
-          "definition": "Business, activité illégale",
-          "category": "argot"
-        },
-        {
-          "term": "V8",
-          "definition": "Voiture avec moteur V8",
-          "category": "reference"
-        },
-        {
-          "term": "Ikki",
-          "definition": "Chevalier du Zodiaque (Phoenix)",
+          "term": "Byakugan",
+          "definition": "Pouvoir oculaire (Naruto)",
           "category": "reference"
         }
       ],
@@ -40,35 +30,35 @@
     },
     {
       "id": "line-002",
-      "text": "Le Glock trace le récit, alcool dans la vessie, j'lui mets une virgule dans l'cul, elle m'appelle Lionel Messi",
+      "text": "J'ai la vision, j'ai le Byakugan",
       "startTime": 4,
       "endTime": 8,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-003",
+      "text": "Comme un pimp, j'arrive avec une canne",
+      "startTime": 8,
+      "endTime": 12,
       "terms": [
         {
-          "term": "Glock",
-          "definition": "Pistolet automatique",
-          "category": "reference"
+          "term": "pimp",
+          "definition": "Proxénète, mac",
+          "category": "argot"
         }
       ],
       "showExplanation": true
     },
     {
-      "id": "line-003",
-      "text": "Tu suces le régiment et tu veux faire la Sainte, j'ai l'odeur des humains, j'peux plus aller dans la jungle",
-      "startTime": 8,
-      "endTime": 12,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
       "id": "line-004",
-      "text": "2.7 gang, ainsi font, ainsi font, j'vois vos âmes à travers la fumée d'mon chichon",
+      "text": "On négocie pas, direct, on vous cane",
       "startTime": 12,
       "endTime": 16,
       "terms": [
         {
-          "term": "chichon",
-          "definition": "Joint, cannabis",
+          "term": "cane",
+          "definition": "Tuer, éliminer",
           "category": "argot"
         }
       ],
@@ -76,49 +66,30 @@
     },
     {
       "id": "line-005",
-      "text": "Faut que j't'envoie sous terre, faut que j't'envoie sous terre, j'descends comme une fusée, j'brûle au contact de l'air",
+      "text": "J'envoie les kilos d'zip' en lucarne",
       "startTime": 16,
-      "endTime": 19.5,
-      "terms": [],
-      "showExplanation": false
+      "endTime": 20,
+      "terms": [
+        {
+          "term": "zip'",
+          "definition": "Sachet de drogue compressé",
+          "category": "argot"
+        },
+        {
+          "term": "lucarne",
+          "definition": "Petite fenêtre, ouverture",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
     },
     {
       "id": "line-006",
-      "text": "J'ai du champ' dans la flûte, pas de plafond de verre, dans le binks, on te sert, sur l'bitume, on te serre",
-      "startTime": 19.5,
-      "endTime": 23,
-      "terms": [
-        {
-          "term": "champ'",
-          "definition": "Champagne",
-          "category": "argot"
-        },
-        {
-          "term": "binks",
-          "definition": "Quartier, bloc",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
-    },
-    {
-      "id": "line-007",
-      "text": "RS ABT, toujours aux aguets, j'ai trois anneaux de plus que Frodon Sacquet",
-      "startTime": 23,
-      "endTime": 27,
-      "terms": [
-        {
-          "term": "RS ABT",
-          "definition": "Audi RS préparée par ABT (tuning)",
-          "category": "reference"
-        },
-        {
-          "term": "Frodon Sacquet",
-          "definition": "Personnage du Seigneur des Anneaux (1 anneau)",
-          "category": "reference"
-        }
-      ],
-      "showExplanation": true
+      "text": "J'envoie les kilos d'zip' en lucarne",
+      "startTime": 20,
+      "endTime": 24,
+      "terms": [],
+      "showExplanation": false
     }
   ],
   "style": {
