@@ -11,14 +11,14 @@
     "term": "BYAKUGAN",
     "line": "J'ai la vision, j'ai le Byakugan",
     "duration": 2,
-    "difficulty": 4
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
       "text": "J'ai la vision, j'ai le Byakugan",
       "startTime": 0,
-      "endTime": 4,
+      "endTime": 2,
       "terms": [
         {
           "term": "Byakugan",
@@ -31,16 +31,22 @@
     {
       "id": "line-002",
       "text": "J'ai la vision, j'ai le Byakugan",
-      "startTime": 4,
-      "endTime": 8,
-      "terms": [],
-      "showExplanation": false
+      "startTime": 2,
+      "endTime": 4,
+      "terms": [
+        {
+          "term": "Byakugan",
+          "definition": "Pouvoir oculaire (Naruto)",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
     },
     {
       "id": "line-003",
       "text": "Comme un pimp, j'arrive avec une canne",
-      "startTime": 8,
-      "endTime": 12,
+      "startTime": 4,
+      "endTime": 6,
       "terms": [
         {
           "term": "pimp",
@@ -53,8 +59,8 @@
     {
       "id": "line-004",
       "text": "On négocie pas, direct, on vous cane",
-      "startTime": 12,
-      "endTime": 16,
+      "startTime": 6,
+      "endTime": 8,
       "terms": [
         {
           "term": "cane",
@@ -67,17 +73,12 @@
     {
       "id": "line-005",
       "text": "J'envoie les kilos d'zip' en lucarne",
-      "startTime": 16,
-      "endTime": 20,
+      "startTime": 8,
+      "endTime": 10,
       "terms": [
         {
           "term": "zip'",
           "definition": "Sachet de drogue compressé",
-          "category": "argot"
-        },
-        {
-          "term": "lucarne",
-          "definition": "Petite fenêtre, ouverture",
           "category": "argot"
         }
       ],
@@ -86,10 +87,16 @@
     {
       "id": "line-006",
       "text": "J'envoie les kilos d'zip' en lucarne",
-      "startTime": 20,
-      "endTime": 24,
-      "terms": [],
-      "showExplanation": false
+      "startTime": 10,
+      "endTime": 12,
+      "terms": [
+        {
+          "term": "zip'",
+          "definition": "Sachet de drogue compressé",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
     }
   ],
   "style": {

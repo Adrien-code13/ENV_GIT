@@ -610,10 +610,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   smallFontSize = 48;
                 }
 
-                // Only show 3 lines max: previous, active, next
+                // Only show 4 lines max: previous, active, next two
                 const effectiveIndex = Math.max(0, activeLineIndex);
                 const windowStart = Math.max(0, effectiveIndex - 1);
-                const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + 1);
+                const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + 2);
                 const visibleLines = lyrics.slice(windowStart, windowEnd + 1);
 
                 // Smooth transition progress for line changes
@@ -657,6 +657,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       if (isActive) opacity = 1;
                       else if (positionInWindow === -1) opacity = 0.4; // previous
                       else if (positionInWindow === 1) opacity = 0.35; // next
+                      else if (positionInWindow === 2) opacity = 0.25; // next+1
                       else opacity = 0.2;
 
                       // Fade out previous line as we approach transition
