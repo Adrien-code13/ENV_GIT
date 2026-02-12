@@ -586,27 +586,28 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               {/* ========== LYRICS — Sliding window, max 5 lines visible ========== */}
               {(() => {
                 // Sliding window: show 2 lines before, active, 2 lines after (max 5)
-                const WINDOW_BEFORE = 2;
+                const WINDOW_BEFORE = 1;
                 const WINDOW_AFTER = 2;
-                const LINE_HEIGHT = 85; // Approximate height per line
+                const LINE_HEIGHT = 140; // Increased for long wrapped lines
 
                 // Calculate which lines to show
                 const effectiveIndex = Math.max(0, activeLineIndex);
                 const windowStart = Math.max(0, effectiveIndex - WINDOW_BEFORE);
                 const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + WINDOW_AFTER);
 
-                // Smooth scroll offset based on active line
+                // Smooth scroll offset based on active line - always keep active line near top
                 const scrollProgress = activeLine
                   ? interpolate(
                       getLineProgress(activeLine),
-                      [0.7, 1],
+                      [0.8, 1],
                       [0, 1],
                       { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
                     )
                   : 0;
 
-                const baseOffset = Math.max(0, effectiveIndex - WINDOW_BEFORE) * LINE_HEIGHT;
-                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.3);
+                // Simple offset: move up by LINE_HEIGHT for each line past the first
+                const baseOffset = effectiveIndex * LINE_HEIGHT;
+                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.2);
 
                 return (
                   <div
@@ -615,7 +616,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       top: SAFE.top + 270,
                       left: SAFE.left,
                       right: SAFE.right,
-                      height: 360,
+                      height: 400,
                       zIndex: 10,
                       overflow: "hidden",
                     }}
@@ -624,9 +625,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 6,
+                        gap: 8,
                         transform: `translateY(-${smoothOffset}px)`,
-                        transition: "transform 0.3s ease-out",
+                        transition: "transform 0.4s ease-out",
                       }}
                     >
                       {lyrics.map((line, index) => {
@@ -639,9 +640,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                         const distanceFromActive = Math.abs(index - effectiveIndex);
                         let opacity = 0;
                         if (isActive) opacity = 1;
-                        else if (distanceFromActive === 1) opacity = isPast ? 0.45 : 0.35;
-                        else if (distanceFromActive === 2) opacity = isPast ? 0.25 : 0.20;
-                        else opacity = 0.1;
+                        else if (distanceFromActive === 1) opacity = isPast ? 0.5 : 0.4;
+                        else if (distanceFromActive === 2) opacity = isPast ? 0.3 : 0.25;
+                        else opacity = 0.15;
 
                         // Subtle scale for active
                         const lineEntrance = isActive
@@ -733,17 +734,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                             <div
                               style={{
-                                fontSize: isActive ? 50 : 42,
+                                fontSize: isActive ? 44 : 36,
                                 fontWeight: 900,
                                 color: isPast
-                                  ? "rgba(255,255,255,0.45)"
+                                  ? "rgba(255,255,255,0.5)"
                                   : isFuture
-                                    ? "rgba(255,255,255,0.35)"
+                                    ? "rgba(255,255,255,0.4)"
                                     : "#ffffff",
                                 fontFamily: FONT,
                                 textTransform: "uppercase",
-                                lineHeight: 1.25,
-                                letterSpacing: 1,
+                                lineHeight: 1.3,
+                                letterSpacing: 0.5,
                                 paddingLeft: isActive ? 18 : 8,
                                 textShadow: isActive
                                   ? `0 2px 12px rgba(0,0,0,0.5), 0 0 25px ${HL}15`
