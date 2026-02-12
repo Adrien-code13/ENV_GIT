@@ -596,18 +596,18 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                 let baseFontSize: number;
                 let smallFontSize: number;
-                if (contentWeight > 6 || maxLineLength > 100) {
-                  // Heavy content: small fonts
-                  baseFontSize = 28;
-                  smallFontSize = 24;
-                } else if (contentWeight > 4 || maxLineLength > 70) {
+                if (contentWeight > 8 || maxLineLength > 120) {
+                  // Very heavy content: medium fonts
+                  baseFontSize = 36;
+                  smallFontSize = 30;
+                } else if (contentWeight > 5 || maxLineLength > 80) {
                   // Medium content
-                  baseFontSize = 32;
-                  smallFontSize = 26;
+                  baseFontSize = 42;
+                  smallFontSize = 34;
                 } else {
                   // Light content: larger fonts
-                  baseFontSize = 38;
-                  smallFontSize = 30;
+                  baseFontSize = 48;
+                  smallFontSize = 38;
                 }
 
                 // Only show 3 lines max: previous, active, next
@@ -633,12 +633,12 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       top: SAFE.top + 270,
                       left: SAFE.left,
                       right: SAFE.right,
-                      bottom: SAFE.bottom + 340,
+                      bottom: SAFE.bottom + 260,
                       zIndex: 10,
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "flex-start",
-                      gap: 16,
+                      gap: 20,
                       overflow: "hidden",
                     }}
                   >
