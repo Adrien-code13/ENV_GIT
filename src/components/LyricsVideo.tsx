@@ -597,17 +597,17 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 let baseFontSize: number;
                 let smallFontSize: number;
                 if (contentWeight > 8 || maxLineLength > 120) {
-                  // Very heavy content: medium fonts
-                  baseFontSize = 36;
-                  smallFontSize = 30;
+                  // Very heavy content
+                  baseFontSize = 46;
+                  smallFontSize = 38;
                 } else if (contentWeight > 5 || maxLineLength > 80) {
                   // Medium content
-                  baseFontSize = 42;
-                  smallFontSize = 34;
+                  baseFontSize = 54;
+                  smallFontSize = 44;
                 } else {
                   // Light content: larger fonts
-                  baseFontSize = 48;
-                  smallFontSize = 38;
+                  baseFontSize = 60;
+                  smallFontSize = 48;
                 }
 
                 // Only show 3 lines max: previous, active, next
