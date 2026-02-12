@@ -585,37 +585,36 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
               {/* ========== LYRICS — Sliding window, max 5 lines visible ========== */}
               {(() => {
-                // Sliding window: show 2 lines before, active, 2 lines after (max 5)
+                // Sliding window config
                 const WINDOW_BEFORE = 1;
                 const WINDOW_AFTER = 2;
-                const LINE_HEIGHT = 140; // Increased for long wrapped lines
+                const LINE_HEIGHT = 200; // Large value for very long wrapped lines
+                const CONTAINER_HEIGHT = 480;
 
                 // Calculate which lines to show
                 const effectiveIndex = Math.max(0, activeLineIndex);
                 const windowStart = Math.max(0, effectiveIndex - WINDOW_BEFORE);
                 const windowEnd = Math.min(lyrics.length - 1, effectiveIndex + WINDOW_AFTER);
 
-                // Smooth scroll offset based on active line - always keep active line near top
+                // Smooth scroll offset based on active line
                 const scrollProgress = activeLine
                   ? interpolate(
                       getLineProgress(activeLine),
-                      [0.8, 1],
+                      [0.85, 1],
                       [0, 1],
                       { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
                     )
                   : 0;
 
                 // Calculate max offset to prevent last lines from being cut off
-                // Total content height minus visible container height
                 const totalContentHeight = lyrics.length * LINE_HEIGHT;
-                const containerHeight = 400;
-                const maxOffset = Math.max(0, totalContentHeight - containerHeight);
+                const maxOffset = Math.max(0, totalContentHeight - CONTAINER_HEIGHT - 50);
 
-                // Simple offset: move up by LINE_HEIGHT for each line past the first
-                // But cap it so last lines stay visible
-                const rawOffset = effectiveIndex * LINE_HEIGHT;
+                // Offset calculation: start scrolling only after first line
+                // Use smaller multiplier to scroll more gradually
+                const rawOffset = Math.max(0, effectiveIndex - 0.5) * LINE_HEIGHT * 0.85;
                 const baseOffset = Math.min(rawOffset, maxOffset);
-                const smoothOffset = baseOffset + (scrollProgress * LINE_HEIGHT * 0.15);
+                const smoothOffset = Math.max(0, baseOffset + (scrollProgress * LINE_HEIGHT * 0.1));
 
                 return (
                   <div
@@ -624,7 +623,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       top: SAFE.top + 270,
                       left: SAFE.left,
                       right: SAFE.right,
-                      height: 400,
+                      height: CONTAINER_HEIGHT,
                       zIndex: 10,
                       overflow: "hidden",
                     }}
@@ -633,9 +632,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 8,
+                        gap: 12,
                         transform: `translateY(-${smoothOffset}px)`,
-                        transition: "transform 0.4s ease-out",
+                        transition: "transform 0.5s ease-out",
                       }}
                     >
                       {lyrics.map((line, index) => {
@@ -742,7 +741,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
 
                             <div
                               style={{
-                                fontSize: isActive ? 44 : 36,
+                                fontSize: isActive ? 40 : 32,
                                 fontWeight: 900,
                                 color: isPast
                                   ? "rgba(255,255,255,0.5)"
@@ -751,7 +750,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                                     : "#ffffff",
                                 fontFamily: FONT,
                                 textTransform: "uppercase",
-                                lineHeight: 1.3,
+                                lineHeight: 1.35,
                                 letterSpacing: 0.5,
                                 paddingLeft: isActive ? 18 : 8,
                                 textShadow: isActive
