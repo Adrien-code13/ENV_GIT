@@ -455,9 +455,9 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {track.coverImage && (
                   <div
                     style={{
-                      width: 90,
-                      height: 90,
-                      borderRadius: 12,
+                      width: 110,
+                      height: 110,
+                      borderRadius: 14,
                       overflow: "hidden",
                       flexShrink: 0,
                       boxShadow: `0 0 0 3px ${HL}80, 0 0 20px ${HL}40, 0 4px 20px rgba(0,0,0,0.5)`,
@@ -472,7 +472,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 <div style={{ flex: 1 }}>
                   <div
                     style={{
-                      fontSize: 46,
+                      fontSize: 56,
                       fontWeight: 900,
                       color: "#fff",
                       fontFamily: FONT,
@@ -486,7 +486,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                   <div
                     style={{
-                      fontSize: 34,
+                      fontSize: 42,
                       color: "rgba(255,255,255,0.6)",
                       fontFamily: FONT,
                       fontWeight: 700,
@@ -504,7 +504,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
               <div
                 style={{
                   position: "absolute",
-                  top: SAFE.top + 120,
+                  top: SAFE.top + 145,
                   left: SAFE.left,
                   right: SAFE.right,
                   zIndex: 20,
@@ -515,7 +515,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   style={{
                     display: "flex",
                     gap: 5,
-                    height: 20,
+                    height: 26,
                     alignItems: "center",
                   }}
                 >
@@ -552,13 +552,13 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 12,
-                    marginTop: 10,
+                    gap: 14,
+                    marginTop: 12,
                   }}
                 >
                   <div
                     style={{
-                      fontSize: 40,
+                      fontSize: 50,
                       fontWeight: 900,
                       color: HL,
                       fontFamily: FONT,
@@ -570,7 +570,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                   <div
                     style={{
-                      fontSize: 30,
+                      fontSize: 36,
                       fontWeight: 900,
                       color: "rgba(255,255,255,0.55)",
                       fontFamily: FONT,
@@ -612,10 +612,10 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   <div
                     style={{
                       position: "absolute",
-                      top: SAFE.top + 225,
+                      top: SAFE.top + 270,
                       left: SAFE.left,
                       right: SAFE.right,
-                      height: 380,
+                      height: 360,
                       zIndex: 10,
                       overflow: "hidden",
                     }}
