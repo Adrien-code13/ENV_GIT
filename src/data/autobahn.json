@@ -86,7 +86,7 @@
       "id": "line-006",
       "text": "J'ai du champ' dans la flûte, pas de plafond de verre, dans le binks, on te sert, sur l'bitume, on te serre",
       "startTime": 19.5,
-      "endTime": 23.5,
+      "endTime": 23,
       "terms": [
         {
           "term": "champ'",
@@ -104,8 +104,8 @@
     {
       "id": "line-007",
       "text": "RS ABT, toujours aux aguets, j'ai trois anneaux de plus que Frodon Sacquet",
-      "startTime": 23.5,
-      "endTime": 27.5,
+      "startTime": 23,
+      "endTime": 27,
       "terms": [
         {
           "term": "RS ABT",
