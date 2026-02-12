@@ -48,11 +48,6 @@
           "term": "Glock",
           "definition": "Pistolet automatique",
           "category": "reference"
-        },
-        {
-          "term": "Lionel Messi",
-          "definition": "Référence au footballeur (10 = virgule)",
-          "category": "reference"
         }
       ],
       "showExplanation": true
@@ -62,14 +57,8 @@
       "text": "Tu suces le régiment et tu veux faire la Sainte, j'ai l'odeur des humains, j'peux plus aller dans la jungle",
       "startTime": 8,
       "endTime": 12,
-      "terms": [
-        {
-          "term": "régiment",
-          "definition": "Tout le monde, beaucoup de monde",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-004",
@@ -77,11 +66,6 @@
       "startTime": 12,
       "endTime": 16,
       "terms": [
-        {
-          "term": "2.7",
-          "definition": "Département 93 + 94 (Seine-Saint-Denis + Val-de-Marne)",
-          "category": "reference"
-        },
         {
           "term": "chichon",
           "definition": "Joint, cannabis",
@@ -107,11 +91,6 @@
         {
           "term": "champ'",
           "definition": "Champagne",
-          "category": "argot"
-        },
-        {
-          "term": "flûte",
-          "definition": "Verre à champagne",
           "category": "argot"
         },
         {
