@@ -7,7 +7,9 @@
     "render": "npx remotion render src/index.ts LyricsVideo out/video.mp4",
     "upgrade": "npx remotion upgrade",
     "generate": "npx ts-node scripts/generate-video.ts",
-    "fetch-cover": "npx ts-node scripts/fetch-cover.ts"
+    "fetch-cover": "npx ts-node scripts/fetch-cover.ts",
+    "sync": "node scripts/sync_lyrics_node.js",
+    "sync:interactive": "bash scripts/quick_sync.sh"
   },
   "dependencies": {
     "@remotion/cli": "4.0.242",
