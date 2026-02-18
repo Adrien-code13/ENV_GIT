@@ -207,48 +207,85 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         />
       )}
 
-      {/* === LYRIC LINE with highlighted term — center of screen === */}
+      {/* === LYRIC CARD — looks like a music player lyric block === */}
       <div
         style={{
           position: "absolute",
-          top: SAFE.top + 30,
-          left: SAFE.left - 20,
-          right: SAFE.right - 20,
+          top: SAFE.top + 20,
+          left: SAFE.left - 10,
+          right: SAFE.right - 10,
           opacity: lineOpacity,
           transform: `translateY(${lineY}px)`,
-          textAlign: "center",
         }}
       >
+        {/* Card container */}
         <div
           style={{
-            fontSize: lineFontSize,
-            fontWeight: 900,
-            color: "rgba(255,255,255,0.85)",
-            fontFamily: FONT,
-            textTransform: "uppercase",
-            lineHeight: 1.3,
-            letterSpacing: 1,
-            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
+            background: "rgba(255,255,255,0.06)",
+            border: `1px solid rgba(255,255,255,0.12)`,
+            borderLeft: `5px solid ${HL}`,
+            borderRadius: 16,
+            padding: "22px 24px 22px 28px",
+            display: "flex",
+            alignItems: "center",
+            gap: 18,
+            boxShadow: `0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)`,
+            backdropFilter: "blur(10px)",
           }}
         >
-          {beforeTerm}
-          <span
+          {/* Lyric text */}
+          <div
             style={{
-              color: "#000",
-              background: HL,
-              padding: "4px 16px",
-              borderRadius: 8,
-              marginLeft: 4,
-              marginRight: 4,
-              boxShadow: `0 0 ${30 + termGlowOpacity * 40}px ${HL}90, 0 0 80px ${HL}40`,
-              display: "inline-block",
-              transform: `scale(${termScale})`,
-              textShadow: "none",
+              flex: 1,
+              fontSize: lineFontSize,
+              fontWeight: 900,
+              color: "rgba(255,255,255,0.92)",
+              fontFamily: FONT,
+              textTransform: "uppercase",
+              lineHeight: 1.3,
+              letterSpacing: 1,
+              textShadow: "0 2px 12px rgba(0,0,0,0.6)",
             }}
           >
-            {termText}
-          </span>
-          {afterTerm}
+            {beforeTerm}
+            <span
+              style={{
+                color: "#000",
+                background: HL,
+                padding: "3px 14px",
+                borderRadius: 7,
+                marginLeft: 4,
+                marginRight: 4,
+                boxShadow: `0 0 ${30 + termGlowOpacity * 40}px ${HL}90, 0 0 60px ${HL}40`,
+                display: "inline-block",
+                transform: `scale(${termScale})`,
+                textShadow: "none",
+              }}
+            >
+              {termText}
+            </span>
+            {afterTerm}
+          </div>
+
+          {/* Sound wave bars — animated, signals "music playing" */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 40, flexShrink: 0 }}>
+            {[0.6, 1.0, 0.75, 0.9, 0.5, 0.85, 0.65].map((base, i) => {
+              const barH = base * 20 + Math.sin(frame * 0.2 + i * 0.8) * base * 18;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    width: 5,
+                    height: Math.max(4, barH),
+                    borderRadius: 3,
+                    background: `linear-gradient(180deg, ${HL}, ${HL}60)`,
+                    boxShadow: `0 0 8px ${HL}60`,
+                    alignSelf: "flex-end",
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
 
