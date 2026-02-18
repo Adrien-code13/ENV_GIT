@@ -163,3 +163,104 @@ export function safeParseRapLyricsVideo(data: unknown): {
   }
   return { success: false, error: result.error };
 }
+
+// ============================================
+// QUIZ VIDEO TYPES
+// ============================================
+
+/**
+ * Schema for a quiz answer choice
+ */
+export const QuizAnswerSchema = z.object({
+  /** The answer text */
+  text: z.string(),
+  /** Whether this is the correct answer */
+  isCorrect: z.boolean(),
+});
+
+export type QuizAnswer = z.infer<typeof QuizAnswerSchema>;
+
+/**
+ * Schema for a single quiz question
+ */
+export const QuizQuestionSchema = z.object({
+  /** Unique identifier */
+  id: z.string(),
+  /** The rap lyric line being questioned */
+  lyricLine: z.string(),
+  /** The specific term/phrase being tested */
+  term: z.string(),
+  /** The question to ask (e.g., "Que veut dire...") */
+  question: z.string(),
+  /** Answer choices (3-4 options) */
+  answers: z.array(QuizAnswerSchema).min(2).max(4),
+  /** The explanation shown after answer reveal */
+  explanation: z.string(),
+  /** Time allocated for this question in seconds */
+  duration: z.number().default(6),
+  /** Artist name for context */
+  artist: z.string().optional(),
+  /** Track title for context */
+  trackTitle: z.string().optional(),
+});
+
+export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
+
+/**
+ * Schema for quiz video styling
+ */
+export const QuizStyleSchema = z.object({
+  /** Background color */
+  backgroundColor: z.string().default("#0b1120"),
+  /** Secondary background color */
+  secondaryColor: z.string().default("#101d35"),
+  /** Primary accent color */
+  primaryColor: z.string().default("#00e676"),
+  /** Correct answer color */
+  correctColor: z.string().default("#00e676"),
+  /** Wrong answer color */
+  wrongColor: z.string().default("#ff4757"),
+  /** Countdown color */
+  countdownColor: z.string().default("#ffd93d"),
+});
+
+export type QuizStyle = z.infer<typeof QuizStyleSchema>;
+
+/**
+ * Main schema for a rap quiz video
+ */
+export const RapQuizVideoSchema = z.object({
+  /** Unique project identifier */
+  id: z.string(),
+  /** Project version */
+  version: z.string().default("1.0.0"),
+  /** Video type identifier */
+  type: z.literal("quiz"),
+  /** Quiz title/theme */
+  title: z.string(),
+  /** Subtitle/hook text */
+  subtitle: z.string().optional(),
+  /** Cover image */
+  coverImage: z.string().optional(),
+  /** Audio file */
+  audioFile: z.string().optional(),
+  /** Hook intro duration in seconds */
+  introDuration: z.number().default(2),
+  /** Array of quiz questions */
+  questions: z.array(QuizQuestionSchema),
+  /** End screen duration in seconds */
+  outroDuration: z.number().default(3),
+  /** Styling options */
+  style: QuizStyleSchema.default({}),
+  /** Video config */
+  config: VideoConfigSchema.default({}),
+});
+
+export type RapQuizVideo = z.infer<typeof RapQuizVideoSchema>;
+
+/**
+ * Helper function to parse quiz video data
+ */
+export function parseRapQuizVideo(data: unknown): RapQuizVideo {
+  return RapQuizVideoSchema.parse(data);
+}

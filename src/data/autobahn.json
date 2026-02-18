@@ -1,110 +1,98 @@
 {
-  "id": "sdm-orelsan-soleil-levant-003",
+  "id": "quiz-rap-fr-001",
   "version": "1.0.0",
-  "track": {
-    "title": "Soleil Levant",
-    "artist": "SDM & Orelsan",
-    "coverImage": "cover.jpg",
-    "audioFile": "audio.mp3"
-  },
-  "hook": {
-    "term": "MICHAEL",
-    "line": "Six bagues au doigt, j'suis comme Michael",
-    "duration": 2,
-    "difficulty": 3
-  },
-  "lyrics": [
+  "type": "quiz",
+  "title": "Quiz Rap FR",
+  "subtitle": "SDM & Orelsan - Soleil Levant",
+  "coverImage": "cover.jpg",
+  "audioFile": "audio.mp3",
+  "introDuration": 2.5,
+  "outroDuration": 3.5,
+  "questions": [
     {
-      "id": "line-001",
-      "text": "Mets plus fort le son dans la caisse (Hein, hein)",
-      "startTime": 0,
-      "endTime": 2.5,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-002",
-      "text": "Cho-Ocho, quand j'suis dans celle-là, j'suis trop trop chaud",
-      "startTime": 2.5,
-      "endTime": 5,
-      "terms": [
-        {
-          "term": "Ocho",
-          "definition": "Surnom de SDM (8 en espagnol)",
-          "category": "reference"
-        }
+      "id": "q1",
+      "lyricLine": "Six bagues au doigt, j'suis comme Michael",
+      "term": "Michael",
+      "question": "Qui est ce Michael ?",
+      "answers": [
+        { "text": "Michael Jordan", "isCorrect": true },
+        { "text": "Michael Jackson", "isCorrect": false },
+        { "text": "Michael Myers", "isCorrect": false }
       ],
-      "showExplanation": true
+      "explanation": "Michael Jordan et ses 6 titres NBA (6 bagues de champion)",
+      "artist": "SDM & Orelsan",
+      "trackTitle": "Soleil Levant"
     },
     {
-      "id": "line-003",
-      "text": "Tu connais, l'ami, tu touches, t'achètes",
-      "startTime": 5,
-      "endTime": 6.5,
-      "terms": [
-        {
-          "term": "tu touches, t'achètes",
-          "definition": "Règle de la rue - tu touches, tu paies",
-          "category": "argot"
-        }
+      "id": "q2",
+      "lyricLine": "J'avance en arrière, j'suis comme Michael",
+      "term": "j'avance en arrière",
+      "question": "Que signifie 'j'avance en arrière' ?",
+      "answers": [
+        { "text": "Le moonwalk", "isCorrect": true },
+        { "text": "Il recule", "isCorrect": false },
+        { "text": "Il est perdu", "isCorrect": false }
       ],
-      "showExplanation": true
+      "explanation": "Référence au moonwalk de Michael Jackson",
+      "artist": "SDM & Orelsan",
+      "trackTitle": "Soleil Levant"
     },
     {
-      "id": "line-004",
-      "text": "Pour pas qu'ils reviennent, tu tires, t'achèves",
-      "startTime": 6.5,
-      "endTime": 8.5,
-      "terms": [
-        {
-          "term": "tu tires, t'achèves",
-          "definition": "Violence totale, pas de témoin",
-          "category": "argot"
-        }
+      "id": "q3",
+      "lyricLine": "Cho-Ocho, quand j'suis dans celle-là",
+      "term": "Ocho",
+      "question": "C'est quoi 'Ocho' ?",
+      "answers": [
+        { "text": "Surnom de SDM", "isCorrect": true },
+        { "text": "Une marque", "isCorrect": false },
+        { "text": "Un quartier", "isCorrect": false },
+        { "text": "De l'argent", "isCorrect": false }
       ],
-      "showExplanation": true
+      "explanation": "Ocho = 8 en espagnol, surnom de SDM",
+      "artist": "SDM & Orelsan",
+      "trackTitle": "Soleil Levant"
     },
     {
-      "id": "line-005",
-      "text": "Change de chaine mais tu verras toujours ma gueule",
-      "startTime": 8.5,
-      "endTime": 11,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-006",
-      "text": "Six bagues au doigt, j'suis comme Michael",
-      "startTime": 11,
-      "endTime": 12.8,
-      "terms": [
-        {
-          "term": "Six bagues au doigt, j'suis comme Michael",
-          "definition": "Référence à Michael Jordan et ses 6 titres NBA",
-          "category": "reference"
-        }
+      "id": "q4",
+      "lyricLine": "Tu touches, t'achètes",
+      "term": "tu touches, t'achètes",
+      "question": "Que veut dire cette expression ?",
+      "answers": [
+        { "text": "Tu casses, tu paies", "isCorrect": true },
+        { "text": "Tu voles, tu gagnes", "isCorrect": false },
+        { "text": "Tu regardes, tu pars", "isCorrect": false }
       ],
-      "showExplanation": true
+      "explanation": "Règle de la rue : tu touches la marchandise, tu dois payer",
+      "artist": "SDM & Orelsan",
+      "trackTitle": "Soleil Levant"
     },
     {
-      "id": "line-007",
-      "text": "J'avance en arrière, j'suis comme Michael (Arriba)",
-      "startTime": 12.8,
-      "endTime": 14.6,
-      "terms": [
-        {
-          "term": "j'avance en arrière",
-          "definition": "Moonwalk de Michael Jackson",
-          "category": "reference"
-        }
+      "id": "q5",
+      "lyricLine": "Le soleil levant",
+      "term": "le soleil levant",
+      "question": "Quel est le jeu de mots ?",
+      "answers": [
+        { "text": "Le soleil le vend", "isCorrect": true },
+        { "text": "Le Japon", "isCorrect": false },
+        { "text": "Se lever tôt", "isCorrect": false },
+        { "text": "La lumière", "isCorrect": false }
       ],
-      "showExplanation": true
+      "explanation": "Jeu de mots : le soleil LE VEND (la drogue)",
+      "artist": "SDM & Orelsan",
+      "trackTitle": "Soleil Levant"
     }
   ],
   "style": {
     "backgroundColor": "#0b1120",
     "secondaryColor": "#101d35",
-    "highlightColor": "#00e676",
-    "animationStyle": "slide"
+    "primaryColor": "#00e676",
+    "correctColor": "#00e676",
+    "wrongColor": "#ff4757",
+    "countdownColor": "#ffd93d"
+  },
+  "config": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
   }
 }

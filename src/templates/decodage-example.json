@@ -1,0 +1,110 @@
+{
+  "id": "sdm-orelsan-soleil-levant-003",
+  "version": "1.0.0",
+  "track": {
+    "title": "Soleil Levant",
+    "artist": "SDM & Orelsan",
+    "coverImage": "cover.jpg",
+    "audioFile": "audio.mp3"
+  },
+  "hook": {
+    "term": "MICHAEL",
+    "line": "Six bagues au doigt, j'suis comme Michael",
+    "duration": 2,
+    "difficulty": 3
+  },
+  "lyrics": [
+    {
+      "id": "line-001",
+      "text": "Mets plus fort le son dans la caisse (Hein, hein)",
+      "startTime": 0,
+      "endTime": 2.5,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-002",
+      "text": "Cho-Ocho, quand j'suis dans celle-là, j'suis trop trop chaud",
+      "startTime": 2.5,
+      "endTime": 5,
+      "terms": [
+        {
+          "term": "Ocho",
+          "definition": "Surnom de SDM (8 en espagnol)",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-003",
+      "text": "Tu connais, l'ami, tu touches, t'achètes",
+      "startTime": 5,
+      "endTime": 6.5,
+      "terms": [
+        {
+          "term": "tu touches, t'achètes",
+          "definition": "Règle de la rue - tu touches, tu paies",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-004",
+      "text": "Pour pas qu'ils reviennent, tu tires, t'achèves",
+      "startTime": 6.5,
+      "endTime": 8.5,
+      "terms": [
+        {
+          "term": "tu tires, t'achèves",
+          "definition": "Violence totale, pas de témoin",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-005",
+      "text": "Change de chaine mais tu verras toujours ma gueule",
+      "startTime": 8.5,
+      "endTime": 11,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-006",
+      "text": "Six bagues au doigt, j'suis comme Michael",
+      "startTime": 11,
+      "endTime": 12.8,
+      "terms": [
+        {
+          "term": "Six bagues au doigt, j'suis comme Michael",
+          "definition": "Référence à Michael Jordan et ses 6 titres NBA",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-007",
+      "text": "J'avance en arrière, j'suis comme Michael (Arriba)",
+      "startTime": 12.8,
+      "endTime": 14.6,
+      "terms": [
+        {
+          "term": "j'avance en arrière",
+          "definition": "Moonwalk de Michael Jackson",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    }
+  ],
+  "style": {
+    "backgroundColor": "#0b1120",
+    "secondaryColor": "#101d35",
+    "highlightColor": "#00e676",
+    "animationStyle": "slide"
+  }
+}
