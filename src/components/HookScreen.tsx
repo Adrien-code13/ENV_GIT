@@ -136,11 +136,11 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
 
   // Adaptive font size for the lyric line
   const lineLength = hookLine.length;
-  let lineFontSize = 64;
-  if (lineLength > 60) lineFontSize = 38;
-  else if (lineLength > 45) lineFontSize = 44;
-  else if (lineLength > 35) lineFontSize = 50;
-  else if (lineLength > 25) lineFontSize = 56;
+  let lineFontSize = 80;
+  if (lineLength > 60) lineFontSize = 48;
+  else if (lineLength > 45) lineFontSize = 56;
+  else if (lineLength > 35) lineFontSize = 64;
+  else if (lineLength > 25) lineFontSize = 72;
 
   return (
     <AbsoluteFill

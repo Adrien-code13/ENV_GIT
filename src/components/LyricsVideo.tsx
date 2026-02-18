@@ -162,7 +162,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
   // End screen: fade to black for loop
   const endScreenTime = currentTime - lyricsEndTime;
   const endFadeOpacity = isEndScreen
-    ? interpolate(endScreenTime, [1.2, 1.5], [1, 0], {
+    ? interpolate(endScreenTime, [2.0, 2.3], [1, 0], {
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
       })
@@ -390,14 +390,14 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                       style={{
                         background: `${getCategoryColor(term.category)}25`,
                         border: `2px solid ${getCategoryColor(term.category)}80`,
-                        borderRadius: 10,
-                        padding: "6px 16px",
+                        borderRadius: 12,
+                        padding: "10px 22px",
                         transform: `scale(${0.9 + Math.sin((frame + i * 5) * 0.1) * 0.05})`,
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 28,
+                          fontSize: 38,
                           fontWeight: 900,
                           color: getCategoryColor(term.category),
                           fontFamily: FONT,
@@ -436,20 +436,36 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   </div>
                 </div>
 
-                {/* Follow CTA */}
+                {/* YouTube-style subscribe button */}
                 <div
                   style={{
                     marginTop: 24,
-                    fontSize: 30,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.7)",
-                    fontFamily: FONT,
-                    letterSpacing: 3,
-                    textTransform: "uppercase",
-                    transform: `translateY(${Math.sin(frame * 0.12) * 5}px)`,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    background: "#ff0000",
+                    borderRadius: 14,
+                    padding: "16px 44px",
+                    boxShadow: `0 0 50px rgba(255,0,0,0.55), 0 8px 30px rgba(0,0,0,0.4)`,
+                    transform: `scale(${1 + Math.sin(frame * 0.12) * 0.05})`,
                   }}
                 >
-                  FOLLOW POUR LA SUITE
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                  </svg>
+                  <div
+                    style={{
+                      fontSize: 44,
+                      fontWeight: 900,
+                      color: "#fff",
+                      fontFamily: FONT,
+                      letterSpacing: 4,
+                      textTransform: "uppercase",
+                      textShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    ABONNE-TOI
+                  </div>
                 </div>
               </div>
             </AbsoluteFill>
