@@ -402,7 +402,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {/* Question */}
                 <div
                   style={{
-                    fontSize: 64,
+                    fontSize: 72,
                     fontWeight: 900,
                     color: "#ffffff",
                     fontFamily: FONT,
@@ -413,9 +413,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                     lineHeight: 1.2,
                   }}
                 >
-                  TU CONNAISSAIS
-                  <br />
-                  COMBIEN DE TERMES ?
+                  TU EN AVAIS COMBIEN ?
                 </div>
 
                 {/* Score */}
@@ -473,28 +471,55 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   ))}
                 </div>
 
-                {/* CTA: COMMENTE */}
+                {/* CTA: COMMENTE - Plus visible avec animation */}
                 <div
                   style={{
-                    background: `linear-gradient(135deg, ${HL}, ${HL}cc)`,
-                    borderRadius: 16,
-                    padding: "18px 44px",
-                    display: "inline-block",
-                    boxShadow: `0 0 40px ${HL}50, 0 8px 30px rgba(0,0,0,0.4)`,
-                    transform: `scale(${0.95 + Math.sin(frame * 0.1) * 0.05})`,
+                    position: "relative",
+                    marginBottom: 10,
                   }}
                 >
+                  {/* Pulsing ring behind */}
                   <div
                     style={{
-                      fontSize: 38,
-                      fontWeight: 900,
-                      color: "#000",
-                      fontFamily: FONT,
-                      letterSpacing: 3,
-                      textTransform: "uppercase",
+                      position: "absolute",
+                      inset: -8,
+                      borderRadius: 24,
+                      border: `4px solid ${HL}`,
+                      opacity: 0.3 + Math.sin(frame * 0.15) * 0.3,
+                      transform: `scale(${1 + Math.sin(frame * 0.15) * 0.08})`,
+                    }}
+                  />
+                  <div
+                    style={{
+                      background: `linear-gradient(135deg, ${HL}, ${HL}cc)`,
+                      borderRadius: 16,
+                      padding: "22px 50px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 16,
+                      boxShadow: `0 0 60px ${HL}70, 0 0 100px ${HL}40, 0 8px 30px rgba(0,0,0,0.4)`,
+                      transform: `scale(${1 + Math.sin(frame * 0.12) * 0.06})`,
+                      border: `3px solid rgba(255,255,255,0.3)`,
                     }}
                   >
-                    COMMENTE TON SCORE !
+                    <span style={{ fontSize: 48, transform: `translateX(${Math.sin(frame * 0.2) * 5}px)` }}>
+                      👇
+                    </span>
+                    <div
+                      style={{
+                        fontSize: 46,
+                        fontWeight: 900,
+                        color: "#000",
+                        fontFamily: FONT,
+                        letterSpacing: 3,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      COMMENTE TON SCORE !
+                    </div>
+                    <span style={{ fontSize: 48, transform: `translateX(${-Math.sin(frame * 0.2) * 5}px)` }}>
+                      👇
+                    </span>
                   </div>
                 </div>
 
