@@ -18,14 +18,14 @@
       "id": "line-001",
       "text": "Grah, j'rallume la lumière avec un Glock, j'commence mon couplet avec un \"grah\"",
       "startTime": 0,
-      "endTime": 3,
+      "endTime": 4,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-002",
       "text": "J'démarre ma carrière d'artiste avec un pote (Ocho, ocho)",
-      "startTime": 3,
+      "startTime": 4,
       "endTime": 6,
       "terms": [
         {
@@ -59,7 +59,7 @@
       "id": "line-004",
       "text": "J'fous cette merde et le soleil levant, et j'quitterai c'monde avec un verre de vin (Arriba)",
       "startTime": 9,
-      "endTime": 12,
+      "endTime": 13,
       "terms": [
         {
           "term": "le soleil levant",
@@ -72,8 +72,8 @@
     {
       "id": "line-005",
       "text": "Gros y'a faute sur moi j'te laisse guetter la VAR, j'vise vers toi, j'te laisse guetter la mort",
-      "startTime": 12,
-      "endTime": 15,
+      "startTime": 13,
+      "endTime": 16.5,
       "terms": [
         {
           "term": "VAR",
@@ -86,8 +86,8 @@
     {
       "id": "line-006",
       "text": "J'ai les mains dans la merde et sur un disque d'or (C'est réel)",
-      "startTime": 15,
-      "endTime": 18,
+      "startTime": 16.5,
+      "endTime": 18.6,
       "terms": [],
       "showExplanation": false
     }
