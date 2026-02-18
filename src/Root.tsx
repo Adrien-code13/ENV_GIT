@@ -24,8 +24,8 @@ const calculateLyricsDuration = (data: RapLyricsVideo, fps: number): number => {
 const calculateQuizDuration = (data: RapQuizVideo, fps: number): number => {
   const introDuration = data.introDuration ?? 2;
   const outroDuration = data.outroDuration ?? 3;
-  // Each question: 0.8 + 0.5 + 3.5 + 1.5 + 0.7 = 7s
-  const questionDuration = 7;
+  // Each question: 0.5 + 0.3 + 3 + 1 + 0.2 = 5s (faster pacing)
+  const questionDuration = 5;
   const totalQuestionTime = data.questions.length * questionDuration;
   return Math.ceil((introDuration + totalQuestionTime + outroDuration) * fps);
 };

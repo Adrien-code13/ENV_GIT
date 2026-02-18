@@ -9,14 +9,13 @@ import {
   staticFile,
   interpolate,
 } from "remotion";
-import type { RapQuizVideo, QuizQuestion } from "../types";
+import type { RapQuizVideo } from "../types";
 
 interface QuizVideoProps {
   data: RapQuizVideo;
 }
 
-// Safe zones for TikTok / YouTube Shorts
-const SAFE = { top: 120, bottom: 280, left: 60, right: 60 };
+const SAFE = { top: 100, bottom: 250, left: 50, right: 50 };
 
 export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
   const frame = useCurrentFrame();
@@ -32,25 +31,17 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
   const ACCENT = "#38bdf8";
   const FONT = "'Impact', 'Arial Black', sans-serif";
 
-  // Calculate phase timings
   const introFrames = Math.ceil(introDuration * fps);
-  const outroFrames = Math.ceil(outroDuration * fps);
 
-  // Each question:
-  // - 0.8s lyric appear
-  // - 0.5s question appear
-  // - 3.5s countdown + answers
-  // - 1.5s reveal
-  // - 0.7s explanation
-  // Total: ~7s per question
-  const LYRIC_PHASE = 0.8;
-  const QUESTION_PHASE = 0.5;
-  const COUNTDOWN_PHASE = 3.5;
-  const REVEAL_PHASE = 1.5;
-  const EXPLAIN_PHASE = 0.7;
-  const QUESTION_DURATION = LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE + REVEAL_PHASE + EXPLAIN_PHASE;
+  // FASTER PACING: 5s per question
+  // 0.5s lyric slam + 0.3s question + 3s countdown + 1s reveal + 0.2s transition
+  const LYRIC_PHASE = 0.5;
+  const QUESTION_PHASE = 0.3;
+  const COUNTDOWN_PHASE = 3;
+  const REVEAL_PHASE = 1;
+  const TRANSITION_PHASE = 0.2;
+  const QUESTION_DURATION = LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE + REVEAL_PHASE + TRANSITION_PHASE;
 
-  // Determine current phase
   const currentTime = frame / fps;
   const isIntro = currentTime < introDuration;
 
@@ -61,44 +52,36 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
   const isOutro = currentTime >= outroStartTime;
   const isQuestionPhase = !isIntro && !isOutro;
 
-  // Current question index and phase within question
   const questionTimeElapsed = currentTime - questionsStartTime;
   const currentQuestionIndex = Math.floor(questionTimeElapsed / QUESTION_DURATION);
   const timeInCurrentQuestion = questionTimeElapsed - (currentQuestionIndex * QUESTION_DURATION);
 
   const currentQuestion = questions[Math.min(currentQuestionIndex, questions.length - 1)];
+  const totalQuestions = questions.length;
 
-  // Sub-phases within a question
+  // Sub-phases
   const isLyricPhase = timeInCurrentQuestion < LYRIC_PHASE;
   const isQuestionTextPhase = timeInCurrentQuestion >= LYRIC_PHASE && timeInCurrentQuestion < LYRIC_PHASE + QUESTION_PHASE;
   const isCountdownPhase = timeInCurrentQuestion >= LYRIC_PHASE + QUESTION_PHASE && timeInCurrentQuestion < LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE;
   const isRevealPhase = timeInCurrentQuestion >= LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE && timeInCurrentQuestion < LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE + REVEAL_PHASE;
-  const isExplainPhase = timeInCurrentQuestion >= LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE + REVEAL_PHASE;
 
-  // Countdown timer (3, 2, 1)
-  const countdownTimeLeft = LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE - timeInCurrentQuestion;
-  const countdownNumber = Math.ceil(countdownTimeLeft);
+  // Countdown progress (1 to 0)
+  const countdownProgress = isCountdownPhase
+    ? 1 - (timeInCurrentQuestion - LYRIC_PHASE - QUESTION_PHASE) / COUNTDOWN_PHASE
+    : 0;
+
+  // Beep effect simulation (visual pulse on each second)
+  const countdownSecond = Math.ceil(countdownProgress * 3);
+  const isBeepMoment = isCountdownPhase && (countdownProgress * 3) % 1 > 0.9;
 
   // Animations
   const pulse = Math.sin(frame * 0.12) * 0.3 + 0.7;
   const fastPulse = Math.sin(frame * 0.25) * 0.5 + 0.5;
 
-  // Intro animation
-  const introScale = spring({
-    frame: frame,
-    fps,
-    config: { damping: 8, stiffness: 100, mass: 0.8 },
-  });
-
-  // Question entrance
-  const questionEntrance = spring({
-    frame: Math.max(0, frame - (questionsStartTime + currentQuestionIndex * QUESTION_DURATION) * fps),
-    fps,
-    config: { damping: 8, stiffness: 180, mass: 0.5 },
-  });
-
-  // Reveal flash
+  // Screen shake on reveal
   const revealProgress = isRevealPhase ? (timeInCurrentQuestion - (LYRIC_PHASE + QUESTION_PHASE + COUNTDOWN_PHASE)) / REVEAL_PHASE : 0;
+  const shakeX = isRevealPhase && revealProgress < 0.3 ? Math.sin(frame * 8) * 12 * (1 - revealProgress * 3) : 0;
+  const shakeY = isRevealPhase && revealProgress < 0.3 ? Math.cos(frame * 10) * 8 * (1 - revealProgress * 3) : 0;
 
   // Outro animation
   const outroFrame = Math.max(0, (currentTime - outroStartTime) * fps);
@@ -108,18 +91,26 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
     config: { damping: 6, stiffness: 150, mass: 0.5 },
   });
 
-  // Score calculation (for outro) - all correct for demo
-  const totalQuestions = questions.length;
-
-  // Get correct answer index
   const correctAnswerIndex = currentQuestion?.answers.findIndex(a => a.isCorrect) ?? 0;
 
-  // Adaptive font size for lyric line
+  // Confetti particles for correct reveal
+  const confettiParticles = useMemo(() => {
+    return Array.from({ length: 30 }).map((_, i) => ({
+      x: Math.random() * 100,
+      startY: -10,
+      speed: 2 + Math.random() * 3,
+      size: 8 + Math.random() * 12,
+      color: [HL, ACCENT, "#ffd93d", "#ff6b6b", "#a855f7"][i % 5],
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 20,
+    }));
+  }, [HL, ACCENT]);
+
   const getLyricFontSize = (text: string) => {
-    if (text.length > 80) return 36;
-    if (text.length > 60) return 42;
-    if (text.length > 40) return 48;
-    return 54;
+    if (text.length > 70) return 34;
+    if (text.length > 50) return 40;
+    if (text.length > 35) return 46;
+    return 52;
   };
 
   return (
@@ -129,223 +120,283 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
         style={{
           position: "absolute",
           inset: 0,
-          background: `linear-gradient(${interpolate(frame, [0, 300], [160, 200])}deg,
-            ${BG1} 0%, #0f1a30 25%, ${BG2} 50%, #0d1528 75%, ${BG1} 100%)`,
+          background: `radial-gradient(ellipse at 50% 30%, ${BG2} 0%, ${BG1} 70%)`,
         }}
       />
 
-      {/* Floating orbs */}
+      {/* Pulsing orbs */}
       {[
-        { x: 20, y: 15, size: 400, speed: 0.01, color: HL },
-        { x: 80, y: 75, size: 350, speed: 0.015, color: ACCENT },
-        { x: 50, y: 50, size: 300, speed: 0.012, color: HL },
+        { x: 15, y: 20, size: 350, color: HL },
+        { x: 85, y: 70, size: 300, color: ACCENT },
       ].map((orb, i) => (
         <div
           key={i}
           style={{
             position: "absolute",
-            left: `${orb.x + Math.sin(frame * orb.speed + i * 2) * 10}%`,
-            top: `${orb.y + Math.cos(frame * orb.speed * 0.8 + i) * 8}%`,
+            left: `${orb.x}%`,
+            top: `${orb.y}%`,
             width: orb.size,
             height: orb.size,
             borderRadius: "50%",
-            background: `radial-gradient(circle, ${orb.color}20 0%, transparent 70%)`,
-            filter: "blur(80px)",
-            opacity: 0.6 + Math.sin(frame * 0.04 + i) * 0.3,
+            background: `radial-gradient(circle, ${orb.color}25 0%, transparent 70%)`,
+            filter: "blur(60px)",
+            opacity: 0.5 + Math.sin(frame * 0.05 + i) * 0.3,
             transform: "translate(-50%, -50%)",
           }}
         />
       ))}
 
-      {/* Particles */}
-      {Array.from({ length: 15 }).map((_, i) => {
-        const seed = i * 137.5;
-        const px = (seed * 7.3) % 100;
-        const py = ((seed * 3.7) % 100) + Math.sin(frame * 0.025 + i) * 6;
-        return (
-          <div
-            key={i}
+      {/* Main content with shake */}
+      <div style={{ transform: `translate(${shakeX}px, ${shakeY}px)`, width: "100%", height: "100%" }}>
+
+        {/* === INTRO - HOOK ADDICTIF === */}
+        {isIntro && (
+          <AbsoluteFill
             style={{
-              position: "absolute",
-              left: `${px}%`,
-              top: `${py}%`,
-              width: 4 + (i % 3) * 2,
-              height: 4 + (i % 3) * 2,
-              borderRadius: "50%",
-              background: i % 2 === 0 ? HL : ACCENT,
-              opacity: 0.15 + Math.sin(frame * 0.06 + i * 0.9) * 0.15,
-              boxShadow: `0 0 10px ${i % 2 === 0 ? HL : ACCENT}50`,
-            }}
-          />
-        );
-      })}
-
-      {/* === INTRO SCREEN === */}
-      {isIntro && (
-        <AbsoluteFill
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
-          }}
-        >
-          {/* Big glow */}
-          <div
-            style={{
-              position: "absolute",
-              width: 700,
-              height: 700,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${HL}50 0%, ${ACCENT}30 40%, transparent 70%)`,
-              opacity: pulse,
-              filter: "blur(60px)",
-            }}
-          />
-
-          <div
-            style={{
-              transform: `scale(${introScale})`,
-              textAlign: "center",
-            }}
-          >
-            {/* Main hook text */}
-            <div
-              style={{
-                fontSize: 72,
-                fontWeight: 900,
-                color: "#fff",
-                fontFamily: FONT,
-                textTransform: "uppercase",
-                letterSpacing: 4,
-                textShadow: `0 4px 40px rgba(0,0,0,0.6), 0 0 60px ${HL}40`,
-                lineHeight: 1.15,
-                marginBottom: 30,
-              }}
-            >
-              TU CONNAIS
-              <br />
-              <span style={{ color: HL }}>VRAIMENT</span>
-              <br />
-              LE RAP FR ?
-            </div>
-
-            {/* Subtitle */}
-            <div
-              style={{
-                fontSize: 38,
-                fontWeight: 700,
-                color: "rgba(255,255,255,0.7)",
-                fontFamily: FONT,
-                letterSpacing: 6,
-                textTransform: "uppercase",
-              }}
-            >
-              {totalQuestions} QUESTIONS
-            </div>
-
-            {/* Pulsing arrow */}
-            <div
-              style={{
-                marginTop: 40,
-                fontSize: 60,
-                opacity: fastPulse,
-                transform: `translateY(${Math.sin(frame * 0.15) * 8}px)`,
-              }}
-            >
-              👇
-            </div>
-          </div>
-        </AbsoluteFill>
-      )}
-
-      {/* === QUESTION PHASE === */}
-      {isQuestionPhase && currentQuestion && (
-        <AbsoluteFill
-          style={{
-            padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
-          }}
-        >
-          {/* Question number badge */}
-          <div
-            style={{
-              position: "absolute",
-              top: SAFE.top,
-              left: SAFE.left,
-              display: "flex",
+              justifyContent: "center",
               alignItems: "center",
-              gap: 12,
+              padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
             }}
           >
-            <div
-              style={{
-                background: HL,
-                color: "#000",
-                fontSize: 32,
-                fontWeight: 900,
-                fontFamily: FONT,
-                padding: "8px 20px",
-                borderRadius: 12,
-                boxShadow: `0 0 30px ${HL}50`,
-              }}
-            >
-              {currentQuestionIndex + 1}/{totalQuestions}
-            </div>
-            {currentQuestion.artist && (
+            {/* Flash burst on entry */}
+            {frame < 8 && (
               <div
                 style={{
-                  fontSize: 28,
+                  position: "absolute",
+                  inset: 0,
+                  background: `radial-gradient(circle, ${HL}90 0%, transparent 60%)`,
+                  opacity: interpolate(frame, [0, 8], [0.8, 0], { extrapolateRight: "clamp" }),
+                }}
+              />
+            )}
+
+            {/* Big glow */}
+            <div
+              style={{
+                position: "absolute",
+                width: 600,
+                height: 600,
+                borderRadius: "50%",
+                background: `radial-gradient(circle, ${HL}50 0%, transparent 60%)`,
+                opacity: pulse,
+                filter: "blur(50px)",
+              }}
+            />
+
+            <div style={{ textAlign: "center", zIndex: 10 }}>
+              {/* HOOK PRINCIPAL - Scarcity/Challenge */}
+              <div
+                style={{
+                  fontSize: 90,
+                  fontWeight: 900,
+                  color: HL,
+                  fontFamily: FONT,
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                  textShadow: `0 0 60px ${HL}80, 0 4px 30px rgba(0,0,0,0.6)`,
+                  lineHeight: 1.1,
+                  transform: `scale(${spring({
+                    frame,
+                    fps,
+                    config: { damping: 6, stiffness: 120, mass: 0.6 },
+                  })})`,
+                }}
+              >
+                SEUL 1%
+              </div>
+              <div
+                style={{
+                  fontSize: 70,
+                  fontWeight: 900,
+                  color: "#fff",
+                  fontFamily: FONT,
+                  textTransform: "uppercase",
+                  letterSpacing: 3,
+                  textShadow: "0 4px 30px rgba(0,0,0,0.6)",
+                  marginTop: 10,
+                  transform: `scale(${spring({
+                    frame: Math.max(0, frame - 4),
+                    fps,
+                    config: { damping: 8, stiffness: 150, mass: 0.5 },
+                  })})`,
+                }}
+              >
+                A {totalQuestions}/{totalQuestions}
+              </div>
+
+              {/* Subtitle - Artist */}
+              <div
+                style={{
+                  fontSize: 32,
                   fontWeight: 700,
                   color: "rgba(255,255,255,0.6)",
                   fontFamily: FONT,
-                  letterSpacing: 2,
+                  letterSpacing: 5,
                   textTransform: "uppercase",
+                  marginTop: 30,
+                  opacity: spring({
+                    frame: Math.max(0, frame - 12),
+                    fps,
+                    config: { damping: 10, stiffness: 100, mass: 0.5 },
+                  }),
                 }}
               >
-                {currentQuestion.artist}
+                {data.subtitle}
               </div>
-            )}
-          </div>
 
-          {/* Main content area */}
-          <div
+              {/* Challenge text */}
+              <div
+                style={{
+                  fontSize: 38,
+                  fontWeight: 900,
+                  color: "#fff",
+                  fontFamily: FONT,
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                  marginTop: 40,
+                  opacity: spring({
+                    frame: Math.max(0, frame - 20),
+                    fps,
+                    config: { damping: 10, stiffness: 100, mass: 0.5 },
+                  }),
+                }}
+              >
+                ET TOI ? 🎯
+              </div>
+
+              {/* Animated arrows */}
+              <div
+                style={{
+                  marginTop: 30,
+                  fontSize: 50,
+                  opacity: fastPulse,
+                  transform: `translateY(${Math.sin(frame * 0.18) * 10}px)`,
+                }}
+              >
+                👇👇👇
+              </div>
+            </div>
+          </AbsoluteFill>
+        )}
+
+        {/* === QUESTION PHASE === */}
+        {isQuestionPhase && currentQuestion && (
+          <AbsoluteFill
             style={{
-              position: "absolute",
-              top: SAFE.top + 80,
-              left: SAFE.left,
-              right: SAFE.right,
-              bottom: SAFE.bottom,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              gap: 24,
+              padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
             }}
           >
-            {/* Lyric line - always visible after lyric phase */}
-            {!isLyricPhase || timeInCurrentQuestion > 0.2 ? (
+            {/* TOP: Progress bar segmentée */}
+            <div
+              style={{
+                position: "absolute",
+                top: SAFE.top,
+                left: SAFE.left,
+                right: SAFE.right,
+                display: "flex",
+                gap: 8,
+                height: 12,
+              }}
+            >
+              {questions.map((_, i) => {
+                const isDone = i < currentQuestionIndex;
+                const isCurrent = i === currentQuestionIndex;
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      flex: 1,
+                      height: "100%",
+                      borderRadius: 6,
+                      background: isDone
+                        ? `linear-gradient(90deg, ${HL}, ${ACCENT})`
+                        : isCurrent
+                          ? "rgba(255,255,255,0.3)"
+                          : "rgba(255,255,255,0.1)",
+                      boxShadow: isDone ? `0 0 15px ${HL}50` : "none",
+                      overflow: "hidden",
+                      position: "relative",
+                    }}
+                  >
+                    {/* Progress fill for current question */}
+                    {isCurrent && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: `${(1 - countdownProgress) * 100}%`,
+                          background: `linear-gradient(90deg, ${HL}, ${ACCENT})`,
+                          boxShadow: `0 0 10px ${HL}60`,
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Question number */}
+            <div
+              style={{
+                position: "absolute",
+                top: SAFE.top + 30,
+                left: SAFE.left,
+                fontSize: 28,
+                fontWeight: 900,
+                color: "rgba(255,255,255,0.5)",
+                fontFamily: FONT,
+                letterSpacing: 3,
+              }}
+            >
+              QUESTION {currentQuestionIndex + 1}/{totalQuestions}
+            </div>
+
+            {/* Main content */}
+            <div
+              style={{
+                position: "absolute",
+                top: SAFE.top + 70,
+                left: SAFE.left,
+                right: SAFE.right,
+                bottom: SAFE.bottom,
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
+              {/* LYRIC LINE - Slam in */}
               <div
                 style={{
                   background: "rgba(255,255,255,0.08)",
                   borderRadius: 16,
-                  padding: "24px 28px",
+                  padding: "20px 24px",
                   borderLeft: `5px solid ${HL}`,
-                  boxShadow: `0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
+                  boxShadow: `0 4px 30px rgba(0,0,0,0.4)`,
                   backdropFilter: "blur(10px)",
-                  transform: `translateY(${(1 - questionEntrance) * 30}px)`,
-                  opacity: questionEntrance,
+                  transform: `scale(${spring({
+                    frame: Math.max(0, (timeInCurrentQuestion) * fps),
+                    fps,
+                    config: { damping: 5, stiffness: 200, mass: 0.4 },
+                  })}) translateX(${(1 - spring({
+                    frame: Math.max(0, (timeInCurrentQuestion) * fps),
+                    fps,
+                    config: { damping: 8, stiffness: 150, mass: 0.5 },
+                  })) * -50}px)`,
                 }}
               >
                 <div
                   style={{
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: 700,
                     color: HL,
                     fontFamily: FONT,
                     letterSpacing: 4,
-                    textTransform: "uppercase",
-                    marginBottom: 12,
+                    marginBottom: 8,
                   }}
                 >
-                  🎵 PAROLES
+                  🎵 {currentQuestion.artist}
                 </div>
                 <div
                   style={{
@@ -354,7 +405,7 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
                     color: "#fff",
                     fontFamily: FONT,
                     textTransform: "uppercase",
-                    lineHeight: 1.25,
+                    lineHeight: 1.2,
                   }}
                 >
                   {(() => {
@@ -370,9 +421,12 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
                           style={{
                             background: HL,
                             color: "#000",
-                            padding: "2px 8px",
+                            padding: "2px 10px",
                             borderRadius: 6,
-                            boxShadow: `0 0 20px ${HL}60`,
+                            boxShadow: `0 0 25px ${HL}70`,
+                            display: "inline-block",
+                            transform: isBeepMoment ? "scale(1.1)" : "scale(1)",
+                            transition: "transform 0.1s",
                           }}
                         >
                           {term}
@@ -383,377 +437,411 @@ export const QuizVideo: React.FC<QuizVideoProps> = ({ data }) => {
                   })()}
                 </div>
               </div>
-            ) : null}
 
-            {/* Question text */}
-            {(isQuestionTextPhase || isCountdownPhase || isRevealPhase || isExplainPhase) && (
-              <div
-                style={{
-                  fontSize: 44,
-                  fontWeight: 900,
-                  color: "#fff",
-                  fontFamily: FONT,
-                  textAlign: "center",
-                  textTransform: "uppercase",
-                  letterSpacing: 2,
-                  textShadow: "0 2px 20px rgba(0,0,0,0.5)",
-                  marginTop: 10,
-                  transform: `scale(${spring({
-                    frame: Math.max(0, (timeInCurrentQuestion - LYRIC_PHASE) * fps),
-                    fps,
-                    config: { damping: 6, stiffness: 200, mass: 0.4 },
-                  })})`,
-                }}
-              >
-                {currentQuestion.question}
-              </div>
-            )}
-
-            {/* Answer choices */}
-            {(isCountdownPhase || isRevealPhase || isExplainPhase) && (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 14,
-                  marginTop: 20,
-                }}
-              >
-                {currentQuestion.answers.map((answer, i) => {
-                  const isCorrect = answer.isCorrect;
-                  const showResult = isRevealPhase || isExplainPhase;
-                  const answerEntrance = spring({
-                    frame: Math.max(0, (timeInCurrentQuestion - LYRIC_PHASE - QUESTION_PHASE - i * 0.1) * fps),
-                    fps,
-                    config: { damping: 8, stiffness: 180, mass: 0.4 },
-                  });
-
-                  let bgColor = "rgba(255,255,255,0.1)";
-                  let borderColor = "rgba(255,255,255,0.2)";
-                  let textColor = "#fff";
-
-                  if (showResult) {
-                    if (isCorrect) {
-                      bgColor = `${CORRECT}30`;
-                      borderColor = CORRECT;
-                      textColor = CORRECT;
-                    } else {
-                      bgColor = `${WRONG}20`;
-                      borderColor = `${WRONG}60`;
-                      textColor = `${WRONG}aa`;
-                    }
-                  }
-
-                  const letters = ["A", "B", "C", "D"];
-
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 16,
-                        background: bgColor,
-                        border: `3px solid ${borderColor}`,
-                        borderRadius: 16,
-                        padding: "18px 24px",
-                        transform: `translateX(${(1 - answerEntrance) * 100}px) scale(${showResult && isCorrect ? 1 + Math.sin(frame * 0.2) * 0.03 : 1})`,
-                        opacity: answerEntrance,
-                        boxShadow: showResult && isCorrect ? `0 0 30px ${CORRECT}40` : "none",
-                        transition: "background 0.3s, border-color 0.3s",
-                      }}
-                    >
-                      {/* Letter badge */}
-                      <div
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 12,
-                          background: showResult && isCorrect ? CORRECT : showResult ? `${WRONG}60` : HL,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 28,
-                          fontWeight: 900,
-                          color: showResult && !isCorrect ? "#fff" : "#000",
-                          fontFamily: FONT,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {letters[i]}
-                      </div>
-
-                      {/* Answer text */}
-                      <div
-                        style={{
-                          fontSize: 34,
-                          fontWeight: 800,
-                          color: textColor,
-                          fontFamily: FONT,
-                          textTransform: "uppercase",
-                          flex: 1,
-                        }}
-                      >
-                        {answer.text}
-                      </div>
-
-                      {/* Check/X icon on reveal */}
-                      {showResult && (
-                        <div style={{ fontSize: 36 }}>
-                          {isCorrect ? "✅" : "❌"}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Countdown timer */}
-            {isCountdownPhase && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 80,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                {/* Circular timer */}
+              {/* QUESTION TEXT */}
+              {(isQuestionTextPhase || isCountdownPhase || isRevealPhase) && (
                 <div
                   style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: "50%",
-                    background: `conic-gradient(${COUNTDOWN_COLOR} ${(countdownTimeLeft / COUNTDOWN_PHASE) * 100}%, rgba(255,255,255,0.1) 0%)`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: `0 0 40px ${COUNTDOWN_COLOR}50`,
+                    fontSize: 42,
+                    fontWeight: 900,
+                    color: "#fff",
+                    fontFamily: FONT,
+                    textAlign: "center",
+                    textTransform: "uppercase",
+                    letterSpacing: 2,
+                    textShadow: "0 2px 15px rgba(0,0,0,0.5)",
+                    marginTop: 5,
+                    transform: `scale(${spring({
+                      frame: Math.max(0, (timeInCurrentQuestion - LYRIC_PHASE) * fps),
+                      fps,
+                      config: { damping: 6, stiffness: 200, mass: 0.3 },
+                    })})`,
+                  }}
+                >
+                  {currentQuestion.question}
+                </div>
+              )}
+
+              {/* COUNTDOWN BAR - Filling/draining with beep pulse */}
+              {isCountdownPhase && (
+                <div
+                  style={{
+                    height: 8,
+                    borderRadius: 4,
+                    background: "rgba(255,255,255,0.15)",
+                    overflow: "hidden",
+                    marginTop: 5,
                   }}
                 >
                   <div
                     style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: "50%",
-                      background: BG1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 48,
-                      fontWeight: 900,
-                      color: COUNTDOWN_COLOR,
-                      fontFamily: FONT,
-                      transform: `scale(${1 + Math.sin(frame * 0.3) * 0.1})`,
+                      width: `${countdownProgress * 100}%`,
+                      height: "100%",
+                      background: countdownProgress < 0.3
+                        ? WRONG
+                        : countdownProgress < 0.6
+                          ? COUNTDOWN_COLOR
+                          : HL,
+                      boxShadow: `0 0 20px ${countdownProgress < 0.3 ? WRONG : COUNTDOWN_COLOR}80`,
+                      transition: "background 0.3s",
                     }}
-                  >
-                    {Math.max(1, countdownNumber)}
-                  </div>
+                  />
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Explanation on reveal */}
-            {isExplainPhase && (
-              <div
-                style={{
-                  background: `linear-gradient(135deg, ${CORRECT}20, ${CORRECT}10)`,
-                  border: `2px solid ${CORRECT}60`,
-                  borderRadius: 16,
-                  padding: "20px 28px",
-                  marginTop: 10,
-                  transform: `scale(${spring({
-                    frame: Math.max(0, (timeInCurrentQuestion - LYRIC_PHASE - QUESTION_PHASE - COUNTDOWN_PHASE - REVEAL_PHASE) * fps),
-                    fps,
-                    config: { damping: 6, stiffness: 180, mass: 0.4 },
-                  })})`,
-                }}
-              >
+              {/* COUNTDOWN NUMBER - Big pulsing */}
+              {isCountdownPhase && (
                 <div
                   style={{
-                    fontSize: 32,
-                    fontWeight: 800,
-                    color: "#fff",
+                    position: "absolute",
+                    top: "50%",
+                    right: 30,
+                    transform: `translateY(-50%) scale(${isBeepMoment ? 1.3 : 1})`,
+                    fontSize: 80,
+                    fontWeight: 900,
+                    color: countdownProgress < 0.3 ? WRONG : COUNTDOWN_COLOR,
                     fontFamily: FONT,
-                    lineHeight: 1.3,
+                    textShadow: `0 0 40px ${countdownProgress < 0.3 ? WRONG : COUNTDOWN_COLOR}80`,
+                    opacity: 0.9,
+                    transition: "transform 0.1s, color 0.3s",
                   }}
                 >
-                  💡 {currentQuestion.explanation}
+                  {countdownSecond}
                 </div>
-              </div>
-            )}
-          </div>
+              )}
 
-          {/* Flash on reveal */}
-          {isRevealPhase && revealProgress < 0.3 && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: `radial-gradient(circle at 50% 50%, ${CORRECT}60 0%, transparent 60%)`,
-                opacity: interpolate(revealProgress, [0, 0.3], [0.6, 0], { extrapolateRight: "clamp" }),
-                pointerEvents: "none",
-              }}
-            />
-          )}
-        </AbsoluteFill>
-      )}
+              {/* ANSWER CHOICES */}
+              {(isCountdownPhase || isRevealPhase) && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                    marginTop: 10,
+                  }}
+                >
+                  {currentQuestion.answers.map((answer, i) => {
+                    const isCorrect = answer.isCorrect;
+                    const showResult = isRevealPhase;
+                    const answerDelay = i * 0.08;
+                    const answerEntrance = spring({
+                      frame: Math.max(0, (timeInCurrentQuestion - LYRIC_PHASE - QUESTION_PHASE - answerDelay) * fps),
+                      fps,
+                      config: { damping: 8, stiffness: 180, mass: 0.4 },
+                    });
 
-      {/* === OUTRO / SCORE SCREEN === */}
-      {isOutro && (
-        <AbsoluteFill
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
-          }}
-        >
-          {/* Big glow */}
-          <div
-            style={{
-              position: "absolute",
-              width: 800,
-              height: 800,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${HL}40 0%, ${ACCENT}20 40%, transparent 60%)`,
-              opacity: pulse,
-              filter: "blur(70px)",
-            }}
-          />
+                    let bgColor = "rgba(255,255,255,0.1)";
+                    let borderColor = "rgba(255,255,255,0.25)";
+                    let textColor = "#fff";
+                    let glowColor = "transparent";
 
-          <div
-            style={{
-              transform: `scale(${outroScale})`,
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            {/* Question */}
-            <div
-              style={{
-                fontSize: 64,
-                fontWeight: 900,
-                color: "#fff",
-                fontFamily: FONT,
-                textTransform: "uppercase",
-                letterSpacing: 3,
-                textShadow: "0 4px 30px rgba(0,0,0,0.6)",
-                marginBottom: 20,
-              }}
-            >
-              T'AS EU COMBIEN ?
+                    if (showResult) {
+                      if (isCorrect) {
+                        bgColor = `${CORRECT}35`;
+                        borderColor = CORRECT;
+                        textColor = "#fff";
+                        glowColor = `${CORRECT}50`;
+                      } else {
+                        bgColor = `${WRONG}15`;
+                        borderColor = `${WRONG}50`;
+                        textColor = `rgba(255,255,255,0.5)`;
+                      }
+                    }
+
+                    const letters = ["A", "B", "C", "D"];
+
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 14,
+                          background: bgColor,
+                          border: `3px solid ${borderColor}`,
+                          borderRadius: 14,
+                          padding: "16px 20px",
+                          transform: `translateX(${(1 - answerEntrance) * 80}px) scale(${showResult && isCorrect ? 1.02 + Math.sin(frame * 0.15) * 0.02 : 1})`,
+                          opacity: answerEntrance,
+                          boxShadow: `0 0 25px ${glowColor}`,
+                          transition: "background 0.2s, border-color 0.2s",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 46,
+                            height: 46,
+                            borderRadius: 10,
+                            background: showResult
+                              ? isCorrect ? CORRECT : `${WRONG}60`
+                              : `linear-gradient(135deg, ${HL}, ${ACCENT})`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 26,
+                            fontWeight: 900,
+                            color: showResult && !isCorrect ? "#fff" : "#000",
+                            fontFamily: FONT,
+                            flexShrink: 0,
+                            boxShadow: showResult && isCorrect ? `0 0 20px ${CORRECT}60` : "none",
+                          }}
+                        >
+                          {showResult ? (isCorrect ? "✓" : "✗") : letters[i]}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 32,
+                            fontWeight: 800,
+                            color: textColor,
+                            fontFamily: FONT,
+                            textTransform: "uppercase",
+                            flex: 1,
+                            textDecoration: showResult && !isCorrect ? "line-through" : "none",
+                          }}
+                        >
+                          {answer.text}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* EXPLANATION on reveal */}
+              {isRevealPhase && revealProgress > 0.4 && (
+                <div
+                  style={{
+                    background: `linear-gradient(135deg, ${CORRECT}25, ${CORRECT}10)`,
+                    border: `2px solid ${CORRECT}50`,
+                    borderRadius: 14,
+                    padding: "16px 22px",
+                    marginTop: 8,
+                    transform: `scale(${spring({
+                      frame: Math.max(0, (revealProgress - 0.4) * fps * REVEAL_PHASE),
+                      fps,
+                      config: { damping: 8, stiffness: 200, mass: 0.4 },
+                    })})`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 28,
+                      fontWeight: 800,
+                      color: "#fff",
+                      fontFamily: FONT,
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    💡 {currentQuestion.explanation}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Score display */}
-            <div
-              style={{
-                fontSize: 140,
-                fontWeight: 900,
-                color: HL,
-                fontFamily: FONT,
-                lineHeight: 1,
-                textShadow: `0 0 60px ${HL}80, 0 0 120px ${HL}40`,
-                marginBottom: 30,
-              }}
-            >
-              ?/{totalQuestions}
-            </div>
+            {/* CONFETTI on correct reveal */}
+            {isRevealPhase && confettiParticles.map((p, i) => {
+              const fallProgress = revealProgress * p.speed;
+              const y = p.startY + fallProgress * 120;
+              if (y > 110) return null;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    position: "absolute",
+                    left: `${p.x}%`,
+                    top: `${y}%`,
+                    width: p.size,
+                    height: p.size * 0.6,
+                    background: p.color,
+                    borderRadius: 2,
+                    transform: `rotate(${p.rotation + frame * p.rotSpeed}deg)`,
+                    opacity: interpolate(y, [80, 110], [1, 0], { extrapolateLeft: "clamp" }),
+                  }}
+                />
+              );
+            })}
 
-            {/* CTA: COMMENTE */}
-            <div
-              style={{
-                position: "relative",
-                marginBottom: 20,
-              }}
-            >
-              {/* Pulsing ring */}
+            {/* Flash on reveal */}
+            {isRevealPhase && revealProgress < 0.2 && (
               <div
                 style={{
                   position: "absolute",
-                  inset: -10,
-                  borderRadius: 24,
-                  border: `4px solid ${HL}`,
-                  opacity: 0.3 + Math.sin(frame * 0.15) * 0.3,
-                  transform: `scale(${1 + Math.sin(frame * 0.15) * 0.08})`,
+                  inset: 0,
+                  background: `radial-gradient(circle at 50% 40%, ${CORRECT}70 0%, transparent 50%)`,
+                  opacity: interpolate(revealProgress, [0, 0.2], [0.7, 0], { extrapolateRight: "clamp" }),
+                  pointerEvents: "none",
                 }}
               />
+            )}
+          </AbsoluteFill>
+        )}
+
+        {/* === OUTRO === */}
+        {isOutro && (
+          <AbsoluteFill
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              padding: `${SAFE.top}px ${SAFE.right}px ${SAFE.bottom}px ${SAFE.left}px`,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                width: 700,
+                height: 700,
+                borderRadius: "50%",
+                background: `radial-gradient(circle, ${HL}40 0%, ${ACCENT}20 40%, transparent 60%)`,
+                opacity: pulse,
+                filter: "blur(60px)",
+              }}
+            />
+
+            <div
+              style={{
+                transform: `scale(${outroScale})`,
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {/* Question */}
               <div
                 style={{
-                  background: `linear-gradient(135deg, ${HL}, ${HL}cc)`,
-                  borderRadius: 16,
-                  padding: "22px 50px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 16,
-                  boxShadow: `0 0 60px ${HL}70, 0 0 100px ${HL}40`,
-                  transform: `scale(${1 + Math.sin(frame * 0.12) * 0.06})`,
-                  border: "3px solid rgba(255,255,255,0.3)",
+                  fontSize: 68,
+                  fontWeight: 900,
+                  color: "#fff",
+                  fontFamily: FONT,
+                  textTransform: "uppercase",
+                  letterSpacing: 3,
+                  textShadow: "0 4px 30px rgba(0,0,0,0.6)",
+                  marginBottom: 15,
                 }}
               >
-                <span style={{ fontSize: 48, transform: `translateX(${Math.sin(frame * 0.2) * 5}px)` }}>
-                  👇
-                </span>
+                T'AS EU COMBIEN ?
+              </div>
+
+              {/* Score mystery */}
+              <div
+                style={{
+                  fontSize: 150,
+                  fontWeight: 900,
+                  color: HL,
+                  fontFamily: FONT,
+                  lineHeight: 1,
+                  textShadow: `0 0 60px ${HL}80, 0 0 120px ${HL}40`,
+                  marginBottom: 25,
+                  transform: `scale(${1 + Math.sin(frame * 0.1) * 0.05})`,
+                }}
+              >
+                ?/{totalQuestions}
+              </div>
+
+              {/* CTA Commente - TRÈS visible */}
+              <div style={{ position: "relative", marginBottom: 15 }}>
                 <div
                   style={{
-                    fontSize: 44,
+                    position: "absolute",
+                    inset: -12,
+                    borderRadius: 24,
+                    border: `4px solid ${HL}`,
+                    opacity: 0.4 + Math.sin(frame * 0.18) * 0.4,
+                    transform: `scale(${1 + Math.sin(frame * 0.18) * 0.1})`,
+                  }}
+                />
+                <div
+                  style={{
+                    background: `linear-gradient(135deg, ${HL}, ${ACCENT})`,
+                    borderRadius: 18,
+                    padding: "24px 50px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 18,
+                    boxShadow: `0 0 70px ${HL}70, 0 0 120px ${HL}30`,
+                    transform: `scale(${1 + Math.sin(frame * 0.14) * 0.06})`,
+                    border: "3px solid rgba(255,255,255,0.4)",
+                  }}
+                >
+                  <span style={{ fontSize: 50, transform: `translateX(${Math.sin(frame * 0.25) * 8}px)` }}>
+                    👇
+                  </span>
+                  <div
+                    style={{
+                      fontSize: 48,
+                      fontWeight: 900,
+                      color: "#000",
+                      fontFamily: FONT,
+                      letterSpacing: 2,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    COMMENTE !
+                  </div>
+                  <span style={{ fontSize: 50, transform: `translateX(${-Math.sin(frame * 0.25) * 8}px)` }}>
+                    👇
+                  </span>
+                </div>
+              </div>
+
+              {/* Subscribe */}
+              <div
+                style={{
+                  marginTop: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  background: "#ff0000",
+                  borderRadius: 14,
+                  padding: "14px 40px",
+                  boxShadow: "0 0 50px rgba(255,0,0,0.5)",
+                  transform: `scale(${1 + Math.sin(frame * 0.12) * 0.04})`,
+                }}
+              >
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                </svg>
+                <div
+                  style={{
+                    fontSize: 38,
                     fontWeight: 900,
-                    color: "#000",
+                    color: "#fff",
                     fontFamily: FONT,
                     letterSpacing: 3,
                     textTransform: "uppercase",
                   }}
                 >
-                  COMMENTE TON SCORE !
+                  ABONNE-TOI
                 </div>
-                <span style={{ fontSize: 48, transform: `translateX(${-Math.sin(frame * 0.2) * 5}px)` }}>
-                  👇
-                </span>
               </div>
-            </div>
 
-            {/* Subscribe button */}
-            <div
-              style={{
-                marginTop: 20,
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                background: "#ff0000",
-                borderRadius: 14,
-                padding: "16px 44px",
-                boxShadow: "0 0 50px rgba(255,0,0,0.55), 0 8px 30px rgba(0,0,0,0.4)",
-                transform: `scale(${1 + Math.sin(frame * 0.12) * 0.05})`,
-              }}
-            >
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-              </svg>
+              {/* Teaser for next */}
               <div
                 style={{
-                  fontSize: 42,
-                  fontWeight: 900,
-                  color: "#fff",
+                  marginTop: 30,
+                  fontSize: 26,
+                  fontWeight: 700,
+                  color: "rgba(255,255,255,0.6)",
                   fontFamily: FONT,
-                  letterSpacing: 4,
+                  letterSpacing: 3,
                   textTransform: "uppercase",
-                  textShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                  opacity: spring({
+                    frame: Math.max(0, outroFrame - 30),
+                    fps,
+                    config: { damping: 10, stiffness: 100, mass: 0.5 },
+                  }),
                 }}
               >
-                ABONNE-TOI
+                PROCHAIN QUIZ ENCORE PLUS DUR 🔥
               </div>
             </div>
-          </div>
-        </AbsoluteFill>
-      )}
+          </AbsoluteFill>
+        )}
+      </div>
 
       {/* === AUDIO === */}
-      {data.audioFile && <Audio src={staticFile(data.audioFile)} />}
+      {data.audioFile && <Audio src={staticFile(data.audioFile)} volume={0.35} />}
     </AbsoluteFill>
   );
 };
