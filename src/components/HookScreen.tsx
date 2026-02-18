@@ -215,31 +215,44 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       </div>
 
       {/* === THE TERM — positioned clearly below question === */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          left: SAFE.left,
-          right: SAFE.right,
-          transform: `scale(${termScale})`,
-          opacity: termOpacity,
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 150,
-            fontWeight: 900,
-            color: HL,
-            fontFamily: FONT,
-            textShadow: `0 0 60px ${HL}90, 0 0 120px ${HL}40, 0 8px 40px rgba(0,0,0,0.9)`,
-            letterSpacing: 6,
-            textTransform: "uppercase",
-          }}
-        >
-          {hook.term}
-        </div>
-      </div>
+      {(() => {
+        // Adaptive font size based on term length
+        const termLength = hook.term.length;
+        let termFontSize = 150;
+        if (termLength > 20) termFontSize = 70;
+        else if (termLength > 15) termFontSize = 90;
+        else if (termLength > 10) termFontSize = 110;
+        else if (termLength > 7) termFontSize = 130;
+
+        return (
+          <div
+            style={{
+              position: "absolute",
+              top: "30%",
+              left: SAFE.left,
+              right: SAFE.right,
+              transform: `scale(${termScale})`,
+              opacity: termOpacity,
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                fontSize: termFontSize,
+                fontWeight: 900,
+                color: HL,
+                fontFamily: FONT,
+                textShadow: `0 0 60px ${HL}90, 0 0 120px ${HL}40, 0 8px 40px rgba(0,0,0,0.9)`,
+                letterSpacing: termLength > 15 ? 2 : 6,
+                textTransform: "uppercase",
+                lineHeight: 1.1,
+              }}
+            >
+              {hook.term}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* === Difficulty gauge — below term === */}
       {difficulty > 0 && diffConfig && (
