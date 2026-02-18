@@ -34,7 +34,7 @@
       "id": "line-003",
       "text": "Chez moi, on graille à même le sol",
       "startTime": 5,
-      "endTime": 7.5,
+      "endTime": 6,
       "terms": [
         {
           "term": "graille",
@@ -47,16 +47,16 @@
     {
       "id": "line-004",
       "text": "J'me fais les pec' en ramenant mon pompe à la salle",
-      "startTime": 7.5,
-      "endTime": 10,
+      "startTime": 6,
+      "endTime": 8,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-005",
       "text": "C'est pas ton pote, ce rasslah, il veut s'faire ta re-sœu",
-      "startTime": 10,
-      "endTime": 12.5,
+      "startTime": 8,
+      "endTime": 9.8,
       "terms": [
         {
           "term": "rasslah",
@@ -74,8 +74,8 @@
     {
       "id": "line-006",
       "text": "Il veut s'faire ta piaule et ta recette (C'est réel)",
-      "startTime": 12.5,
-      "endTime": 15,
+      "startTime": 9.8,
+      "endTime": 11,
       "terms": [
         {
           "term": "piaule",
@@ -93,8 +93,8 @@
     {
       "id": "line-007",
       "text": "J'ai pt'êt' un p'tit pet au casque, au lieu d'ouvrir on casse",
-      "startTime": 15,
-      "endTime": 17.5,
+      "startTime": 11,
+      "endTime": 13,
       "terms": [
         {
           "term": "pet au casque",
