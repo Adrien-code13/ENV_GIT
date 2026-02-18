@@ -1,5 +1,5 @@
 {
-  "id": "sdm-orelsan-soleil-levant-001",
+  "id": "sdm-orelsan-soleil-levant-002",
   "version": "1.0.0",
   "track": {
     "title": "Soleil Levant",
@@ -8,48 +8,37 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "AVEC UN POTE",
-    "line": "J'démarre ma carrière d'artiste avec un pote",
+    "term": "RASSLAH",
+    "line": "C'est pas ton pote, ce rasslah",
     "duration": 2,
-    "difficulty": 3
+    "difficulty": 4
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "Grah, j'rallume la lumière avec un Glock, j'commence mon couplet avec un \"grah\"",
+      "text": "J'commence couplet quand t'attendais l'refrain, yop (Arriba)",
       "startTime": 0,
-      "endTime": 4,
+      "endTime": 2.5,
       "terms": [],
       "showExplanation": false
     },
     {
       "id": "line-002",
-      "text": "J'démarre ma carrière d'artiste avec un pote (Ocho, ocho)",
-      "startTime": 4,
-      "endTime": 6,
-      "terms": [
-        {
-          "term": "j'démarre ma carrière d'artiste avec un pote",
-          "definition": "Référence à PLK, ami et collaborateur de SDM",
-          "category": "reference"
-        },
-        {
-          "term": "Ocho",
-          "definition": "Surnom de SDM (8 en espagnol)",
-          "category": "reference"
-        }
-      ],
-      "showExplanation": true
+      "text": "Là où c'est propre, nous on vient faire du sale (Tu-tu-tah)",
+      "startTime": 2.5,
+      "endTime": 5,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-003",
-      "text": "J'commence à l'arrière, j'finis devant, j'te fidélise, j'te fais dix balles le vingt",
-      "startTime": 6,
-      "endTime": 9,
+      "text": "Chez moi, on graille à même le sol",
+      "startTime": 5,
+      "endTime": 7.5,
       "terms": [
         {
-          "term": "dix balles le vingt",
-          "definition": "10€ pour un 20€ de drogue - vendre à perte pour fidéliser",
+          "term": "graille",
+          "definition": "Manger (argot)",
           "category": "argot"
         }
       ],
@@ -57,39 +46,63 @@
     },
     {
       "id": "line-004",
-      "text": "J'fous cette merde et le soleil levant, et j'quitterai c'monde avec un verre de vin (Arriba)",
-      "startTime": 9,
-      "endTime": 13,
-      "terms": [
-        {
-          "term": "le soleil levant",
-          "definition": "Jeu de mots : le soleil le vend (la drogue)",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "text": "J'me fais les pec' en ramenant mon pompe à la salle",
+      "startTime": 7.5,
+      "endTime": 10,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-005",
-      "text": "Gros y'a faute sur moi j'te laisse guetter la VAR, j'vise vers toi, j'te laisse guetter la mort",
-      "startTime": 13,
-      "endTime": 16.5,
+      "text": "C'est pas ton pote, ce rasslah, il veut s'faire ta re-sœu",
+      "startTime": 10,
+      "endTime": 12.5,
       "terms": [
         {
-          "term": "VAR",
-          "definition": "Arbitrage vidéo au foot - ici, métaphore de la justice",
-          "category": "reference"
+          "term": "rasslah",
+          "definition": "Gars louche, traître (argot)",
+          "category": "argot"
+        },
+        {
+          "term": "re-sœu",
+          "definition": "Sœur en verlan",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-006",
-      "text": "J'ai les mains dans la merde et sur un disque d'or (C'est réel)",
-      "startTime": 16.5,
-      "endTime": 18.6,
-      "terms": [],
-      "showExplanation": false
+      "text": "Il veut s'faire ta piaule et ta recette (C'est réel)",
+      "startTime": 12.5,
+      "endTime": 15,
+      "terms": [
+        {
+          "term": "piaule",
+          "definition": "Chambre, appartement (argot)",
+          "category": "argot"
+        },
+        {
+          "term": "recette",
+          "definition": "Argent, gains (argot)",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-007",
+      "text": "J'ai pt'êt' un p'tit pet au casque, au lieu d'ouvrir on casse",
+      "startTime": 15,
+      "endTime": 17.5,
+      "terms": [
+        {
+          "term": "pet au casque",
+          "definition": "Être fou, dérangé (argot)",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
     }
   ],
   "style": {
