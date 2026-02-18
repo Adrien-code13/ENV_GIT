@@ -1,5 +1,5 @@
 {
-  "id": "sch-a7-001",
+  "id": "sch-a7-002",
   "version": "1.0.0",
   "track": {
     "title": "A7",
@@ -8,42 +8,42 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "DU PLOMB PLEIN LA TASSIMO",
-    "line": "On finira du plomb plein la Tassimo",
+    "term": "ORANGE BUD",
+    "line": "J'fume l'Orange Bud",
     "duration": 2,
-    "difficulty": 4
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "45 AMG, au volant, que des tes-tê d'illettrés",
+      "text": "J'ai écrit l'album dans les larmes, pas dans les normes, balles dans les armes",
       "startTime": 0,
       "endTime": 4,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
+      "id": "line-002",
+      "text": "Charcle-le s'il fait l'homme, tâche son Paul & Shark, mathafack",
+      "startTime": 4,
+      "endTime": 8,
       "terms": [
         {
-          "term": "45 AMG",
-          "definition": "Mercedes-AMG A45 (sportive)",
-          "category": "reference"
+          "term": "Charcle-le",
+          "definition": "Charge-le, attaque-le (verlan)",
+          "category": "verlan"
         },
         {
-          "term": "tes-tê",
-          "definition": "Têtes (verlan)",
-          "category": "verlan"
+          "term": "Paul & Shark",
+          "definition": "Marque de vêtements de luxe",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
-      "id": "line-002",
-      "text": "J'viens les tuer d'près, dehors, j'y étais automne, hiver, été",
-      "startTime": 4,
-      "endTime": 8,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
       "id": "line-003",
-      "text": "On t'applaudira jamais, j'ai sorti mon CD",
+      "text": "J'veux d'l'or en chaine, d'l'or en barre, d'l'or en bagues",
       "startTime": 8,
       "endTime": 12,
       "terms": [],
@@ -51,41 +51,19 @@
     },
     {
       "id": "line-004",
-      "text": "Rappelle-toi, pour te uer-t, tout l'espoir qu'on y mettait",
+      "text": "J'fume l'Orange Bud, j'dors en loge, ils dorment en GAV, ouais",
       "startTime": 12,
       "endTime": 16,
       "terms": [
         {
-          "term": "uer-t",
-          "definition": "Tuer (verlan)",
-          "category": "verlan"
-        }
-      ],
-      "showExplanation": true
-    },
-    {
-      "id": "line-005",
-      "text": "Ici, tout l'monde veut mourir riche pour s'payer l'plaisir d'partir en paix",
-      "startTime": 16,
-      "endTime": 20,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-006",
-      "text": "On finira du plomb plein la Tassimo, coño, jamais tu nous verras ramper",
-      "startTime": 20,
-      "endTime": 24,
-      "terms": [
-        {
-          "term": "du plomb plein la Tassimo",
-          "definition": "Détournement de \"se faire sauter la cafetière\"",
+          "term": "Orange Bud",
+          "definition": "Variété de cannabis",
           "category": "argot"
         },
         {
-          "term": "coño",
-          "definition": "Juron espagnol",
-          "category": "reference"
+          "term": "GAV",
+          "definition": "Garde à vue",
+          "category": "argot"
         }
       ],
       "showExplanation": true
