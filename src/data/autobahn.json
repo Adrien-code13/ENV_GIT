@@ -1,114 +1,91 @@
 {
-  "id": "kaaris-lafouine-vision-003",
+  "id": "sch-a7-001",
   "version": "1.0.0",
   "track": {
-    "title": "Vision",
-    "artist": "Kaaris & La Fouine",
+    "title": "A7",
+    "artist": "SCH",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "CHAHAD",
-    "line": "Les gars que j't'envoie, ils ont jamais chahad",
+    "term": "TES-TÊ",
+    "line": "Que des tes-tê d'illettrés",
     "duration": 2,
-    "difficulty": 4
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "Dragon à deux têtes, j'ai l'9 vu qu'y a deux sept ; dans l'garage, y a deux fers, armé comme un gros four",
+      "text": "45 AMG, au volant, que des tes-tê d'illettrés",
       "startTime": 0,
       "endTime": 4,
       "terms": [
         {
-          "term": "l'9",
-          "definition": "Pistolet 9mm",
-          "category": "argot"
+          "term": "45 AMG",
+          "definition": "Mercedes-AMG A45 (sportive)",
+          "category": "reference"
+        },
+        {
+          "term": "tes-tê",
+          "definition": "Têtes (verlan)",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-002",
-      "text": "Ça t'braque pour du cobalt, la misère est globale, j'ai l'Soulier, la Copa, la zipette est coupée",
+      "text": "J'viens les tuer d'près, dehors, j'y étais automne, hiver, été",
       "startTime": 4,
       "endTime": 8,
-      "terms": [
-        {
-          "term": "Soulier",
-          "definition": "Soulier d'Or (trophée foot)",
-          "category": "reference"
-        },
-        {
-          "term": "Copa",
-          "definition": "Copa America (trophée)",
-          "category": "reference"
-        },
-        {
-          "term": "zipette",
-          "definition": "Sachet de drogue",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-003",
-      "text": "Une étoile, un drapeau, le green et l'red et, les gars que j't'envoie, ils ont jamais chahad",
+      "text": "On t'applaudira jamais, j'ai sorti mon CD",
       "startTime": 8,
-      "endTime": 11.5,
-      "terms": [
-        {
-          "term": "chahad",
-          "definition": "Témoigné, balancé (arabe)",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "endTime": 12,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-004",
-      "text": "Du Bourget, j'atterris à JFK, à l'air libre comme la cervelle à JFK",
-      "startTime": 11.5,
+      "text": "Rappelle-toi, pour te uer-t, tout l'espoir qu'on y mettait",
+      "startTime": 12,
       "endTime": 16,
       "terms": [
         {
-          "term": "JFK",
-          "definition": "Aéroport NY / Assassinat Kennedy",
-          "category": "reference"
+          "term": "uer-t",
+          "definition": "Tuer (verlan)",
+          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-005",
-      "text": "Hmm, c'est des bataradés, t'es parti, t'as tiré, m'dis pas qu't'as raté",
+      "text": "Ici, tout l'monde veut mourir riche pour s'payer l'plaisir d'partir en paix",
       "startTime": 16,
       "endTime": 20,
-      "terms": [
-        {
-          "term": "bataradés",
-          "definition": "Bâtards (verlan)",
-          "category": "argot"
-        }
-      ],
-      "showExplanation": true
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-006",
-      "text": "J'te vois à terre, j'crois qu'le pacte est rompu, eux, c'est des schlags, paie ces bâtards en beuh",
+      "text": "On finira du plomb plein la Tassimo, coño, jamais tu nous verras ramper",
       "startTime": 20,
       "endTime": 24,
       "terms": [
         {
-          "term": "schlags",
-          "definition": "Personnes sans valeur",
-          "category": "argot"
+          "term": "Tassimo",
+          "definition": "Machine à café (ironie)",
+          "category": "reference"
         },
         {
-          "term": "beuh",
-          "definition": "Cannabis",
-          "category": "argot"
+          "term": "coño",
+          "definition": "Juron espagnol",
+          "category": "reference"
         }
       ],
       "showExplanation": true
