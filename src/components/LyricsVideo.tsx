@@ -291,6 +291,68 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             }}
           />
 
+          {/* --- Horizontal scanline sweep --- */}
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: `${(contentFrame * 0.3) % 110 - 5}%`,
+              height: 3,
+              background: `linear-gradient(90deg, transparent 0%, ${HL}30 30%, ${ACCENT}40 50%, ${HL}30 70%, transparent 100%)`,
+              filter: "blur(3px)",
+              opacity: 0.6,
+            }}
+          />
+
+          {/* --- Corner accent rings --- */}
+          {[
+            { cx: -60, cy: -60, r: 220 },
+            { cx: "calc(100% + 60px)", cy: "calc(100% + 60px)", r: 200 },
+          ].map((ring, i) => (
+            <div
+              key={`ring-${i}`}
+              style={{
+                position: "absolute",
+                left: ring.cx,
+                top: ring.cy,
+                width: ring.r * 2,
+                height: ring.r * 2,
+                borderRadius: "50%",
+                border: `1px solid ${i === 0 ? HL : ACCENT}20`,
+                transform: `translate(-50%, -50%) scale(${0.9 + Math.sin(contentFrame * 0.02 + i) * 0.1})`,
+                boxShadow: `0 0 30px ${i === 0 ? HL : ACCENT}10 inset`,
+              }}
+            />
+          ))}
+
+          {/* --- Floating diamond shapes --- */}
+          {[
+            { x: 5, y: 30, size: 12, speed: 0.022 },
+            { x: 92, y: 55, size: 8, speed: 0.017 },
+            { x: 10, y: 75, size: 10, speed: 0.019 },
+            { x: 88, y: 15, size: 14, speed: 0.014 },
+          ].map((d, i) => {
+            const dY = d.y + Math.sin(contentFrame * d.speed + i) * 6;
+            const dOpacity = 0.12 + Math.sin(contentFrame * 0.03 + i * 2) * 0.08;
+            return (
+              <div
+                key={`diamond-${i}`}
+                style={{
+                  position: "absolute",
+                  left: `${d.x}%`,
+                  top: `${dY}%`,
+                  width: d.size,
+                  height: d.size,
+                  background: i % 2 === 0 ? HL : ACCENT,
+                  opacity: dOpacity,
+                  transform: `rotate(45deg)`,
+                  boxShadow: `0 0 ${d.size * 2}px ${i % 2 === 0 ? HL : ACCENT}50`,
+                }}
+              />
+            );
+          })}
+
           {/* === GLITCH FLASH overlay === */}
           {flashOpacity > 0 && (
             <div
@@ -340,7 +402,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 {/* Question */}
                 <div
                   style={{
-                    fontSize: 52,
+                    fontSize: 64,
                     fontWeight: 900,
                     color: "#ffffff",
                     fontFamily: FONT,
