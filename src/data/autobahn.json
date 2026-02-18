@@ -1,66 +1,55 @@
 {
-  "id": "sch-a7-003",
+  "id": "sdm-orelsan-soleil-levant-001",
   "version": "1.0.0",
   "track": {
-    "title": "A7",
-    "artist": "SCH",
+    "title": "Soleil Levant",
+    "artist": "SDM & Orelsan",
     "coverImage": "cover.jpg",
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "GE-GOR",
-    "line": "la ge-gor du rap sous mon Gillette",
+    "term": "AVEC UN POTE",
+    "line": "J'démarre ma carrière d'artiste avec un pote",
     "duration": 2,
-    "difficulty": 2
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'recherche mes limites, la ge-gor du rap sous mon Gillette (Dans vos oreilles et vos culs)",
+      "text": "Grah, j'rallume la lumière avec un Glock, j'commence mon couplet avec un \"grah\"",
       "startTime": 0,
-      "endTime": 4.2,
-      "terms": [
-        {
-          "term": "la ge-gor du rap sous mon Gillette",
-          "definition": "La gorge du rap sous ma lame - il domine le game",
-          "category": "verlan"
-        }
-      ],
-      "showExplanation": true
+      "endTime": 3,
+      "terms": [],
+      "showExplanation": false
     },
     {
       "id": "line-002",
-      "text": "Personne te sauvera, carre-toi, dans l'cul, ton amulette (J'suis sur l'rrain-te avant toi)",
-      "startTime": 4.2,
-      "endTime": 8.4,
+      "text": "J'démarre ma carrière d'artiste avec un pote (Ocho, ocho)",
+      "startTime": 3,
+      "endTime": 6,
       "terms": [
         {
-          "term": "carre-toi",
-          "definition": "Te carrer en verlan - fous-toi (vulgaire)",
-          "category": "verlan"
+          "term": "j'démarre ma carrière d'artiste avec un pote",
+          "definition": "Référence à PLK, ami et collaborateur de SDM",
+          "category": "reference"
         },
         {
-          "term": "rrain-te",
-          "definition": "Terrain en verlan - les rues",
-          "category": "verlan"
+          "term": "Ocho",
+          "definition": "Surnom de SDM (8 en espagnol)",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-003",
-      "text": "J'peux pas perdre une minute, puto, laisse remplir la mallette (J'enterre une équipe)",
-      "startTime": 8.4,
-      "endTime": 12.6,
+      "text": "J'commence à l'arrière, j'finis devant, j'te fidélise, j'te fais dix balles le vingt",
+      "startTime": 6,
+      "endTime": 9,
       "terms": [
         {
-          "term": "puto",
-          "definition": "Insulte espagnole - pute/connard",
-          "category": "argot"
-        },
-        {
-          "term": "mallette",
-          "definition": "Argent, liasses de billets",
+          "term": "dix balles le vingt",
+          "definition": "10€ pour un 20€ de drogue - vendre à perte pour fidéliser",
           "category": "argot"
         }
       ],
@@ -68,9 +57,37 @@
     },
     {
       "id": "line-004",
-      "text": "J'sais qu'ils prieront leur Dieu quand j'vais plonger leur tête dans la cuvette (J'ai pas pris d'avocat)",
-      "startTime": 12.6,
-      "endTime": 16.8,
+      "text": "J'fous cette merde et le soleil levant, et j'quitterai c'monde avec un verre de vin (Arriba)",
+      "startTime": 9,
+      "endTime": 12,
+      "terms": [
+        {
+          "term": "le soleil levant",
+          "definition": "Jeu de mots : le soleil le vend (la drogue)",
+          "category": "argot"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-005",
+      "text": "Gros y'a faute sur moi j'te laisse guetter la VAR, j'vise vers toi, j'te laisse guetter la mort",
+      "startTime": 12,
+      "endTime": 15,
+      "terms": [
+        {
+          "term": "VAR",
+          "definition": "Arbitrage vidéo au foot - ici, métaphore de la justice",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
+    },
+    {
+      "id": "line-006",
+      "text": "J'ai les mains dans la merde et sur un disque d'or (C'est réel)",
+      "startTime": 15,
+      "endTime": 18,
       "terms": [],
       "showExplanation": false
     }
