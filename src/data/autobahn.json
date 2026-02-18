@@ -8,10 +8,10 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "TES-TÊ",
-    "line": "Que des tes-tê d'illettrés",
+    "term": "DU PLOMB PLEIN LA TASSIMO",
+    "line": "On finira du plomb plein la Tassimo",
     "duration": 2,
-    "difficulty": 3
+    "difficulty": 4
   },
   "lyrics": [
     {
@@ -78,9 +78,9 @@
       "endTime": 24,
       "terms": [
         {
-          "term": "Tassimo",
-          "definition": "Machine à café (ironie)",
-          "category": "reference"
+          "term": "du plomb plein la Tassimo",
+          "definition": "Détournement de \"se faire sauter la cafetière\"",
+          "category": "argot"
         },
         {
           "term": "coño",
