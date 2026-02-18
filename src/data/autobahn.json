@@ -1,5 +1,5 @@
 {
-  "id": "sdm-orelsan-soleil-levant-002",
+  "id": "sdm-orelsan-soleil-levant-003",
   "version": "1.0.0",
   "track": {
     "title": "Soleil Levant",
@@ -8,15 +8,15 @@
     "audioFile": "audio.mp3"
   },
   "hook": {
-    "term": "RASSLAH",
-    "line": "C'est pas ton pote, ce rasslah",
+    "term": "MICHAEL",
+    "line": "Six bagues au doigt, j'suis comme Michael",
     "duration": 2,
-    "difficulty": 4
+    "difficulty": 3
   },
   "lyrics": [
     {
       "id": "line-001",
-      "text": "J'commence couplet quand t'attendais l'refrain, yop (Arriba)",
+      "text": "Mets plus fort le son dans la caisse (Hein, hein)",
       "startTime": 0,
       "endTime": 2.5,
       "terms": [],
@@ -24,21 +24,27 @@
     },
     {
       "id": "line-002",
-      "text": "Là où c'est propre, nous on vient faire du sale (Tu-tu-tah)",
+      "text": "Cho-Ocho, quand j'suis dans celle-là, j'suis trop trop chaud",
       "startTime": 2.5,
       "endTime": 5,
-      "terms": [],
-      "showExplanation": false
+      "terms": [
+        {
+          "term": "Ocho",
+          "definition": "Surnom de SDM (8 en espagnol)",
+          "category": "reference"
+        }
+      ],
+      "showExplanation": true
     },
     {
       "id": "line-003",
-      "text": "Chez moi, on graille à même le sol",
+      "text": "Tu connais, l'ami, tu touches, t'achètes",
       "startTime": 5,
-      "endTime": 6,
+      "endTime": 7.5,
       "terms": [
         {
-          "term": "graille",
-          "definition": "Manger (argot)",
+          "term": "tu touches, t'achètes",
+          "definition": "Règle de la rue - tu touches, tu paies",
           "category": "argot"
         }
       ],
@@ -46,60 +52,50 @@
     },
     {
       "id": "line-004",
-      "text": "J'me fais les pec' en ramenant mon pompe à la salle",
-      "startTime": 6,
-      "endTime": 8,
-      "terms": [],
-      "showExplanation": false
-    },
-    {
-      "id": "line-005",
-      "text": "C'est pas ton pote, ce rasslah, il veut s'faire ta re-sœu",
-      "startTime": 8,
-      "endTime": 9.8,
+      "text": "Pour pas qu'ils reviennent, tu tires, t'achèves",
+      "startTime": 7.5,
+      "endTime": 10,
       "terms": [
         {
-          "term": "rasslah",
-          "definition": "Gars louche, traître (argot)",
+          "term": "tu tires, t'achèves",
+          "definition": "Violence totale, pas de témoin",
           "category": "argot"
-        },
-        {
-          "term": "re-sœu",
-          "definition": "Sœur en verlan",
-          "category": "verlan"
         }
       ],
       "showExplanation": true
     },
     {
+      "id": "line-005",
+      "text": "Change de chaine mais tu verras toujours ma gueule",
+      "startTime": 10,
+      "endTime": 12.5,
+      "terms": [],
+      "showExplanation": false
+    },
+    {
       "id": "line-006",
-      "text": "Il veut s'faire ta piaule et ta recette (C'est réel)",
-      "startTime": 9.8,
-      "endTime": 11,
+      "text": "Six bagues au doigt, j'suis comme Michael",
+      "startTime": 12.5,
+      "endTime": 15,
       "terms": [
         {
-          "term": "piaule",
-          "definition": "Chambre, appartement (argot)",
-          "category": "argot"
-        },
-        {
-          "term": "recette",
-          "definition": "Argent, gains (argot)",
-          "category": "argot"
+          "term": "Six bagues au doigt, j'suis comme Michael",
+          "definition": "Référence à Michael Jordan et ses 6 titres NBA",
+          "category": "reference"
         }
       ],
       "showExplanation": true
     },
     {
       "id": "line-007",
-      "text": "J'ai pt'êt' un p'tit pet au casque, au lieu d'ouvrir on casse",
-      "startTime": 11,
-      "endTime": 13,
+      "text": "J'avance en arrière, j'suis comme Michael (Arriba)",
+      "startTime": 15,
+      "endTime": 17.5,
       "terms": [
         {
-          "term": "pet au casque",
-          "definition": "Être fou, dérangé (argot)",
-          "category": "argot"
+          "term": "j'avance en arrière",
+          "definition": "Moonwalk de Michael Jackson",
+          "category": "reference"
         }
       ],
       "showExplanation": true
