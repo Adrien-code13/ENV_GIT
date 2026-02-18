@@ -34,47 +34,59 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   const difficulty = hook.difficulty ?? 0;
   const diffConfig = DIFFICULTY_CONFIG[difficulty];
 
-  // === PHASE 1: "ÇA VEUT DIRE QUOI..." — INSTANT (frame 0) ===
-  const phase1Scale = interpolate(frame, [0, 4], [1.08, 1], {
+  // === PHASE 1: Lyric line with highlighted term — INSTANT (frame 0) ===
+  const lineOpacity = interpolate(frame, [0, 3], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const phase1Opacity = interpolate(frame, [0, 2], [0.7, 1], {
+  const lineY = interpolate(frame, [0, 4], [40, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // === PHASE 2: TERM SLAMS in (frame 4) — aggressive zoom 2.5→1 ===
-  const termDelay = 4;
+  // === PHASE 2: Term highlight SLAMS (frame 3) ===
+  const termDelay = 3;
   const termSlam = spring({
     frame: frame - termDelay,
     fps,
-    config: { damping: 5, stiffness: 150, mass: 0.8 },
+    config: { damping: 5, stiffness: 180, mass: 0.6 },
   });
-  const termScale = interpolate(termSlam, [0, 1], [2.5, 1]);
-  const termOpacity = interpolate(frame, [termDelay, termDelay + 2], [0, 1], {
+  const termScale = interpolate(termSlam, [0, 1], [1.8, 1]);
+  const termGlowOpacity = interpolate(frame, [termDelay, termDelay + 2], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // === Impact flash on term landing ===
+  // === Impact flash on term highlight ===
   const impactFlash =
-    frame >= termDelay && frame < termDelay + 5
-      ? interpolate(frame, [termDelay, termDelay + 2, termDelay + 5], [0.8, 0.4, 0], {
+    frame >= termDelay && frame < termDelay + 4
+      ? interpolate(frame, [termDelay, termDelay + 1, termDelay + 4], [0.7, 0.3, 0], {
           extrapolateRight: "clamp",
         })
       : 0;
 
-  // === Screen shake on term slam ===
+  // === Screen shake ===
   const shakeIntensity =
-    frame >= termDelay && frame < termDelay + 6
-      ? (6 - (frame - termDelay)) / 6
+    frame >= termDelay && frame < termDelay + 5
+      ? (5 - (frame - termDelay)) / 5
       : 0;
-  const shakeX = shakeIntensity * Math.sin(frame * 4) * 12;
-  const shakeY = shakeIntensity * Math.cos(frame * 5) * 8;
+  const shakeX = shakeIntensity * Math.sin(frame * 4) * 10;
+  const shakeY = shakeIntensity * Math.cos(frame * 5) * 7;
 
-  // === PHASE 3: Difficulty stars (frame 12) ===
-  const diffDelay = 12;
+  // === PHASE 3: "TU SAIS CE QUE ÇA VEUT DIRE ?" (frame 8) ===
+  const questionDelay = 8;
+  const questionSlam = spring({
+    frame: frame - questionDelay,
+    fps,
+    config: { damping: 6, stiffness: 200, mass: 0.5 },
+  });
+  const questionOpacity = interpolate(frame, [questionDelay, questionDelay + 3], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // === PHASE 4: Difficulty stars (frame 16) ===
+  const diffDelay = 16;
   const diffScale = spring({
     frame: frame - diffDelay,
     fps,
@@ -93,16 +105,7 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
     });
   };
 
-  // === PHASE 4: "?" (frame 16) ===
-  const qDelay = 16;
-  const qScale = spring({
-    frame: frame - qDelay,
-    fps,
-    config: { damping: 4, stiffness: 300, mass: 0.5 },
-  });
-  const qBounce = frame > qDelay ? Math.sin((frame - qDelay) * 0.15) * 10 : 0;
-
-  // === PHASE 5: "Décodons les paroles" (frame 30) ===
+  // === PHASE 5: "DÉCODONS LES PAROLES" (frame 30) ===
   const decodonsDelay = 30;
   const decodonsOpacity = interpolate(
     frame,
@@ -121,6 +124,23 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
   // Background effects
   const pulse = Math.sin(frame * 0.15) * 0.4 + 0.6;
   const gradientAngle = interpolate(frame, [0, 90], [135, 225]);
+
+  // Split the hook line into parts: before term, term, after term
+  const hookLine = hook.line;
+  const hookTerm = hook.term;
+  const termIndex = hookLine.toLowerCase().indexOf(hookTerm.toLowerCase());
+
+  const beforeTerm = termIndex >= 0 ? hookLine.slice(0, termIndex) : hookLine;
+  const termText = termIndex >= 0 ? hookLine.slice(termIndex, termIndex + hookTerm.length) : hookTerm;
+  const afterTerm = termIndex >= 0 ? hookLine.slice(termIndex + hookTerm.length) : "";
+
+  // Adaptive font size for the lyric line
+  const lineLength = hookLine.length;
+  let lineFontSize = 64;
+  if (lineLength > 60) lineFontSize = 38;
+  else if (lineLength > 45) lineFontSize = 44;
+  else if (lineLength > 35) lineFontSize = 50;
+  else if (lineLength > 25) lineFontSize = 56;
 
   return (
     <AbsoluteFill
@@ -161,14 +181,14 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
       <div
         style={{
           position: "absolute",
-          top: "25%",
+          top: "20%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 800,
           height: 800,
           borderRadius: "50%",
           background: `radial-gradient(circle, ${HL}35 0%, ${ACCENT}15 40%, transparent 60%)`,
-          opacity: termOpacity * pulse,
+          opacity: termGlowOpacity * pulse,
           filter: "blur(80px)",
         }}
       />
@@ -187,79 +207,87 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
         />
       )}
 
-      {/* === "ÇA VEUT DIRE QUOI..." — top zone === */}
+      {/* === LYRIC LINE with highlighted term — center of screen === */}
       <div
         style={{
           position: "absolute",
-          top: SAFE.top + 40,
-          left: SAFE.left,
-          right: SAFE.right,
-          transform: `scale(${phase1Scale})`,
-          opacity: phase1Opacity,
+          top: SAFE.top + 30,
+          left: SAFE.left - 20,
+          right: SAFE.right - 20,
+          opacity: lineOpacity,
+          transform: `translateY(${lineY}px)`,
+          textAlign: "center",
         }}
       >
         <div
           style={{
-            fontSize: 82,
-            color: "#ffffff",
-            fontFamily: FONT,
+            fontSize: lineFontSize,
             fontWeight: 900,
-            textAlign: "center",
-            letterSpacing: 4,
+            color: "rgba(255,255,255,0.85)",
+            fontFamily: FONT,
             textTransform: "uppercase",
-            textShadow: `0 4px 40px rgba(0,0,0,0.7), 0 0 30px ${ACCENT}30`,
+            lineHeight: 1.3,
+            letterSpacing: 1,
+            textShadow: "0 4px 20px rgba(0,0,0,0.7)",
           }}
         >
-          ÇA VEUT DIRE QUOI...
+          {beforeTerm}
+          <span
+            style={{
+              color: "#000",
+              background: HL,
+              padding: "4px 16px",
+              borderRadius: 8,
+              marginLeft: 4,
+              marginRight: 4,
+              boxShadow: `0 0 ${30 + termGlowOpacity * 40}px ${HL}90, 0 0 80px ${HL}40`,
+              display: "inline-block",
+              transform: `scale(${termScale})`,
+              textShadow: "none",
+            }}
+          >
+            {termText}
+          </span>
+          {afterTerm}
         </div>
       </div>
 
-      {/* === THE TERM — positioned clearly below question === */}
-      {(() => {
-        // Adaptive font size based on term length
-        const termLength = hook.term.length;
-        let termFontSize = 150;
-        if (termLength > 20) termFontSize = 70;
-        else if (termLength > 15) termFontSize = 90;
-        else if (termLength > 10) termFontSize = 110;
-        else if (termLength > 7) termFontSize = 130;
+      {/* === "TU SAIS CE QUE ÇA VEUT DIRE ?" === */}
+      <div
+        style={{
+          position: "absolute",
+          top: "42%",
+          left: SAFE.left,
+          right: SAFE.right,
+          textAlign: "center",
+          opacity: questionOpacity,
+          transform: `scale(${questionSlam})`,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 72,
+            fontWeight: 900,
+            color: "#ffffff",
+            fontFamily: FONT,
+            letterSpacing: 3,
+            textTransform: "uppercase",
+            textShadow: `0 4px 40px rgba(0,0,0,0.7), 0 0 30px ${ACCENT}30`,
+            lineHeight: 1.15,
+          }}
+        >
+          TU SAIS CE QUE
+          <br />
+          ÇA VEUT DIRE ?
+        </div>
+      </div>
 
-        return (
-          <div
-            style={{
-              position: "absolute",
-              top: "30%",
-              left: SAFE.left,
-              right: SAFE.right,
-              transform: `scale(${termScale})`,
-              opacity: termOpacity,
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{
-                fontSize: termFontSize,
-                fontWeight: 900,
-                color: HL,
-                fontFamily: FONT,
-                textShadow: `0 0 60px ${HL}90, 0 0 120px ${HL}40, 0 8px 40px rgba(0,0,0,0.9)`,
-                letterSpacing: termLength > 15 ? 2 : 6,
-                textTransform: "uppercase",
-                lineHeight: 1.1,
-              }}
-            >
-              {hook.term}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* === Difficulty gauge — below term === */}
+      {/* === Difficulty gauge === */}
       {difficulty > 0 && diffConfig && (
         <div
           style={{
             position: "absolute",
-            top: "54%",
+            top: "62%",
             left: SAFE.left,
             right: SAFE.right,
             opacity: diffOpacity,
@@ -316,32 +344,6 @@ export const HookScreen: React.FC<HookScreenProps> = ({ hook, style }) => {
           </div>
         </div>
       )}
-
-      {/* === "?" — below difficulty === */}
-      <div
-        style={{
-          position: "absolute",
-          top: "68%",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-          opacity: qScale,
-          transform: `scale(${qScale}) translateY(${qBounce}px)`,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 200,
-            fontWeight: 900,
-            color: HL,
-            fontFamily: FONT,
-            textShadow: `0 0 80px ${HL}80, 0 0 160px ${HL}40`,
-            lineHeight: 0.8,
-          }}
-        >
-          ?
-        </div>
-      </div>
 
       {/* === "DÉCODONS LES PAROLES" === */}
       <div

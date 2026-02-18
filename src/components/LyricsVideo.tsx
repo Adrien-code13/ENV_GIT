@@ -196,58 +196,98 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
             opacity: endFadeOpacity,
           }}
         >
-          {/* --- Rich gradient background --- */}
+          {/* --- Animated gradient background --- */}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: `linear-gradient(170deg,
+              background: `linear-gradient(${interpolate(contentFrame, [0, 300], [170, 210])}deg,
               ${BG1} 0%, #0f1a30 20%, ${BG2} 45%, #0d1528 70%, ${BG1} 100%)`,
             }}
           />
 
-          {/* --- Ambient color blobs --- */}
-          <div
-            style={{
-              position: "absolute",
-              top: "5%",
-              left: "-15%",
-              width: 700,
-              height: 700,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${HL}15 0%, transparent 65%)`,
-              filter: "blur(100px)",
-              opacity: 0.9,
-              transform: `translate(${drift}px, ${drift * 0.5}px)`,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "10%",
-              right: "-10%",
-              width: 600,
-              height: 600,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, ${ACCENT}18 0%, transparent 60%)`,
-              filter: "blur(80px)",
-              opacity: 0.8,
-              transform: `translate(${-drift}px, ${drift * 0.3}px)`,
-            }}
-          />
+          {/* --- Floating animated orbs --- */}
+          {[
+            { x: 15, y: 10, size: 500, speed: 0.008, color: HL, blur: 120, opacity: 0.6 },
+            { x: 75, y: 80, size: 400, speed: 0.012, color: ACCENT, blur: 100, opacity: 0.5 },
+            { x: 50, y: 40, size: 350, speed: 0.015, color: HL, blur: 90, opacity: 0.4 },
+            { x: 85, y: 20, size: 300, speed: 0.01, color: ACCENT, blur: 80, opacity: 0.35 },
+            { x: 30, y: 70, size: 250, speed: 0.018, color: HL, blur: 70, opacity: 0.3 },
+          ].map((orb, i) => {
+            const orbX = orb.x + Math.sin(contentFrame * orb.speed + i * 2) * 12;
+            const orbY = orb.y + Math.cos(contentFrame * orb.speed * 0.7 + i) * 10;
+            const orbPulse = 0.6 + Math.sin(contentFrame * 0.04 + i * 1.5) * 0.4;
+            return (
+              <div
+                key={`orb-${i}`}
+                style={{
+                  position: "absolute",
+                  left: `${orbX}%`,
+                  top: `${orbY}%`,
+                  width: orb.size,
+                  height: orb.size,
+                  borderRadius: "50%",
+                  background: `radial-gradient(circle, ${orb.color}25 0%, transparent 70%)`,
+                  filter: `blur(${orb.blur}px)`,
+                  opacity: orb.opacity * orbPulse,
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            );
+          })}
 
-          {/* --- Animated glow streak --- */}
+          {/* --- Floating particles --- */}
+          {Array.from({ length: 20 }).map((_, i) => {
+            const seed = i * 137.5;
+            const particleX = ((seed * 7.3) % 100);
+            const particleBaseY = ((seed * 3.7) % 100);
+            const particleY = particleBaseY + Math.sin(contentFrame * 0.02 + i) * 8;
+            const particleSize = 3 + (i % 4) * 2;
+            const particleOpacity = 0.15 + Math.sin(contentFrame * 0.05 + i * 0.8) * 0.15;
+            const particleColor = i % 3 === 0 ? HL : i % 3 === 1 ? ACCENT : "#ffffff";
+            return (
+              <div
+                key={`particle-${i}`}
+                style={{
+                  position: "absolute",
+                  left: `${particleX}%`,
+                  top: `${particleY}%`,
+                  width: particleSize,
+                  height: particleSize,
+                  borderRadius: "50%",
+                  background: particleColor,
+                  opacity: particleOpacity,
+                  boxShadow: `0 0 ${particleSize * 3}px ${particleColor}60`,
+                }}
+              />
+            );
+          })}
+
+          {/* --- Animated glow streaks --- */}
           <div
             style={{
               position: "absolute",
               top: -200,
               left: "20%",
-              width: 300,
+              width: 200,
+              height: 1200,
+              background: `linear-gradient(180deg, ${ACCENT}12 0%, transparent 50%)`,
+              opacity: pulse * 0.7,
+              filter: "blur(40px)",
+              transform: `skewX(-25deg) translateY(${drift * 1.5}px)`,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: -100,
+              right: "15%",
+              width: 150,
               height: 1000,
-              background: `linear-gradient(180deg, ${ACCENT}18 0%, transparent 60%)`,
-              opacity: pulse,
-              filter: "blur(50px)",
-              transform: `skewX(-20deg) translateY(${drift}px)`,
+              background: `linear-gradient(180deg, ${HL}10 0%, transparent 50%)`,
+              opacity: fastPulse * 0.5,
+              filter: "blur(35px)",
+              transform: `skewX(20deg) translateY(${-drift}px)`,
             }}
           />
 
@@ -292,22 +332,28 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 style={{
                   transform: `scale(${endScreenScale})`,
                   textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
+                {/* Question */}
                 <div
                   style={{
-                    fontSize: 68,
+                    fontSize: 52,
                     fontWeight: 900,
                     color: "#ffffff",
                     fontFamily: FONT,
                     textTransform: "uppercase",
-                    letterSpacing: 4,
+                    letterSpacing: 3,
                     textShadow: `0 4px 30px rgba(0,0,0,0.6)`,
-                    marginBottom: 30,
+                    marginBottom: 20,
                     lineHeight: 1.2,
                   }}
                 >
-                  ALORS, TU EN AVAIS COMBIEN ?
+                  TU CONNAISSAIS
+                  <br />
+                  COMBIEN DE TERMES ?
                 </div>
 
                 {/* Score */}
@@ -319,10 +365,50 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                     fontFamily: FONT,
                     lineHeight: 1,
                     textShadow: `0 0 60px ${HL}80, 0 0 120px ${HL}40`,
-                    marginBottom: 40,
+                    marginBottom: 24,
                   }}
                 >
-                  {decodedTerms}/{totalTerms}
+                  {totalTerms}
+                </div>
+
+                {/* All terms as chips */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    gap: 10,
+                    marginBottom: 30,
+                    maxWidth: 800,
+                  }}
+                >
+                  {lyrics.flatMap(line => line.terms).filter((t, i, arr) =>
+                    arr.findIndex(x => x.term.toLowerCase() === t.term.toLowerCase()) === i
+                  ).map((term, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        background: `${getCategoryColor(term.category)}25`,
+                        border: `2px solid ${getCategoryColor(term.category)}80`,
+                        borderRadius: 10,
+                        padding: "6px 16px",
+                        transform: `scale(${0.9 + Math.sin((frame + i * 5) * 0.1) * 0.05})`,
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 28,
+                          fontWeight: 900,
+                          color: getCategoryColor(term.category),
+                          fontFamily: FONT,
+                          textTransform: "uppercase",
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {term.term}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 {/* CTA: COMMENTE */}
@@ -330,7 +416,7 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                   style={{
                     background: `linear-gradient(135deg, ${HL}, ${HL}cc)`,
                     borderRadius: 16,
-                    padding: "20px 50px",
+                    padding: "18px 44px",
                     display: "inline-block",
                     boxShadow: `0 0 40px ${HL}50, 0 8px 30px rgba(0,0,0,0.4)`,
                     transform: `scale(${0.95 + Math.sin(frame * 0.1) * 0.05})`,
@@ -338,102 +424,32 @@ export const LyricsVideo: React.FC<LyricsVideoProps> = ({ data }) => {
                 >
                   <div
                     style={{
-                      fontSize: 40,
+                      fontSize: 38,
                       fontWeight: 900,
                       color: "#000",
-                      fontFamily: FONT,
-                      letterSpacing: 4,
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    COMMENTE TON SCORE
-                  </div>
-                </div>
-
-                {/* ABONNE-TOI — Strong CTA */}
-                <div
-                  style={{
-                    marginTop: 40,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  {/* Subscribe button */}
-                  <div
-                    style={{
-                      background: "#ff0000",
-                      borderRadius: 14,
-                      padding: "18px 50px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 16,
-                      boxShadow: `0 0 50px rgba(255,0,0,0.5), 0 8px 30px rgba(0,0,0,0.4)`,
-                      transform: `scale(${1 + Math.sin(frame * 0.12) * 0.06})`,
-                    }}
-                  >
-                    {/* Bell icon */}
-                    <svg
-                      width="42"
-                      height="42"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                      style={{
-                        filter: "drop-shadow(0 0 8px rgba(255,255,255,0.5))",
-                      }}
-                    >
-                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-                    </svg>
-                    <div
-                      style={{
-                        fontSize: 48,
-                        fontWeight: 900,
-                        color: "#fff",
-                        fontFamily: FONT,
-                        letterSpacing: 4,
-                        textTransform: "uppercase",
-                        textShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                      }}
-                    >
-                      ABONNE-TOI
-                    </div>
-                  </div>
-
-                  {/* Arrow pointing up */}
-                  <div
-                    style={{
-                      transform: `translateY(${Math.sin(frame * 0.15) * 8}px)`,
-                      opacity: 0.8,
-                    }}
-                  >
-                    <svg
-                      width="50"
-                      height="50"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 19V5M5 12l7-7 7 7"/>
-                    </svg>
-                  </div>
-
-                  {/* Teaser text */}
-                  <div
-                    style={{
-                      fontSize: 32,
-                      fontWeight: 700,
-                      color: "rgba(255,255,255,0.7)",
                       fontFamily: FONT,
                       letterSpacing: 3,
                       textTransform: "uppercase",
                     }}
                   >
-                    POUR NE RIEN RATER
+                    COMMENTE TON SCORE !
                   </div>
+                </div>
+
+                {/* Follow CTA */}
+                <div
+                  style={{
+                    marginTop: 24,
+                    fontSize: 30,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.7)",
+                    fontFamily: FONT,
+                    letterSpacing: 3,
+                    textTransform: "uppercase",
+                    transform: `translateY(${Math.sin(frame * 0.12) * 5}px)`,
+                  }}
+                >
+                  FOLLOW POUR LA SUITE
                 </div>
               </div>
             </AbsoluteFill>
