@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Réceptions</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html" class="active"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Réceptions</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Réceptions</div>
+          <div class="page-subtitle">Suivi de toutes les réceptions de marchandise</div>
+        </div>
+        <a href="03-reception-new.html" class="btn btn-primary">+ Nouvelle réception</a>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="form-input search-input" type="text" placeholder="Rechercher N°, fournisseur...">
+        </div>
+        <select class="form-select">
+          <option>Tous les fournisseurs</option>
+          <option>Ferme Morin</option>
+          <option>Coop. Loire Verdure</option>
+          <option>Import Soleil</option>
+        </select>
+        <select class="form-select">
+          <option>Tous les statuts</option>
+          <option>En cours</option>
+          <option>Terminée</option>
+          <option>Refusée</option>
+        </select>
+        <div class="filter-tabs">
+          <button class="filter-tab active">Aujourd'hui</button>
+          <button class="filter-tab">7 jours</button>
+          <button class="filter-tab">30 jours</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>N° Réception</th>
+                <th>Fournisseur</th>
+                <th>Produits</th>
+                <th>Quantité totale</th>
+                <th>Date / Heure</th>
+                <th>Opérateur</th>
+                <th>Statut</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="clickable" onclick="location.href='03-reception-new.html'">
+                <td><span class="font-mono text-sm">REC-260318-03</span></td>
+                <td>
+                  <span class="font-bold">Ferme Morin</span><br>
+                  <span class="text-xs text-muted">FARM-042</span>
+                </td>
+                <td>
+                  <span class="tag">🥕 Carotte lavée</span>
+                  <span class="tag">🥕 Carotte sable</span>
+                </td>
+                <td><strong>7 200 kg</strong><br><span class="text-xs text-muted">2 lots</span></td>
+                <td>18/03/2026<br><span class="text-xs text-muted">09:35</span></td>
+                <td>M. Leroy</td>
+                <td><span class="badge badge-warning"><span class="dot dot-warning"></span> En cours</span></td>
+                <td><a href="03-reception-new.html" class="btn btn-secondary btn-sm">Continuer →</a></td>
+              </tr>
+              <tr>
+                <td><span class="font-mono text-sm">REC-260318-02</span></td>
+                <td>
+                  <span class="font-bold">Coop. Loire Verdure</span><br>
+                  <span class="text-xs text-muted">COOP-018</span>
+                </td>
+                <td>
+                  <span class="tag">🥬 Laitue iceberg</span>
+                  <span class="tag">🥦 Brocoli</span>
+                </td>
+                <td><strong>840 kg</strong><br><span class="text-xs text-muted">2 lots</span></td>
+                <td>18/03/2026<br><span class="text-xs text-muted">07:30</span></td>
+                <td>S. Martin</td>
+                <td><span class="badge badge-success"><span class="dot dot-success"></span> Terminée</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir</button></td>
+              </tr>
+              <tr>
+                <td><span class="font-mono text-sm">REC-260318-01</span></td>
+                <td>
+                  <span class="font-bold">Import Soleil</span><br>
+                  <span class="text-xs text-muted">IMP-007</span>
+                </td>
+                <td>
+                  <span class="tag">🍌 Banane</span>
+                </td>
+                <td><strong>3 200 kg</strong><br><span class="text-xs text-muted">1 lot</span></td>
+                <td>18/03/2026<br><span class="text-xs text-muted">06:00</span></td>
+                <td>M. Leroy</td>
+                <td><span class="badge badge-success"><span class="dot dot-success"></span> Terminée</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir</button></td>
+              </tr>
+              <tr>
+                <td><span class="font-mono text-sm">REC-260317-05</span></td>
+                <td>
+                  <span class="font-bold">Ferme Petit</span><br>
+                  <span class="text-xs text-muted">FARM-091</span>
+                </td>
+                <td>
+                  <span class="tag">🥔 Pomme de terre</span>
+                  <span class="tag">🧅 Oignon</span>
+                </td>
+                <td><strong>4 100 kg</strong><br><span class="text-xs text-muted">2 lots</span></td>
+                <td>17/03/2026<br><span class="text-xs text-muted">14:20</span></td>
+                <td>S. Martin</td>
+                <td><span class="badge badge-success"><span class="dot dot-success"></span> Terminée</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir</button></td>
+              </tr>
+              <tr>
+                <td><span class="font-mono text-sm">REC-260316-01</span></td>
+                <td>
+                  <span class="font-bold">Ferme Grandin</span><br>
+                  <span class="text-xs text-muted">FARM-033</span>
+                </td>
+                <td>
+                  <span class="tag">🍅 Tomate ronde</span>
+                </td>
+                <td><strong>0 kg</strong><br><span class="text-xs text-muted">Refusé</span></td>
+                <td>16/03/2026<br><span class="text-xs text-muted">10:05</span></td>
+                <td>M. Leroy</td>
+                <td><span class="badge badge-danger"><span class="dot dot-danger"></span> Refusée</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          <span class="text-muted text-sm">5 réceptions affichées</span>
+          <div class="flex gap-8">
+            <button class="btn btn-ghost btn-sm">← Préc.</button>
+            <button class="btn btn-secondary btn-sm">1</button>
+            <button class="btn btn-ghost btn-sm">Suiv. →</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

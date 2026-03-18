@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Référentiels</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .ref-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+    .ref-tab {
+      padding: 10px 18px;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none; background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+    }
+    .ref-tab:hover { color: var(--primary); }
+    .ref-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    .ref-content { display: none; }
+    .ref-content.active { display: block; }
+
+    .compat-cell { text-align: center; font-size: 16px; }
+    .matrix-table th, .matrix-table td { text-align: center; padding: 8px 10px; border: 1px solid var(--border); font-size: 12px; }
+    .matrix-table th { background: var(--bg); font-weight: 700; color: var(--text-secondary); font-size: 11px; }
+    .matrix-table td:first-child { font-weight: 700; text-align: left; background: var(--bg); color: var(--text-secondary); font-size: 11px; }
+    .mc-ok      { background: #ECFDF5; }
+    .mc-block   { background: #FEF2F2; }
+    .mc-warn    { background: #FFFBEB; }
+    .mc-na      { background: var(--bg); color: var(--text-muted); }
+
+    .product-prop { display: flex; align-items: center; gap: 6px; }
+    .prop-icon { font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html" class="active"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Référentiels</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Référentiels</div>
+          <div class="page-subtitle">Gestion des données de base du SI</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="ref-tabs">
+        <button class="ref-tab active" onclick="showTab('produits')">📦 Produits</button>
+        <button class="ref-tab" onclick="showTab('fournisseurs')">🚚 Fournisseurs</button>
+        <button class="ref-tab" onclick="showTab('zones')">🏭 Zones</button>
+        <button class="ref-tab" onclick="showTab('regles')">⚠️ Règles de stockage</button>
+      </div>
+
+      <!-- ─── PRODUITS ─────────────────────────────────────── -->
+      <div class="ref-content active" id="tab-produits">
+        <div class="page-actions" style="justify-content: space-between; display: flex; margin-bottom: 16px;">
+          <div class="filters-bar" style="margin: 0;">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input class="form-input search-input" type="text" placeholder="Rechercher un produit...">
+            </div>
+            <select class="form-select">
+              <option>Toutes les familles</option>
+              <option>Légumes racines</option>
+              <option>Légumes feuilles</option>
+              <option>Fruits tempérés</option>
+            </select>
+            <select class="form-select">
+              <option>Tous les statuts</option>
+              <option>Actifs</option>
+              <option>Inactifs</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">+ Nouveau produit</button>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Libellé</th>
+                  <th>Famille</th>
+                  <th>Catégo. stockage</th>
+                  <th>T° min/max</th>
+                  <th>DLC std</th>
+                  <th>Propriétés</th>
+                  <th>Statut</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="font-mono text-sm">CAR-001</span></td>
+                  <td><strong>🥕 Carotte lavée</strong></td>
+                  <td><span class="tag">Légume racine</span></td>
+                  <td><span class="badge badge-primary">RACINE_FROID</span></td>
+                  <td>0°C / 4°C</td>
+                  <td>21 j</td>
+                  <td>
+                    <div class="product-prop"><span title="Sensible à l'éthylène">🟡 Éthyl. sensible</span></div>
+                    <div class="product-prop"><span title="Absorbe les odeurs">🟠 Absorb. odeurs</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">CAR-002</span></td>
+                  <td><strong>🥕 Carotte sable</strong></td>
+                  <td><span class="tag">Légume racine</span></td>
+                  <td><span class="badge badge-primary">RACINE_FROID</span></td>
+                  <td>0°C / 4°C</td>
+                  <td>21 j</td>
+                  <td>
+                    <div class="product-prop"><span>🟡 Éthyl. sensible</span></div>
+                    <div class="product-prop"><span>🟠 Absorb. odeurs</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">POM-001</span></td>
+                  <td><strong>🍎 Pomme Golden</strong></td>
+                  <td><span class="tag">Fruit tempéré</span></td>
+                  <td><span class="badge badge-neutral">FRUIT_TEMPER</span></td>
+                  <td>1°C / 4°C</td>
+                  <td>45 j</td>
+                  <td>
+                    <div class="product-prop"><span>🔴 Prod. éthylène</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">LAI-001</span></td>
+                  <td><strong>🥬 Laitue iceberg</strong></td>
+                  <td><span class="tag">Légume feuille</span></td>
+                  <td><span class="badge badge-info">FEUILLE_FROID</span></td>
+                  <td>2°C / 6°C</td>
+                  <td>7 j</td>
+                  <td>
+                    <div class="product-prop"><span>🟡 Éthyl. sensible</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">OIG-001</span></td>
+                  <td><strong>🧅 Oignon jaune</strong></td>
+                  <td><span class="tag">Bulbe</span></td>
+                  <td><span class="badge badge-warning">BULBE_ODEUR</span></td>
+                  <td>0°C / 5°C</td>
+                  <td>60 j</td>
+                  <td>
+                    <div class="product-prop"><span>🟠 Émet. odeurs</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">BAN-001</span></td>
+                  <td><strong>🍌 Banane</strong></td>
+                  <td><span class="tag">Fruit tropical</span></td>
+                  <td><span class="badge badge-orange">FRUIT_TROPICAL</span></td>
+                  <td>13°C / 15°C</td>
+                  <td>10 j</td>
+                  <td>
+                    <div class="product-prop"><span>🔴 Prod. éthylène</span></div>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                    <button class="btn btn-ghost btn-sm">⏸️</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <span class="text-muted text-sm">6 produits affichés sur 12 actifs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── FOURNISSEURS ──────────────────────────────────── -->
+      <div class="ref-content" id="tab-fournisseurs">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <div class="filters-bar" style="margin:0;">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input class="form-input search-input" type="text" placeholder="Rechercher...">
+            </div>
+            <select class="form-select">
+              <option>Tous types</option>
+              <option>Ferme</option>
+              <option>Coopérative</option>
+              <option>Importateur</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">+ Nouveau fournisseur</button>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Raison sociale</th>
+                  <th>Type</th>
+                  <th>Contact</th>
+                  <th>Certifications</th>
+                  <th>Statut</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="font-mono text-sm">FARM-042</span></td>
+                  <td><strong>Ferme Morin</strong></td>
+                  <td><span class="tag">Ferme</span></td>
+                  <td>Pierre Morin<br><span class="text-xs text-muted">06 12 34 56 78</span></td>
+                  <td>
+                    <span class="badge badge-success text-xs">BIO</span>
+                    <span class="badge badge-neutral text-xs">HVE</span>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">COOP-018</span></td>
+                  <td><strong>Coop. Loire Verdure</strong></td>
+                  <td><span class="tag">Coopérative</span></td>
+                  <td>M. Bertrand<br><span class="text-xs text-muted">02 41 55 67 89</span></td>
+                  <td>
+                    <span class="badge badge-neutral text-xs">GlobalGAP</span>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">IMP-007</span></td>
+                  <td><strong>Import Soleil</strong></td>
+                  <td><span class="tag">Importateur</span></td>
+                  <td>L. Fontaine<br><span class="text-xs text-muted">01 44 32 10 00</span></td>
+                  <td>
+                    <span class="badge badge-neutral text-xs">GLOBALG.A.P.</span>
+                  </td>
+                  <td><span class="badge badge-success"><span class="dot dot-success"></span> Actif</span></td>
+                  <td>
+                    <button class="btn btn-ghost btn-sm">✏️</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ZONES ─────────────────────────────────────────── -->
+      <div class="ref-content" id="tab-zones">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <div class="filters-bar" style="margin:0;">
+            <select class="form-select">
+              <option>ENT-01 Principal</option>
+              <option>ENT-02 Annexe</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">+ Nouvelle zone</button>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code zone</th>
+                  <th>Libellé</th>
+                  <th>Catégorie thermique</th>
+                  <th>T° consigne</th>
+                  <th>Hum. consigne</th>
+                  <th>Capacité</th>
+                  <th>Statut</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZA</span></td>
+                  <td><strong>Zone A — Froid léger</strong></td>
+                  <td><span class="badge" style="background:#DBEAFE; color:#1D4ED8;">FROID_LEGER</span></td>
+                  <td>2°C</td>
+                  <td>92%</td>
+                  <td>12 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZB</span></td>
+                  <td><strong>Zone B — Froid modéré</strong></td>
+                  <td><span class="badge" style="background:#E0F2FE; color:#0369A1;">FROID_MODERE</span></td>
+                  <td>6°C</td>
+                  <td>87%</td>
+                  <td>8 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZC</span></td>
+                  <td><strong>Zone C — Tempéré frais</strong></td>
+                  <td><span class="badge" style="background:#DCFCE7; color:#15803D;">FRAIS</span></td>
+                  <td>10°C</td>
+                  <td>82%</td>
+                  <td>10 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZD</span></td>
+                  <td><strong>Zone D — Tempéré</strong></td>
+                  <td><span class="badge" style="background:#FEF9C3; color:#92400E;">TEMPERE</span></td>
+                  <td>14°C</td>
+                  <td>74%</td>
+                  <td>10 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZE</span></td>
+                  <td><strong>Zone E — Tropical</strong></td>
+                  <td><span class="badge" style="background:#FEF3C7; color:#92400E;">TROPICAL</span></td>
+                  <td>15°C</td>
+                  <td>87%</td>
+                  <td>8 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+                <tr>
+                  <td><span class="font-mono text-sm">ENT01-ZF</span></td>
+                  <td><strong>Zone F — Ambiant sec</strong></td>
+                  <td><span class="badge" style="background:#F3F4F6; color:#374151;">AMBIANT</span></td>
+                  <td>17°C</td>
+                  <td>62%</td>
+                  <td>5 palettes</td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── RÈGLES ─────────────────────────────────────────── -->
+      <div class="ref-content" id="tab-regles">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <div class="filter-tabs">
+            <button class="filter-tab active" onclick="showMatrix('liste')">Liste</button>
+            <button class="filter-tab" onclick="showMatrix('matrice')">Matrice</button>
+          </div>
+          <button class="btn btn-primary">+ Nouvelle règle</button>
+        </div>
+
+        <!-- Liste -->
+        <div id="view-liste">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Catégorie A</th>
+                    <th>Catégorie B</th>
+                    <th>Niveau</th>
+                    <th>Dérogation</th>
+                    <th>Motif</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="badge badge-primary">RACINE_FROID</span></td>
+                    <td><span class="badge badge-neutral">FRUIT_TEMPER</span></td>
+                    <td><span class="badge badge-danger">❌ BLOQUANT</span></td>
+                    <td><span class="badge badge-neutral">Non</span></td>
+                    <td class="text-sm text-muted">Éthylène des pommes rend les carottes amères</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">RACINE_FROID</span></td>
+                    <td><span class="badge badge-warning">BULBE_ODEUR</span></td>
+                    <td><span class="badge badge-danger">❌ BLOQUANT</span></td>
+                    <td><span class="badge badge-neutral">Oui*</span></td>
+                    <td class="text-sm text-muted">Carottes absorbent les odeurs soufrées des oignons</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-info">FEUILLE_FROID</span></td>
+                    <td><span class="badge badge-neutral">FRUIT_TEMPER</span></td>
+                    <td><span class="badge badge-danger">❌ BLOQUANT</span></td>
+                    <td><span class="badge badge-neutral">Non</span></td>
+                    <td class="text-sm text-muted">Éthylène fait jaunir les laitues et brocolis</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-orange">FRUIT_TROPICAL</span></td>
+                    <td><span class="badge badge-primary">RACINE_FROID</span></td>
+                    <td><span class="badge badge-danger">❌ BLOQUANT</span></td>
+                    <td><span class="badge badge-neutral">Non</span></td>
+                    <td class="text-sm text-muted">Températures incompatibles + éthylène banane</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-primary">TUBERCULE</span></td>
+                    <td><span class="badge badge-warning">BULBE_ODEUR</span></td>
+                    <td><span class="badge badge-warning">⚠️ DÉCONSEILLÉ</span></td>
+                    <td><span class="text-muted text-sm">—</span></td>
+                    <td class="text-sm text-muted">Vapeurs oignon accélèrent germination PDT</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge badge-danger">LEGUME_FRUIT</span></td>
+                    <td><span class="badge badge-warning">BULBE_ODEUR</span></td>
+                    <td><span class="badge badge-danger">❌ BLOQUANT</span></td>
+                    <td><span class="badge badge-neutral">Non</span></td>
+                    <td class="text-sm text-muted">Tomates absorbent odeurs oignons</td>
+                    <td><button class="btn btn-ghost btn-sm">✏️</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-footer">
+              <span class="text-muted text-sm">* Dérogation possible avec validation responsable d'entrepôt</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matrice -->
+        <div id="view-matrice" style="display:none;">
+          <div class="card">
+            <div class="card-body" style="overflow-x: auto;">
+              <p class="text-muted text-sm mb-16">Lecture : ❌ = incompatible (BLOQUANT) · ⚠️ = déconseillé · ✅ = compatible · — = identique</p>
+              <table class="matrix-table" style="min-width: 600px;">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>RACINE<br>FROID</th>
+                    <th>FEUILLE<br>FROID</th>
+                    <th>FRUIT<br>TEMPER</th>
+                    <th>FRUIT<br>TROPICAL</th>
+                    <th>LEGUME<br>FRUIT</th>
+                    <th>BULBE<br>ODEUR</th>
+                    <th>TUBER<br>CULE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>RACINE_FROID</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-ok">✅</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-ok">✅</td>
+                  </tr>
+                  <tr>
+                    <td>FEUILLE_FROID</td>
+                    <td class="mc-ok">✅</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-ok">✅</td>
+                  </tr>
+                  <tr>
+                    <td>FRUIT_TEMPER</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                  </tr>
+                  <tr>
+                    <td>FRUIT_TROPICAL</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                  </tr>
+                  <tr>
+                    <td>LEGUME_FRUIT</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                  </tr>
+                  <tr>
+                    <td>BULBE_ODEUR</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-na">—</td>
+                    <td class="mc-warn">⚠️</td>
+                  </tr>
+                  <tr>
+                    <td>TUBERCULE</td>
+                    <td class="mc-ok">✅</td>
+                    <td class="mc-ok">✅</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-block">❌</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-warn">⚠️</td>
+                    <td class="mc-na">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script>
+function showTab(name) {
+  document.querySelectorAll('.ref-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.ref-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function showMatrix(view) {
+  document.getElementById('view-liste').style.display = view === 'liste' ? 'block' : 'none';
+  document.getElementById('view-matrice').style.display = view === 'matrice' ? 'block' : 'none';
+  document.querySelectorAll('.ref-content#tab-regles .filter-tab').forEach((el, i) => {
+    el.classList.toggle('active', (view === 'liste' && i === 0) || (view === 'matrice' && i === 1));
+  });
+}
+</script>
+</body>
+</html>

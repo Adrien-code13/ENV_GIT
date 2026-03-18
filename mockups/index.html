@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Maquettes SI</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .hub-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+      text-decoration: none;
+      display: block;
+    }
+    .hub-card:hover { box-shadow: var(--shadow); border-color: var(--primary-light); transform: translateY(-2px); }
+    .hub-card-icon { font-size: 32px; margin-bottom: 10px; }
+    .hub-card-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .hub-card-desc  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+    .hub-card-code  { font-size: 10.5px; font-family: monospace; color: var(--text-muted); margin-top: 8px; background: var(--bg); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); margin: 28px 0 12px; }
+    .section-title:first-child { margin-top: 0; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Navigation maquettes</div>
+      <ul class="sidebar-nav">
+        <li><a href="index.html" class="active"><span class="nav-icon">🗂️</span> Index des écrans</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Index des maquettes</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-alerts">🔔<span class="badge">3</span></div>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🥕 LogiFL — Maquettes Fonctionnelles</div>
+          <div class="page-subtitle">SI Logistique Fruits & Légumes — Cliquez sur un écran pour l'ouvrir</div>
+        </div>
+        <div>
+          <span class="badge badge-primary">v1.0 — 18 écrans</span>
+        </div>
+      </div>
+
+      <div class="section-title">Tableau de bord</div>
+      <div class="hub-grid">
+        <a class="hub-card" href="01-dashboard.html">
+          <div class="hub-card-icon">📊</div>
+          <div class="hub-card-title">Tableau de bord</div>
+          <div class="hub-card-desc">Vue synthétique du jour : réceptions en cours, alertes, derniers mouvements, stock critique.</div>
+          <div class="hub-card-code">MOV-01</div>
+        </a>
+      </div>
+
+      <div class="section-title">Réceptions (flux complet)</div>
+      <div class="hub-grid">
+        <a class="hub-card" href="02-receptions.html">
+          <div class="hub-card-icon">📋</div>
+          <div class="hub-card-title">Liste des réceptions</div>
+          <div class="hub-card-desc">Toutes les réceptions filtrables par statut, date, fournisseur.</div>
+          <div class="hub-card-code">REC-01</div>
+        </a>
+        <a class="hub-card" href="03-reception-new.html">
+          <div class="hub-card-icon">🚛</div>
+          <div class="hub-card-title">Nouvelle réception</div>
+          <div class="hub-card-desc">Flux complet en 4 étapes : en-tête → contrôle QC → saisie des lots → affectation des emplacements.</div>
+          <div class="hub-card-code">REC-02 à REC-05</div>
+        </a>
+      </div>
+
+      <div class="section-title">Stocks</div>
+      <div class="hub-grid">
+        <a class="hub-card" href="04-stocks.html">
+          <div class="hub-card-icon">📦</div>
+          <div class="hub-card-title">Stocks en temps réel</div>
+          <div class="hub-card-desc">Vue globale par produit avec quantités, DLC, alertes de péremption.</div>
+          <div class="hub-card-code">STK-01</div>
+        </a>
+        <a class="hub-card" href="05-stock-lot.html">
+          <div class="hub-card-icon">🏷️</div>
+          <div class="hub-card-title">Détail d'un lot</div>
+          <div class="hub-card-desc">Fiche complète du lot LOT-260318-0007 (carottes lavées), historique des mouvements.</div>
+          <div class="hub-card-code">STK-02</div>
+        </a>
+        <a class="hub-card" href="06-zones.html">
+          <div class="hub-card-icon">🗺️</div>
+          <div class="hub-card-title">Vue par zones</div>
+          <div class="hub-card-desc">Occupation des zones de l'entrepôt, taux de remplissage, produits stockés par zone.</div>
+          <div class="hub-card-code">STK-03</div>
+        </a>
+      </div>
+
+      <div class="section-title">Alertes & Suivi</div>
+      <div class="hub-grid">
+        <a class="hub-card" href="07-alertes.html">
+          <div class="hub-card-icon">🔔</div>
+          <div class="hub-card-title">Centre d'alertes</div>
+          <div class="hub-card-desc">DLC dépassées, ruptures de chaîne du froid, stocks critiques. Actions rapides intégrées.</div>
+          <div class="hub-card-code">ALR-01</div>
+        </a>
+      </div>
+
+      <div class="section-title">Référentiels</div>
+      <div class="hub-grid">
+        <a class="hub-card" href="08-referentiels.html">
+          <div class="hub-card-icon">⚙️</div>
+          <div class="hub-card-title">Référentiels</div>
+          <div class="hub-card-desc">Produits, fournisseurs, zones et règles de stockage. Catalogue des incompatibilités.</div>
+          <div class="hub-card-code">REF-01 à REF-05</div>
+        </a>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Stocks</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .dlc-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; }
+    .dlc-ok   { color: var(--success); }
+    .dlc-warn { color: var(--warning); }
+    .dlc-crit { color: var(--orange); }
+    .dlc-over { color: var(--danger); }
+    .expand-row { background: #F7FBF8; }
+    .expand-row td { padding: 0 !important; }
+    .expand-inner { padding: 0 14px 14px 40px; }
+    .expand-inner table { margin-top: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .expand-inner thead th { background: var(--bg); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html" class="active"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Stocks en temps réel</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Stocks en temps réel</div>
+          <div class="page-subtitle">Dernière mise à jour : 09:52 — ENT-01 Principal</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost">📊 Rapport</button>
+          <button class="btn btn-ghost">⬇️ Export CSV</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="kpi-card">
+          <div class="kpi-label">Stock total</div>
+          <div class="kpi-value">14 360</div>
+          <div class="kpi-sub">kg en entrepôt</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Lots actifs</div>
+          <div class="kpi-value">9</div>
+          <div class="kpi-sub">lots en stock</div>
+        </div>
+        <div class="kpi-card" style="border-color: #FCA5A5; background: var(--danger-bg);">
+          <div class="kpi-label">DLC dépassées</div>
+          <div class="kpi-value" style="color:var(--danger)">1</div>
+          <div class="kpi-sub" style="color:var(--danger)">lot à traiter</div>
+        </div>
+        <div class="kpi-card" style="border-color: #FCD34D; background: var(--warning-bg);">
+          <div class="kpi-label">DLC &lt; 7 jours</div>
+          <div class="kpi-value" style="color:var(--warning)">3</div>
+          <div class="kpi-sub" style="color:var(--warning)">lots à surveiller</div>
+        </div>
+      </div>
+
+      <!-- Filters + view toggle -->
+      <div class="filters-bar" style="margin-bottom: 16px;">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="form-input search-input" type="text" placeholder="Produit, lot, emplacement...">
+        </div>
+        <select class="form-select">
+          <option>Toutes les zones</option>
+          <option>Zone A — Froid léger</option>
+          <option>Zone B — Froid modéré</option>
+          <option>Zone C — Tempéré frais</option>
+          <option>Zone D — Tempéré</option>
+          <option>Zone E — Tropical</option>
+        </select>
+        <select class="form-select">
+          <option>Toutes les familles</option>
+          <option>Légumes racines</option>
+          <option>Légumes feuilles</option>
+          <option>Fruits tempérés</option>
+          <option>Fruits tropicaux</option>
+        </select>
+        <select class="form-select">
+          <option>DLC : Tous</option>
+          <option>DLC dépassée</option>
+          <option>DLC &lt; 48h</option>
+          <option>DLC &lt; 7 jours</option>
+        </select>
+        <div class="filter-tabs">
+          <button class="filter-tab active">Par produit</button>
+          <button class="filter-tab">Par lot</button>
+          <button class="filter-tab">Par zone</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:32px"></th>
+                <th>Produit</th>
+                <th>Famille</th>
+                <th>Quantité totale</th>
+                <th>Nb lots</th>
+                <th>Zone(s)</th>
+                <th>DLC la plus proche</th>
+                <th>Statut DLC</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Expandable row: Carotte lavée -->
+              <tr class="clickable" onclick="toggleRow('r1')">
+                <td style="text-align:center; color: var(--text-muted);" id="r1-icon">▶</td>
+                <td>
+                  <div class="font-bold">🥕 Carotte lavée</div>
+                  <div class="text-xs text-muted">CAR-001 · RACINE_FROID</div>
+                </td>
+                <td><span class="tag">Légume racine</span></td>
+                <td><strong>4 800 kg</strong></td>
+                <td>1 lot</td>
+                <td><span class="badge badge-primary">Zone A</span></td>
+                <td class="dlc-chip dlc-ok">✅ 02/04/2026 <span style="font-weight:400;">(15j)</span></td>
+                <td><span class="badge badge-success">OK</span></td>
+                <td><a href="05-stock-lot.html" class="btn btn-ghost btn-sm" onclick="event.stopPropagation()">Voir lot</a></td>
+              </tr>
+              <tr class="expand-row" id="r1" style="display:none;">
+                <td colspan="9">
+                  <div class="expand-inner">
+                    <table>
+                      <thead><tr><th>N° Lot</th><th>Qté</th><th>Emplacement</th><th>Réception</th><th>Récolte</th><th>DLC</th><th></th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td><span class="font-mono text-sm">LOT-260318-0007</span></td>
+                          <td>4 800 kg</td>
+                          <td>ENT01-ZA-R02-E01</td>
+                          <td>18/03/2026</td>
+                          <td>12/03/2026</td>
+                          <td><span class="dlc-chip dlc-ok">✅ 02/04/2026</span></td>
+                          <td><a href="05-stock-lot.html" class="btn btn-ghost btn-sm">Détail</a></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Carotte sable -->
+              <tr class="clickable" onclick="toggleRow('r2')">
+                <td style="text-align:center; color: var(--text-muted);" id="r2-icon">▶</td>
+                <td>
+                  <div class="font-bold">🥕 Carotte sable</div>
+                  <div class="text-xs text-muted">CAR-002 · RACINE_FROID</div>
+                </td>
+                <td><span class="tag">Légume racine</span></td>
+                <td><strong>2 400 kg</strong></td>
+                <td>1 lot</td>
+                <td><span class="badge badge-primary">Zone A</span></td>
+                <td class="dlc-chip dlc-ok">✅ 31/03/2026 <span style="font-weight:400;">(13j)</span></td>
+                <td><span class="badge badge-success">OK</span></td>
+                <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation()">Voir lot</button></td>
+              </tr>
+              <tr class="expand-row" id="r2" style="display:none;">
+                <td colspan="9">
+                  <div class="expand-inner">
+                    <table>
+                      <thead><tr><th>N° Lot</th><th>Qté</th><th>Emplacement</th><th>DLC</th><th></th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td><span class="font-mono text-sm">LOT-260318-0008</span></td>
+                          <td>2 400 kg</td>
+                          <td>ENT01-ZA-R02-E02</td>
+                          <td><span class="dlc-chip dlc-ok">✅ 31/03/2026</span></td>
+                          <td><button class="btn btn-ghost btn-sm">Détail</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Laitue iceberg — DLC dépassée -->
+              <tr class="clickable" style="background: #FFF5F5;" onclick="toggleRow('r3')">
+                <td style="text-align:center; color: var(--text-muted);" id="r3-icon">▶</td>
+                <td>
+                  <div class="font-bold">🥬 Laitue iceberg</div>
+                  <div class="text-xs text-muted">LAI-001 · FEUILLE_FROID</div>
+                </td>
+                <td><span class="tag">Légume feuille</span></td>
+                <td><strong>320 kg</strong></td>
+                <td>1 lot</td>
+                <td><span class="badge badge-primary">Zone B</span></td>
+                <td class="dlc-chip dlc-over">🔴 17/03/2026 <span style="font-weight:400;">(−1j)</span></td>
+                <td><span class="badge badge-danger">DLC dépassée</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation()">Déclarer perte</button></td>
+              </tr>
+              <tr class="expand-row" id="r3" style="display:none;">
+                <td colspan="9">
+                  <div class="expand-inner">
+                    <div class="alert-card alert-danger" style="margin: 10px 0;">
+                      <div class="alert-icon">🔴</div>
+                      <div class="alert-content">
+                        <div class="alert-title">DLC dépassée depuis le 17/03/2026</div>
+                        <div class="alert-body">Ce lot doit être déclaré en perte. Il ne peut plus être expédié.</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Betterave -->
+              <tr>
+                <td style="text-align:center; color: var(--text-muted);">▶</td>
+                <td>
+                  <div class="font-bold">🫚 Betterave rouge</div>
+                  <div class="text-xs text-muted">BET-001 · RACINE_FROID</div>
+                </td>
+                <td><span class="tag">Légume racine</span></td>
+                <td><strong>1 800 kg</strong></td>
+                <td>2 lots</td>
+                <td><span class="badge badge-primary">Zone A</span></td>
+                <td class="dlc-chip dlc-ok">✅ 05/04/2026 <span style="font-weight:400;">(18j)</span></td>
+                <td><span class="badge badge-success">OK</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir lots</button></td>
+              </tr>
+
+              <!-- Banane -->
+              <tr>
+                <td style="text-align:center; color: var(--text-muted);">▶</td>
+                <td>
+                  <div class="font-bold">🍌 Banane</div>
+                  <div class="text-xs text-muted">BAN-001 · FRUIT_TROPICAL</div>
+                </td>
+                <td><span class="tag">Fruit tropical</span></td>
+                <td><strong>3 200 kg</strong></td>
+                <td>2 lots</td>
+                <td><span class="badge badge-info">Zone E</span></td>
+                <td class="dlc-chip dlc-warn">🟡 22/03/2026 <span style="font-weight:400;">(4j)</span></td>
+                <td><span class="badge badge-warning">⚠️ 4j</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir lots</button></td>
+              </tr>
+
+              <!-- Tomate -->
+              <tr>
+                <td style="text-align:center; color: var(--text-muted);">▶</td>
+                <td>
+                  <div class="font-bold">🍅 Tomate ronde</div>
+                  <div class="text-xs text-muted">TOM-001 · LEGUME_FRUIT</div>
+                </td>
+                <td><span class="tag">Légume-fruit</span></td>
+                <td><strong>450 kg</strong></td>
+                <td>1 lot</td>
+                <td><span class="badge badge-warning">Zone D</span></td>
+                <td class="dlc-chip dlc-crit">🟠 20/03/2026 <span style="font-weight:400;">(2j)</span></td>
+                <td><span class="badge badge-orange">⚠️ 48h</span></td>
+                <td><button class="btn btn-secondary btn-sm">Préparer expéd.</button></td>
+              </tr>
+
+              <!-- Oignon -->
+              <tr>
+                <td style="text-align:center; color: var(--text-muted);">▶</td>
+                <td>
+                  <div class="font-bold">🧅 Oignon jaune</div>
+                  <div class="text-xs text-muted">OIG-001 · BULBE_ODEUR</div>
+                </td>
+                <td><span class="tag">Bulbe</span></td>
+                <td><strong>1 390 kg</strong></td>
+                <td>1 lot</td>
+                <td><span class="badge badge-neutral">Zone F</span></td>
+                <td class="dlc-chip dlc-ok">✅ 15/04/2026 <span style="font-weight:400;">(28j)</span></td>
+                <td><span class="badge badge-success">OK</span></td>
+                <td><button class="btn btn-ghost btn-sm">Voir lot</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          <div>
+            <span class="text-muted text-sm">7 produits · 9 lots · 14 360 kg total</span>
+          </div>
+          <div class="flex gap-8">
+            <span class="badge badge-danger">🔴 1 DLC dépassée</span>
+            <span class="badge badge-warning">🟡 3 DLC &lt; 7j</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+function toggleRow(id) {
+  const row = document.getElementById(id);
+  const icon = document.getElementById(id + '-icon');
+  if (row.style.display === 'none') {
+    row.style.display = 'table-row';
+    if (icon) icon.textContent = '▼';
+  } else {
+    row.style.display = 'none';
+    if (icon) icon.textContent = '▶';
+  }
+}
+</script>
+</body>
+</html>

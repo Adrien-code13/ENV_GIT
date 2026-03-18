@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Tableau de bord</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .rec-pending-card {
+      background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+      border: 1.5px solid #86EFAC;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer; transition: box-shadow 0.15s;
+    }
+    .rec-pending-card:hover { box-shadow: var(--shadow); }
+    .rec-pending-icon { font-size: 28px; }
+    .rec-pending-info { flex: 1; }
+    .rec-pending-title { font-size: 13.5px; font-weight: 700; color: var(--primary); }
+    .rec-pending-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .move-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .move-row:last-child { border-bottom: none; }
+    .move-type { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .move-rec  { background: var(--success-bg); }
+    .move-exp  { background: var(--info-bg); }
+    .move-prt  { background: var(--danger-bg); }
+    .move-trf  { background: var(--warning-bg); }
+    .move-info { flex: 1; }
+    .move-title { font-size: 13px; font-weight: 600; }
+    .move-meta  { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+    .move-time  { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+    .stock-row  { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .stock-row:last-child { border-bottom: none; }
+    .stock-name { font-size: 13px; font-weight: 600; flex: 1; }
+    .stock-qty  { font-size: 13px; font-weight: 700; color: var(--text-primary); min-width: 80px; text-align: right; }
+    .stock-bar  { flex: 1; max-width: 100px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html" class="active"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Tableau de bord</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Bonjour, Marc 👋</div>
+          <div class="page-subtitle">Mercredi 18 mars 2026 — Entrepôt ENT-01 Principal</div>
+        </div>
+        <a href="03-reception-new.html" class="btn btn-primary">
+          <span>+</span> Nouvelle réception
+        </a>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">🚛</div>
+          <div class="kpi-label">Réceptions du jour</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-sub">dont 1 en cours</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📦</div>
+          <div class="kpi-label">Stock total</div>
+          <div class="kpi-value">14 360</div>
+          <div class="kpi-sub">kg en entrepôt</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">📤</div>
+          <div class="kpi-label">Expéditions du jour</div>
+          <div class="kpi-value">1</div>
+          <div class="kpi-sub">planifiée à 14h00</div>
+        </div>
+        <div class="kpi-card" style="border-color: #FCA5A5; background: var(--danger-bg);">
+          <div class="kpi-icon">⚠️</div>
+          <div class="kpi-label">Alertes actives</div>
+          <div class="kpi-value" style="color: var(--danger);">3</div>
+          <div class="kpi-sub" style="color: var(--danger);">dont 1 DLC dépassée</div>
+        </div>
+      </div>
+
+      <!-- Pending reception + Recent moves -->
+      <div class="two-col">
+
+        <!-- Left column -->
+        <div>
+          <!-- Pending -->
+          <div class="card mb-16">
+            <div class="card-header">
+              <span class="card-title">📋 Réceptions du jour</span>
+              <a href="02-receptions.html" class="btn btn-ghost btn-sm">Tout voir</a>
+            </div>
+            <div class="card-body">
+              <a href="03-reception-new.html" class="rec-pending-card" style="text-decoration:none;">
+                <div class="rec-pending-icon">🚛</div>
+                <div class="rec-pending-info">
+                  <div class="rec-pending-title">Ferme Morin — En attente</div>
+                  <div class="rec-pending-sub">Carottes · ~7 200 kg · Prévue 09:00</div>
+                </div>
+                <span class="badge badge-warning">En cours</span>
+              </a>
+
+              <div class="rec-pending-card" style="background: var(--success-bg); border-color: #86EFAC;">
+                <div class="rec-pending-icon">✅</div>
+                <div class="rec-pending-info">
+                  <div class="rec-pending-title" style="color: var(--success);">Coop. Loire Verdure — Terminée</div>
+                  <div class="rec-pending-sub">Laitues, Brocolis · 840 kg · 07:30</div>
+                </div>
+                <span class="badge badge-success">Terminée</span>
+              </div>
+
+              <div class="rec-pending-card" style="background: var(--success-bg); border-color: #86EFAC;">
+                <div class="rec-pending-icon">✅</div>
+                <div class="rec-pending-info">
+                  <div class="rec-pending-title" style="color: var(--success);">Import Soleil — Terminée</div>
+                  <div class="rec-pending-sub">Bananes · 3 200 kg · 06:00</div>
+                </div>
+                <span class="badge badge-success">Terminée</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts summary -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🔔 Alertes actives</span>
+              <a href="07-alertes.html" class="btn btn-ghost btn-sm">Voir tout</a>
+            </div>
+            <div class="card-body">
+              <div class="alert-card alert-danger" style="margin-bottom:10px;">
+                <div class="alert-icon">🔴</div>
+                <div class="alert-content">
+                  <div class="alert-title">DLC dépassée — Laitue iceberg</div>
+                  <div class="alert-body">LOT-260315-001 · Zone B · Depuis hier</div>
+                  <div class="alert-actions">
+                    <a href="07-alertes.html" class="btn btn-danger btn-sm">Déclarer perte</a>
+                    <a href="05-stock-lot.html" class="btn btn-ghost btn-sm">Voir lot</a>
+                  </div>
+                </div>
+              </div>
+              <div class="alert-card alert-orange" style="margin-bottom:10px;">
+                <div class="alert-icon">🟠</div>
+                <div class="alert-content">
+                  <div class="alert-title">DLC dans 48h — Tomates rondes</div>
+                  <div class="alert-body">LOT-260316-003 · Zone D · 450 kg</div>
+                </div>
+              </div>
+              <div class="alert-card alert-warning">
+                <div class="alert-icon">🌡️</div>
+                <div class="alert-content">
+                  <div class="alert-title">Pic température — Zone A</div>
+                  <div class="alert-body">6.8°C pendant 12 min à 08:32</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div>
+          <!-- Stock critique -->
+          <div class="card mb-16">
+            <div class="card-header">
+              <span class="card-title">📦 Stock par produit</span>
+              <a href="04-stocks.html" class="btn btn-ghost btn-sm">Tout voir</a>
+            </div>
+            <div class="card-body">
+              <div class="stock-row">
+                <div class="stock-name">🥕 Carotte lavée</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-success" style="width:65%"></div></div>
+                </div>
+                <div class="stock-qty">4 800 kg</div>
+                <span class="badge badge-success">✅</span>
+              </div>
+              <div class="stock-row">
+                <div class="stock-name">🥕 Carotte sable</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-success" style="width:40%"></div></div>
+                </div>
+                <div class="stock-qty">2 400 kg</div>
+                <span class="badge badge-success">✅</span>
+              </div>
+              <div class="stock-row">
+                <div class="stock-name">🥬 Laitue iceberg</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-danger" style="width:15%"></div></div>
+                </div>
+                <div class="stock-qty">320 kg</div>
+                <span class="badge badge-danger">DLC!</span>
+              </div>
+              <div class="stock-row">
+                <div class="stock-name">🍌 Banane</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-warning" style="width:55%"></div></div>
+                </div>
+                <div class="stock-qty">3 200 kg</div>
+                <span class="badge badge-warning">🟡 5j</span>
+              </div>
+              <div class="stock-row">
+                <div class="stock-name">🍅 Tomate ronde</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-warning" style="width:30%"></div></div>
+                </div>
+                <div class="stock-qty">450 kg</div>
+                <span class="badge badge-orange">⚠️ 2j</span>
+              </div>
+              <div class="stock-row">
+                <div class="stock-name">🫚 Betterave rouge</div>
+                <div class="progress-bar-wrap stock-bar">
+                  <div class="progress-bar"><div class="progress-bar-fill fill-primary" style="width:45%"></div></div>
+                </div>
+                <div class="stock-qty">1 800 kg</div>
+                <span class="badge badge-success">✅</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent movements -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">🔄 Derniers mouvements</span>
+            </div>
+            <div class="card-body">
+              <div class="move-row">
+                <div class="move-type move-rec">🚛</div>
+                <div class="move-info">
+                  <div class="move-title">Réception — Carottes lavées</div>
+                  <div class="move-meta">+4 800 kg · Ferme Morin · Zone A</div>
+                </div>
+                <div class="move-time">09:42</div>
+              </div>
+              <div class="move-row">
+                <div class="move-type move-exp">📤</div>
+                <div class="move-info">
+                  <div class="move-title">Expédition — Laitues</div>
+                  <div class="move-meta">−480 kg · Client Metro · Zone B</div>
+                </div>
+                <div class="move-time">08:15</div>
+              </div>
+              <div class="move-row">
+                <div class="move-type move-prt">🗑️</div>
+                <div class="move-info">
+                  <div class="move-title">Perte — Tomates (pourriture)</div>
+                  <div class="move-meta">−60 kg · LOT-260315-001 · Zone D</div>
+                </div>
+                <div class="move-time">07:30</div>
+              </div>
+              <div class="move-row">
+                <div class="move-type move-rec">🚛</div>
+                <div class="move-info">
+                  <div class="move-title">Réception — Bananes</div>
+                  <div class="move-meta">+3 200 kg · Import Soleil · Zone E</div>
+                </div>
+                <div class="move-time">06:00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

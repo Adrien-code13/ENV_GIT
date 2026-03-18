@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Détail lot LOT-260318-0007</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .detail-section { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 16px; }
+    .detail-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 12px; }
+    @media (max-width: 800px) { .detail-grid { grid-template-columns: 1fr; } }
+    .temp-gauge {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--success-bg); border: 1px solid #A7F3D0;
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .temp-num { font-size: 24px; font-weight: 800; color: var(--success); }
+    .temp-detail { font-size: 12px; color: var(--success); }
+    .action-strip {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      padding: 16px 20px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html" class="active"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <a href="04-stocks.html">Stocks</a>
+        <span class="sep">›</span>
+        <span class="current">LOT-260318-0007</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title flex-center gap-8">
+            <span class="font-mono">LOT-260318-0007</span>
+            <span class="badge badge-success"><span class="dot dot-success"></span> Stocké</span>
+          </div>
+          <div class="page-subtitle">🥕 Carotte lavée (CAR-001) — Ferme Morin</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary" onclick="alert('Impression étiquette — maquette')">🖨️ Imprimer étiquette</button>
+          <button class="btn btn-secondary" onclick="alert('Transfert — maquette')">↔️ Transférer</button>
+          <button class="btn btn-danger" onclick="alert('Déclarer perte — maquette')">🗑️ Déclarer perte</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+
+          <div class="detail-grid">
+            <!-- Identification -->
+            <div class="detail-section">
+              <div class="detail-section-title">Identification</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">N° lot interne</div>
+                  <div class="info-value font-mono">LOT-260318-0007</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">N° lot fournisseur</div>
+                  <div class="info-value font-mono">LOT-MORIN-2603-A</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Produit</div>
+                  <div class="info-value">🥕 Carotte lavée</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Code produit</div>
+                  <div class="info-value font-mono">CAR-001</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Fournisseur</div>
+                  <div class="info-value">Ferme Morin</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Qualité</div>
+                  <div class="info-value"><span class="badge badge-success">Catégorie I</span></div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Réception</div>
+                  <div class="info-value font-mono">REC-260318-03</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">QC</div>
+                  <div class="info-value"><span class="badge badge-warning">⚠️ Réserves</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quantités -->
+            <div class="detail-section">
+              <div class="detail-section-title">Quantités</div>
+              <div style="display: flex; gap: 24px; margin-bottom: 14px;">
+                <div style="text-align: center;">
+                  <div style="font-size: 32px; font-weight: 800; color: var(--primary);">4 800</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">kg actuels</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="font-size: 32px; font-weight: 800; color: var(--text-secondary);">4 800</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">kg initiaux</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="font-size: 32px; font-weight: 800; color: var(--text-secondary);">200</div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">colis</div>
+                </div>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" style="height: 12px;">
+                  <div class="progress-bar-fill fill-success" style="width:100%"></div>
+                </div>
+                <span class="text-sm text-muted">100% intact</span>
+              </div>
+            </div>
+
+            <!-- Localisation -->
+            <div class="detail-section">
+              <div class="detail-section-title">Localisation actuelle</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">Entrepôt</div>
+                  <div class="info-value">ENT-01 Principal</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Zone</div>
+                  <div class="info-value">Zone A — Froid léger</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Emplacement</div>
+                  <div class="info-value font-mono">ENT01-ZA-R02-E01</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Catégorie stockage</div>
+                  <div class="info-value"><span class="tag">RACINE_FROID</span></div>
+                </div>
+              </div>
+              <div class="temp-gauge">
+                <div>
+                  <div class="temp-num">3.1°C</div>
+                  <div class="temp-detail">T° zone actuelle ✓ dans plage 0–4°C</div>
+                </div>
+                <div style="margin-left: auto; text-align: right;">
+                  <div style="font-size: 12px; color: var(--success); font-weight: 600;">92% humidité</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">plage 90–95% ✓</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="detail-section">
+              <div class="detail-section-title">Dates & Traçabilité</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">Date réception</div>
+                  <div class="info-value">18/03/2026 — 09:42</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Date récolte</div>
+                  <div class="info-value">12/03/2026</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">DLC</div>
+                  <div class="info-value">
+                    <span style="font-weight: 800; color: var(--success); font-size: 15px;">02/04/2026</span>
+                    <span class="badge badge-success" style="margin-left: 6px;">✅ 15 jours</span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Opérateur réception</div>
+                  <div class="info-value">Marc Leroy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Historique -->
+          <div class="card-header" style="border-top: 1px solid var(--border); border-radius: 0; padding-left: 0; padding-right: 0; margin-top: 4px;">
+            <span class="card-title">Historique des mouvements</span>
+          </div>
+          <div style="margin-top: 16px;">
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">18/03/2026 — 09:42</div>
+                <div class="timeline-text">📦 Réception — REC-260318-03</div>
+                <div class="timeline-sub">+4 800 kg · Ferme Morin · Opérateur : Marc Leroy</div>
+                <div class="timeline-sub">Emplacement : → ENT01-ZA-R02-E01 (Zone A Froid léger)</div>
+              </div>
+            </div>
+            <div class="empty-state" style="padding: 20px; text-align: center; color: var(--text-muted);">
+              <div style="font-size: 12px;">Aucun autre mouvement enregistré sur ce lot.</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="action-strip">
+          <button class="btn btn-secondary" onclick="alert('Transfert — maquette')">↔️ Transférer ce lot</button>
+          <button class="btn btn-secondary" onclick="alert('Expédition — maquette')">📤 Expédier (partiel ou total)</button>
+          <button class="btn btn-ghost" onclick="alert('Diviser lot — maquette')">✂️ Diviser le lot</button>
+          <span style="margin-left: auto;"></span>
+          <button class="btn btn-danger" onclick="alert('Perte — maquette')">🗑️ Déclarer perte</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

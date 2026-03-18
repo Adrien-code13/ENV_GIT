@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Nouvelle réception</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+
+    .qc-radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .qc-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qc-option:hover { border-color: var(--primary-light); background: var(--primary-xlight); }
+    .qc-option.selected { border-color: var(--primary); background: var(--primary-xlight); }
+    .qc-option input { accent-color: var(--primary); }
+
+    .temp-indicator {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 600;
+    }
+    .temp-ok   { background: var(--success-bg); color: var(--success); }
+    .temp-warn { background: var(--warning-bg); color: var(--warning); }
+
+    .lot-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border-dark);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .lot-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+    .compat-zone-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .zone-option {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .zone-option:hover { border-color: var(--primary-light); }
+    .zone-option.selected { border-color: var(--primary); background: var(--primary-xlight); }
+    .zone-option input { accent-color: var(--primary); }
+    .zone-option-info { flex: 1; }
+    .zone-option-name { font-size: 13px; font-weight: 700; }
+    .zone-option-detail { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .zone-option-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+
+    .success-screen { text-align: center; padding: 40px 20px; }
+    .success-icon { font-size: 64px; margin-bottom: 16px; }
+    .success-title { font-size: 22px; font-weight: 800; color: var(--success); margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+    .created-lots { text-align: left; background: var(--success-bg); border: 1px solid #86EFAC; border-radius: var(--radius); padding: 16px; margin: 0 auto 24px; max-width: 500px; }
+    .created-lot-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #A7F3D0; }
+    .created-lot-item:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html" class="active"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <a href="02-receptions.html">Réceptions</a>
+        <span class="sep">›</span>
+        <span class="current">Nouvelle réception</span>
+      </div>
+      <div class="topbar-right">
+        <a href="07-alertes.html" class="topbar-alerts">🔔<span class="badge">3</span></a>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Nouvelle réception</div>
+          <div class="page-subtitle" id="rec-num" style="color: var(--primary); font-weight: 600;">N° REC-260318-03</div>
+        </div>
+        <a href="02-receptions.html" class="btn btn-ghost">✕ Annuler</a>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper" id="stepper">
+        <div class="step completed" id="s1">
+          <div class="step-circle">✓</div>
+          <div class="step-label">En-tête</div>
+        </div>
+        <div class="step completed" id="s2">
+          <div class="step-circle">✓</div>
+          <div class="step-label">Contrôle qualité</div>
+        </div>
+        <div class="step active" id="s3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Saisie des lots</div>
+        </div>
+        <div class="step" id="s4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Affectation emplacements</div>
+        </div>
+      </div>
+
+      <!-- STEP 1 — En-tête -->
+      <div class="step-content" id="step1">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Étape 1 — Informations générales</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Fournisseur <span class="req">*</span></label>
+                  <select class="form-select">
+                    <option value="">Rechercher un fournisseur...</option>
+                    <option selected>Ferme Morin (FARM-042)</option>
+                    <option>Coop. Loire Verdure (COOP-018)</option>
+                    <option>Import Soleil (IMP-007)</option>
+                  </select>
+                  <span class="form-hint success">✓ Légumes racines — Agriculteur certifié HVE</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">N° BL fournisseur</label>
+                  <input class="form-input" type="text" value="BL-MORIN-20260318" placeholder="Optionnel">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Date d'arrivée <span class="req">*</span></label>
+                  <input class="form-input" type="date" value="2026-03-18">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Heure d'arrivée <span class="req">*</span></label>
+                  <input class="form-input" type="time" value="09:35">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Immatriculation camion</label>
+                  <input class="form-input" type="text" value="AB-123-CD">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">N° Sceau / plombage</label>
+                  <input class="form-input" type="text" value="SC-44892">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Température camion (°C) <span class="req">*</span></label>
+                  <div class="input-with-suffix">
+                    <input class="form-input success" type="number" step="0.1" value="3.2">
+                    <span class="input-suffix">°C <span class="temp-indicator temp-ok">✓ Conforme</span></span>
+                  </div>
+                  <span class="form-hint success">Dans la plage attendue pour carottes (0–4°C)</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Commentaire</label>
+                  <input class="form-input" type="text" placeholder="Observations à l'arrivée...">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span></span>
+            <button class="btn btn-primary" onclick="goStep(2)">Étape suivante — Contrôle qualité →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — QC -->
+      <div class="step-content" id="step2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Étape 2 — Contrôle qualité</span>
+            <div class="flex gap-8">
+              <span class="tag">Ferme Morin</span>
+              <span class="tag">🌡️ 3.2°C camion</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="text-muted text-sm mb-16">Inspectez la cargaison et renseignez chaque point de contrôle.</p>
+
+            <table class="qc-table" style="margin-bottom: 20px;">
+              <thead>
+                <tr style="background: var(--bg);">
+                  <th style="padding: 8px 12px; text-align:left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1.5px solid var(--border);">Point de contrôle</th>
+                  <th style="padding: 8px 12px; text-align:left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1.5px solid var(--border); width: 160px;">Résultat</th>
+                  <th style="padding: 8px 12px; text-align:left; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1.5px solid var(--border);">Commentaire</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Intégrité des emballages</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" placeholder="—" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+                <tr>
+                  <td>Absence de moisissures</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" placeholder="—" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+                <tr>
+                  <td>Température produit (sonde)</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" value="3°C mesuré" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+                <tr>
+                  <td>Dates limites / étiquetage</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" placeholder="—" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+                <tr>
+                  <td>Conformité quantité BL</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option selected>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" value="2 colis manquants signalés" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+                <tr>
+                  <td>Absence de nuisibles</td>
+                  <td>
+                    <select class="form-select" style="padding: 5px 24px 5px 8px; font-size: 12px;">
+                      <option>✅ Conforme</option>
+                      <option>⚠️ Réserve</option>
+                      <option>❌ Non conforme</option>
+                    </select>
+                  </td>
+                  <td><input class="form-input" type="text" placeholder="—" style="padding: 5px 8px; font-size: 12px;"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="form-group mb-16">
+              <label class="form-label">Résultat global <span class="req">*</span></label>
+              <div class="qc-radio-group">
+                <label class="qc-option">
+                  <input type="radio" name="qc" value="ok"> <span>✅ Conforme</span>
+                </label>
+                <label class="qc-option selected">
+                  <input type="radio" name="qc" value="reserve" checked> <span>⚠️ Conforme avec réserves — commentaire obligatoire</span>
+                </label>
+                <label class="qc-option">
+                  <input type="radio" name="qc" value="partial"> <span>❌ Non-conforme partiel — préciser les lots refusés</span>
+                </label>
+                <label class="qc-option">
+                  <input type="radio" name="qc" value="total"> <span>🚫 Non-conforme total — refus de la livraison</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Commentaire général <span class="req">*</span></label>
+              <textarea class="form-textarea" rows="2">2 colis de carotte sable manquants — signalé au chauffeur. Avoir à demander au fournisseur.</textarea>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost" onclick="goStep(1)">← Retour</button>
+            <button class="btn btn-primary" onclick="goStep(3)">Étape suivante — Saisie des lots →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — Lots -->
+      <div class="step-content active" id="step3">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Étape 3 — Saisie des lots</span>
+            <button class="btn btn-secondary btn-sm" onclick="alert('Ajout d\'un lot — maquette')">+ Ajouter un lot</button>
+          </div>
+          <div class="card-body">
+
+            <!-- Lot 1 -->
+            <div class="lot-card">
+              <div class="lot-card-header">
+                <span class="lot-num">LOT 1 — <span class="font-mono">LOT-260318-0007</span></span>
+                <button class="btn-icon" title="Supprimer">🗑️</button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Produit <span class="req">*</span></label>
+                  <select class="form-select">
+                    <option selected>🥕 Carotte lavée (CAR-001)</option>
+                    <option>🥕 Carotte sable (CAR-002)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Qualité</label>
+                  <select class="form-select">
+                    <option selected>Catégorie I</option>
+                    <option>Catégorie II</option>
+                    <option>Déclassé</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-3" style="margin-top: 12px;">
+                <div class="form-group">
+                  <label class="form-label">Quantité (kg) <span class="req">*</span></label>
+                  <div class="input-with-suffix">
+                    <input class="form-input" type="number" value="4800">
+                    <span class="input-suffix">kg</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nb colis</label>
+                  <input class="form-input" type="number" value="200" placeholder="Auto: 24 kg/colis">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">N° lot fournisseur</label>
+                  <input class="form-input" type="text" value="LOT-MORIN-2603-A">
+                </div>
+              </div>
+              <div class="form-row" style="margin-top: 12px;">
+                <div class="form-group">
+                  <label class="form-label">Date de récolte</label>
+                  <input class="form-input" type="date" value="2026-03-12">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">DLC</label>
+                  <div class="input-with-suffix">
+                    <input class="form-input success" type="date" value="2026-04-02">
+                    <span class="input-suffix">✓ 21 j</span>
+                  </div>
+                  <span class="form-hint success">Calculée automatiquement (DLC standard : 21 jours)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lot 2 -->
+            <div class="lot-card">
+              <div class="lot-card-header">
+                <span class="lot-num">LOT 2 — <span class="font-mono">LOT-260318-0008</span></span>
+                <button class="btn-icon" title="Supprimer">🗑️</button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Produit <span class="req">*</span></label>
+                  <select class="form-select">
+                    <option>🥕 Carotte lavée (CAR-001)</option>
+                    <option selected>🥕 Carotte sable (CAR-002)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Qualité</label>
+                  <select class="form-select">
+                    <option selected>Catégorie I</option>
+                    <option>Catégorie II</option>
+                    <option>Déclassé</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row-3" style="margin-top: 12px;">
+                <div class="form-group">
+                  <label class="form-label">Quantité (kg) <span class="req">*</span></label>
+                  <div class="input-with-suffix">
+                    <input class="form-input" type="number" value="2400">
+                    <span class="input-suffix">kg</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nb colis</label>
+                  <input class="form-input" type="number" value="98">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">N° lot fournisseur</label>
+                  <input class="form-input" type="text" value="LOT-MORIN-2603-B">
+                </div>
+              </div>
+              <div class="form-row" style="margin-top: 12px;">
+                <div class="form-group">
+                  <label class="form-label">Date de récolte</label>
+                  <input class="form-input" type="date" value="2026-03-10">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">DLC</label>
+                  <div class="input-with-suffix">
+                    <input class="form-input success" type="date" value="2026-03-31">
+                    <span class="input-suffix">✓ 21 j</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-bar">
+              <span>📦 Récapitulatif : 2 lots — 7 200 kg — 298 colis</span>
+              <span class="badge badge-success">✓ Données complètes</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost" onclick="goStep(2)">← Retour</button>
+            <button class="btn btn-primary" onclick="goStep(4)">Étape suivante — Affectation →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — Affectation -->
+      <div class="step-content" id="step4">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Étape 4 — Affectation des emplacements</span>
+          </div>
+          <div class="card-body">
+            <!-- Lot 1 -->
+            <div style="margin-bottom: 24px;">
+              <div class="flex-center gap-8 mb-8">
+                <span style="font-weight: 700;">LOT 1 — Carotte lavée (CAR-001)</span>
+                <span class="badge badge-neutral">4 800 kg</span>
+                <span class="tag">RACINE_FROID</span>
+              </div>
+
+              <div class="compat-zone-list">
+                <label class="zone-option selected">
+                  <input type="radio" name="zon1" checked>
+                  <div class="zone-option-info">
+                    <div class="zone-option-name">✅ Zone A — Froid léger (ENT01-ZA)</div>
+                    <div class="zone-option-detail">0–4°C · 92% humidité · 9 palettes libres (~54 000 kg dispo)</div>
+                    <div class="zone-option-chips">
+                      <span class="product-chip">🫚 Betterave (RACINE_FROID) ✓ compatible</span>
+                    </div>
+                  </div>
+                  <span class="badge badge-success">Recommandée</span>
+                </label>
+                <label class="zone-option">
+                  <input type="radio" name="zon1">
+                  <div class="zone-option-info">
+                    <div class="zone-option-name">✅ Zone A2 — Froid léger bis (ENT01-ZA2)</div>
+                    <div class="zone-option-detail">0–4°C · 91% humidité · 4 palettes libres</div>
+                    <div class="zone-option-chips">
+                      <span class="product-chip">Vide</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              <div class="excluded-zones">
+                <div class="excluded-label">Zones exclues par les règles de stockage :</div>
+                <div class="excluded-item">
+                  <span class="excluded-icon">✗</span>
+                  <div>
+                    <div class="excluded-name">Zone C — Tempéré frais (ENT01-ZC)</div>
+                    <div class="excluded-reason">Contient des Pommes Golden (FRUIT_TEMPER) — RÈGLE-001 : éthylène des pommes rend les carottes amères. BLOQUANT.</div>
+                  </div>
+                </div>
+                <div class="excluded-item">
+                  <span class="excluded-icon">✗</span>
+                  <div>
+                    <div class="excluded-name">Zone E — Ambiant sec (ENT01-ZE)</div>
+                    <div class="excluded-reason">Contient des Oignons jaunes (BULBE_ODEUR) — RÈGLE-002 : les carottes absorbent les odeurs soufrées des oignons. BLOQUANT.</div>
+                  </div>
+                </div>
+                <div class="excluded-item">
+                  <span class="excluded-icon">✗</span>
+                  <div>
+                    <div class="excluded-name">Zone B — Froid modéré (ENT01-ZB) — Hors température</div>
+                    <div class="excluded-reason">T° zone 6°C > T° max carotte 4°C — BLOQUANT thermique.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mt-12">
+                <label class="form-label">Emplacement précis <span class="req">*</span></label>
+                <select class="form-select">
+                  <option selected>ENT01-ZA-R02-E01 (Rangée 2, Étagère 1) — Libre</option>
+                  <option>ENT01-ZA-R02-E02 (Rangée 2, Étagère 2) — Libre</option>
+                  <option>ENT01-ZA-R03-E01 (Rangée 3, Étagère 1) — Libre</option>
+                </select>
+              </div>
+
+              <div class="compat-result compat-ok">
+                <div class="compat-title">✅ Aucune incompatibilité détectée</div>
+                <div class="compat-reason">Zone A — Froid léger · Produits présents compatibles avec RACINE_FROID</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Lot 2 -->
+            <div>
+              <div class="flex-center gap-8 mb-8">
+                <span style="font-weight: 700;">LOT 2 — Carotte sable (CAR-002)</span>
+                <span class="badge badge-neutral">2 400 kg</span>
+                <span class="tag">RACINE_FROID</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Zone + Emplacement <span class="req">*</span></label>
+                <select class="form-select">
+                  <option selected>ENT01-ZA-R02-E02 — Zone A Froid léger — Libre</option>
+                  <option>ENT01-ZA-R03-E01 — Zone A Froid léger — Libre</option>
+                </select>
+              </div>
+              <div class="compat-result compat-ok">
+                <div class="compat-title">✅ Aucune incompatibilité</div>
+                <div class="compat-reason">Même zone que Lot 1 — Catégorie RACINE_FROID compatible</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-ghost" onclick="goStep(3)">← Retour</button>
+            <div class="flex gap-8">
+              <button class="btn btn-secondary" onclick="alert('Impression étiquettes — maquette')">🖨️ Imprimer étiquettes (2)</button>
+              <button class="btn btn-primary" onclick="goStep(5)">✅ Valider la réception</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 — Success -->
+      <div class="step-content" id="step5">
+        <div class="card">
+          <div class="card-body success-screen">
+            <div class="success-icon">✅</div>
+            <div class="success-title">Réception validée !</div>
+            <div class="success-sub">La réception <strong>REC-260318-03</strong> a été enregistrée avec succès.</div>
+
+            <div class="created-lots">
+              <div style="font-size: 13px; font-weight: 700; color: var(--success); margin-bottom: 10px;">Lots créés et mis en stock :</div>
+              <div class="created-lot-item">
+                <span>🥕</span>
+                <div>
+                  <div style="font-size: 13px; font-weight: 700;">LOT-260318-0007 — Carotte lavée</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">4 800 kg · DLC 02/04/2026 · Zone A — ENT01-ZA-R02-E01</div>
+                </div>
+              </div>
+              <div class="created-lot-item">
+                <span>🥕</span>
+                <div>
+                  <div style="font-size: 13px; font-weight: 700;">LOT-260318-0008 — Carotte sable</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">2 400 kg · DLC 31/03/2026 · Zone A — ENT01-ZA-R02-E02</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size: 12.5px; color: var(--warning); background: var(--warning-bg); border: 1px solid #FCD34D; padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto;">
+              ⚠️ Réserve enregistrée : 2 colis de carotte sable manquants — avoir à traiter avec le fournisseur.
+            </div>
+
+            <div class="flex gap-8" style="justify-content: center;">
+              <a href="05-stock-lot.html" class="btn btn-secondary">🏷️ Voir les lots</a>
+              <a href="03-reception-new.html" class="btn btn-secondary" onclick="resetForm()">+ Nouvelle réception</a>
+              <a href="01-dashboard.html" class="btn btn-primary">← Retour accueil</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+function goStep(n) {
+  // Hide all steps
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('step' + i).classList.remove('active');
+  }
+  // Show target step
+  document.getElementById('step' + n).classList.add('active');
+
+  // Update stepper (only 4 visual steps)
+  const stepEls = ['s1','s2','s3','s4'];
+  stepEls.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','completed');
+    const stepNum = idx + 1;
+    if (stepNum < n) el.classList.add('completed');
+    else if (stepNum === n) el.classList.add('active');
+  });
+
+  if (n === 5) {
+    // Mark all done
+    stepEls.forEach(id => {
+      document.getElementById(id).classList.remove('active');
+      document.getElementById(id).classList.add('completed');
+    });
+  }
+
+  window.scrollTo(0, 0);
+}
+
+// Init: show step 3 as active (mid-process demo)
+goStep(3);
+</script>
+</body>
+</html>

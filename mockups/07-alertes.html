@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiFL — Alertes</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .alerte-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin: 20px 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .alerte-section-title:first-child { margin-top: 0; }
+    .alert-card-big {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1.5px solid;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .alert-card-big.crit  { border-color: #FCA5A5; }
+    .alert-card-big.warn  { border-color: #FCD34D; }
+    .alert-card-big.info  { border-color: #93C5FD; }
+    .alert-top {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 18px;
+    }
+    .alert-badge-big {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .bg-crit  { background: var(--danger-bg); }
+    .bg-warn  { background: var(--warning-bg); }
+    .bg-info  { background: var(--info-bg); }
+    .alert-main { flex: 1; }
+    .alert-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .alert-title-big { font-size: 14px; font-weight: 700; }
+    .crit .alert-title-big  { color: var(--danger); }
+    .warn .alert-title-big  { color: var(--warning); }
+    .info .alert-title-big  { color: var(--info); }
+    .alert-subtitle { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; }
+    .alert-details {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 10px;
+      padding: 12px 18px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    .alert-det-item { }
+    .alert-det-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.4px; margin-bottom: 2px; }
+    .alert-det-value { font-size: 13px; font-weight: 600; }
+    .alert-footer-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .alert-footer-left { font-size: 11.5px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥕</div>
+      <div class="logo-text">LogiFL</div>
+      <div class="logo-sub">Logistique Fruits & Légumes</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Principal</div>
+      <ul class="sidebar-nav">
+        <li><a href="01-dashboard.html"><span class="nav-icon">📊</span> Tableau de bord</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Opérations</div>
+      <ul class="sidebar-nav">
+        <li><a href="02-receptions.html"><span class="nav-icon">🚛</span> Réceptions</a></li>
+        <li><a href="04-stocks.html"><span class="nav-icon">📦</span> Stocks</a></li>
+        <li><a href="06-zones.html"><span class="nav-icon">🗺️</span> Vue par zones</a></li>
+        <li><a href="07-alertes.html" class="active"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge">3</span></a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Configuration</div>
+      <ul class="sidebar-nav">
+        <li><a href="08-referentiels.html"><span class="nav-icon">⚙️</span> Référentiels</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-bottom">
+      <ul class="sidebar-nav">
+        <li><a href="#"><span class="nav-icon">👤</span> Marc Leroy</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="current">Centre d'alertes</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-alerts" style="background: var(--danger-bg);">🔔<span class="badge">3</span></div>
+        <div class="topbar-user">
+          <div class="avatar">ML</div>
+          <div class="user-info">
+            <div class="user-name">Marc Leroy</div>
+            <div class="user-role">Opérateur réception</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Centre d'alertes</div>
+          <div class="page-subtitle">3 alertes actives — 18/03/2026</div>
+        </div>
+        <button class="btn btn-ghost">✓ Tout marquer comme lu</button>
+      </div>
+
+      <!-- CRITIQUES -->
+      <div class="alerte-section-title">
+        <span class="badge badge-danger">🔴 Critiques</span>
+        <span>1 alerte</span>
+      </div>
+
+      <div class="alert-card-big crit">
+        <div class="alert-top">
+          <div class="alert-badge-big bg-crit">🔴</div>
+          <div class="alert-main">
+            <div class="alert-h">
+              <div>
+                <div class="alert-title-big">DLC dépassée — Laitue iceberg</div>
+                <div class="alert-subtitle">Lot LOT-260315-001 · Zone B — Froid modéré · Depuis le 17/03/2026 (−1 jour)</div>
+              </div>
+              <div class="alert-time">Détectée 07:00</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert-details">
+          <div class="alert-det-item">
+            <div class="alert-det-label">Produit</div>
+            <div class="alert-det-value">🥬 Laitue iceberg (LAI-001)</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">Quantité concernée</div>
+            <div class="alert-det-value">320 kg</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">DLC</div>
+            <div class="alert-det-value" style="color: var(--danger);">17/03/2026 (dépassée)</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">Emplacement</div>
+            <div class="alert-det-value font-mono">ENT01-ZB-R01-E02</div>
+          </div>
+        </div>
+        <div class="alert-footer-bar">
+          <span class="alert-footer-left">⚠️ Ce lot ne peut plus être expédié. Action immédiate requise.</span>
+          <div class="flex gap-8">
+            <button class="btn btn-ghost btn-sm" onclick="alert('Voir lot — maquette')">Voir le lot</button>
+            <button class="btn btn-danger btn-sm" onclick="alert('Déclaration de perte — maquette')">🗑️ Déclarer la perte</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERTISSEMENTS -->
+      <div class="alerte-section-title">
+        <span class="badge badge-orange">🟠 Avertissements</span>
+        <span>1 alerte</span>
+      </div>
+
+      <div class="alert-card-big warn">
+        <div class="alert-top">
+          <div class="alert-badge-big bg-warn">🟠</div>
+          <div class="alert-main">
+            <div class="alert-h">
+              <div>
+                <div class="alert-title-big">DLC dans moins de 48 heures — Tomates rondes</div>
+                <div class="alert-subtitle">Lot LOT-260316-003 · Zone D — Tempéré · DLC le 20/03/2026 (2 jours restants)</div>
+              </div>
+              <div class="alert-time">Détectée 06:00</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert-details">
+          <div class="alert-det-item">
+            <div class="alert-det-label">Produit</div>
+            <div class="alert-det-value">🍅 Tomate ronde (TOM-001)</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">Quantité</div>
+            <div class="alert-det-value">450 kg</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">DLC</div>
+            <div class="alert-det-value" style="color: var(--orange);">20/03/2026 (2 jours)</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">Fournisseur d'origine</div>
+            <div class="alert-det-value">Ferme Grandin</div>
+          </div>
+        </div>
+        <div class="alert-footer-bar">
+          <span class="alert-footer-left">Préparer une expédition en urgence ou envisager une perte partielle.</span>
+          <div class="flex gap-8">
+            <button class="btn btn-ghost btn-sm">Voir le lot</button>
+            <button class="btn btn-secondary btn-sm" onclick="alert('Préparer expédition — maquette')">📤 Préparer expédition</button>
+            <button class="btn btn-danger btn-sm">🗑️ Déclarer perte</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFORMATIONS -->
+      <div class="alerte-section-title">
+        <span class="badge badge-warning">🟡 Informations</span>
+        <span>1 alerte</span>
+      </div>
+
+      <div class="alert-card-big info">
+        <div class="alert-top">
+          <div class="alert-badge-big bg-info">🌡️</div>
+          <div class="alert-main">
+            <div class="alert-h">
+              <div>
+                <div class="alert-title-big">Anomalie température — Zone A (Froid léger)</div>
+                <div class="alert-subtitle">Pic à 6.8°C détecté pendant 12 minutes à 08:32 — Retour à la normale à 08:44</div>
+              </div>
+              <div class="alert-time">08:32</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert-details">
+          <div class="alert-det-item">
+            <div class="alert-det-label">Zone concernée</div>
+            <div class="alert-det-value">Zone A — Froid léger</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">T° max enregistrée</div>
+            <div class="alert-det-value" style="color: var(--warning);">6.8°C (seuil : 4°C)</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">Durée</div>
+            <div class="alert-det-value">12 minutes</div>
+          </div>
+          <div class="alert-det-item">
+            <div class="alert-det-label">T° actuelle</div>
+            <div class="alert-det-value" style="color: var(--success);">3.1°C ✓</div>
+          </div>
+        </div>
+        <div style="padding: 10px 18px; background: var(--info-bg); border-top: 1px solid #BFDBFE;">
+          <div style="font-size: 12.5px; font-weight: 700; color: var(--info); margin-bottom: 6px;">Lots potentiellement affectés :</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12.5px;">
+              <span class="font-mono">LOT-260318-0007</span> — Carotte lavée — 4 800 kg
+              <span class="badge badge-info">À vérifier</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12.5px;">
+              <span class="font-mono">LOT-260318-0008</span> — Carotte sable — 2 400 kg
+              <span class="badge badge-info">À vérifier</span>
+            </div>
+          </div>
+        </div>
+        <div class="alert-footer-bar">
+          <span class="alert-footer-left">Rupture brève — Vérifier visuellement les lots et documenter.</span>
+          <div class="flex gap-8">
+            <button class="btn btn-ghost btn-sm">Voir Zone A</button>
+            <button class="btn btn-secondary btn-sm" onclick="alert('Enquête — maquette')">🔍 Ouvrir enquête</button>
+            <button class="btn btn-ghost btn-sm" onclick="alert('Valider — maquette')">✓ Marquer comme traitée</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historique -->
+      <div class="alerte-section-title">
+        <span>📋 Alertes résolues récemment</span>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Lot / Zone</th>
+                <th>Description</th>
+                <th>Résolution</th>
+                <th>Par</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>17/03 14:20</td>
+                <td><span class="badge badge-neutral">DLC 48h</span></td>
+                <td><span class="font-mono text-sm">LOT-260314-002</span></td>
+                <td>Brocoli DLC proche</td>
+                <td><span class="badge badge-success">Expédié</span></td>
+                <td>S. Martin</td>
+              </tr>
+              <tr>
+                <td>16/03 09:10</td>
+                <td><span class="badge badge-neutral">T° anomalie</span></td>
+                <td>Zone E</td>
+                <td>Pic 18.9°C (15 min)</td>
+                <td><span class="badge badge-success">Validée</span></td>
+                <td>M. Leroy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
